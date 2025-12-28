@@ -1,0 +1,251 @@
+/* EstateAnalytics Design System - CSS Design Tokens */
+/* Based on OKLCH Color Space for perceptually uniform colors */
+
+:root {
+   /* ========================================
+     COLOR SYSTEM (OKLCH)
+     ======================================== */
+
+   /* Primary - Rolls-Royce Deep Navy (Luxury) */
+   --color-primary-50: oklch(98% 0.01 260);
+   --color-primary-100: oklch(95% 0.02 260);
+   --color-primary-200: oklch(90% 0.03 260);
+   --color-primary-300: oklch(80% 0.04 260);
+   --color-primary-400: oklch(60% 0.05 260);
+   --color-primary-500: oklch(35% 0.06 260);
+   /* Navy Deep #0a1128 */
+   --color-primary-600: oklch(28% 0.05 260);
+   --color-primary-700: oklch(22% 0.04 260);
+   --color-primary-800: oklch(16% 0.03 260);
+   --color-primary-900: oklch(10% 0.02 260);
+
+   /* Accent - Refined Gold (Luxury Touch) */
+   --color-accent-50: oklch(97% 0.02 80);
+   --color-accent-100: oklch(93% 0.05 80);
+   --color-accent-200: oklch(88% 0.08 80);
+   --color-accent-300: oklch(82% 0.12 80);
+   --color-accent-400: oklch(78% 0.14 75);
+   --color-accent-500: oklch(72% 0.14 75);
+   /* Gold #d4af37 */
+   --color-accent-600: oklch(65% 0.13 75);
+   --color-accent-700: oklch(55% 0.11 75);
+   --color-accent-800: oklch(45% 0.09 75);
+   --color-accent-900: oklch(35% 0.07 75);
+
+   /* Success - Emerald Green */
+   --color-success-500: oklch(65% 0.18 145);
+   --color-success-600: oklch(55% 0.16 145);
+
+   /* Warning - Amber */
+   --color-warning-500: oklch(75% 0.18 85);
+   --color-warning-600: oklch(65% 0.16 85);
+
+   /* Error - Ruby Red */
+   --color-error-500: oklch(55% 0.22 25);
+   --color-error-600: oklch(45% 0.20 25);
+
+   /* Neutral - Slate */
+   --color-neutral-0: oklch(100% 0 0);
+   --color-neutral-50: oklch(98% 0.005 260);
+   --color-neutral-100: oklch(96% 0.008 260);
+   --color-neutral-200: oklch(92% 0.010 260);
+   --color-neutral-300: oklch(85% 0.012 260);
+   --color-neutral-400: oklch(70% 0.015 260);
+   --color-neutral-500: oklch(55% 0.015 260);
+   --color-neutral-600: oklch(45% 0.012 260);
+   --color-neutral-700: oklch(35% 0.010 260);
+   --color-neutral-800: oklch(25% 0.008 260);
+   --color-neutral-900: oklch(15% 0.005 260);
+   --color-neutral-950: oklch(10% 0.003 260);
+
+   /* ========================================
+     SEMANTIC COLORS
+     ======================================== */
+   --color-bg-primary: var(--color-neutral-950);
+   --color-bg-secondary: var(--color-neutral-900);
+   --color-bg-tertiary: var(--color-neutral-800);
+   --color-bg-inverse: var(--color-neutral-100);
+
+   --color-text-primary: var(--color-neutral-50);
+   --color-text-secondary: var(--color-neutral-400);
+   --color-text-tertiary: var(--color-neutral-500);
+   --color-text-inverse: var(--color-neutral-950);
+   --color-text-link: var(--color-accent-400);
+
+   --color-border-default: var(--color-neutral-200);
+   --color-border-strong: var(--color-neutral-300);
+
+   /* ========================================
+     SPACING SYSTEM (8px base)
+     ======================================== */
+   --space-0: 0;
+   --space-1: 0.25rem;
+   /* 4px */
+   --space-2: 0.5rem;
+   /* 8px */
+   --space-3: 0.75rem;
+   /* 12px */
+   --space-4: 1rem;
+   /* 16px */
+   --space-5: 1.25rem;
+   /* 20px */
+   --space-6: 1.5rem;
+   /* 24px */
+   --space-8: 2rem;
+   /* 32px */
+   --space-10: 2.5rem;
+   /* 40px */
+   --space-12: 3rem;
+   /* 48px */
+   --space-16: 4rem;
+   /* 64px */
+   --space-20: 5rem;
+   /* 80px */
+   --space-24: 6rem;
+   /* 96px */
+
+   /* ========================================
+     TYPOGRAPHY
+     ======================================== */
+   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+   --font-display: 'Outfit', var(--font-sans);
+   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+   /* Font Sizes (clamp for fluid typography) */
+   --text-xs: clamp(0.7rem, 0.65rem + 0.25vw, 0.75rem);
+   --text-sm: clamp(0.8rem, 0.75rem + 0.25vw, 0.875rem);
+   --text-base: clamp(0.9rem, 0.85rem + 0.25vw, 1rem);
+   --text-lg: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+   --text-xl: clamp(1.1rem, 1rem + 0.5vw, 1.25rem);
+   --text-2xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+   --text-3xl: clamp(1.5rem, 1.25rem + 1.25vw, 1.875rem);
+   --text-4xl: clamp(1.75rem, 1.5rem + 1.5vw, 2.25rem);
+   --text-5xl: clamp(2rem, 1.75rem + 2vw, 3rem);
+   --text-6xl: clamp(2.5rem, 2rem + 2.5vw, 3.75rem);
+
+   /* Line Heights */
+   --leading-none: 1;
+   --leading-tight: 1.25;
+   --leading-snug: 1.375;
+   --leading-normal: 1.5;
+   --leading-relaxed: 1.625;
+   --leading-loose: 2;
+
+   /* Font Weights */
+   --font-light: 300;
+   --font-normal: 400;
+   --font-medium: 500;
+   --font-semibold: 600;
+   --font-bold: 700;
+
+   /* ========================================
+     BORDERS & RADIUS
+     ======================================== */
+   --radius-none: 0;
+   --radius-sm: 0.25rem;
+   --radius-md: 0.5rem;
+   --radius-lg: 0.75rem;
+   --radius-xl: 1rem;
+   --radius-2xl: 1.5rem;
+   --radius-full: 9999px;
+
+   --border-width: 1px;
+   --border-width-2: 2px;
+
+   /* ========================================
+     SHADOWS (Elevation)
+     ======================================== */
+   --shadow-sm: 0 1px 2px 0 oklch(0% 0 0 / 0.05);
+   --shadow-md: 0 4px 6px -1px oklch(0% 0 0 / 0.1), 0 2px 4px -2px oklch(0% 0 0 / 0.1);
+   --shadow-lg: 0 10px 15px -3px oklch(0% 0 0 / 0.1), 0 4px 6px -4px oklch(0% 0 0 / 0.1);
+   --shadow-xl: 0 20px 25px -5px oklch(0% 0 0 / 0.1), 0 8px 10px -6px oklch(0% 0 0 / 0.1);
+   --shadow-2xl: 0 25px 50px -12px oklch(0% 0 0 / 0.25);
+   --shadow-inner: inset 0 2px 4px 0 oklch(0% 0 0 / 0.05);
+
+   /* ========================================
+     TRANSITIONS
+     ======================================== */
+   --transition-fast: 150ms ease;
+   --transition-normal: 250ms ease;
+   --transition-slow: 350ms ease;
+   --transition-slower: 500ms ease;
+
+   /* ========================================
+     Z-INDEX SCALE
+     ======================================== */
+   --z-base: 0;
+   --z-dropdown: 1000;
+   --z-sticky: 1020;
+   --z-fixed: 1030;
+   --z-modal-backdrop: 1040;
+   --z-modal: 1050;
+   --z-popover: 1060;
+   --z-tooltip: 1070;
+}
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+[data-theme="dark"],
+.dark {
+   --color-bg-primary: var(--color-neutral-950);
+   --color-bg-secondary: var(--color-neutral-900);
+   --color-bg-tertiary: var(--color-neutral-800);
+   --color-bg-inverse: var(--color-neutral-100);
+
+   --color-text-primary: var(--color-neutral-50);
+   --color-text-secondary: var(--color-neutral-400);
+   --color-text-tertiary: var(--color-neutral-500);
+   --color-text-inverse: var(--color-neutral-900);
+   --color-text-link: var(--color-primary-400);
+
+   --color-border-default: var(--color-neutral-800);
+   --color-border-strong: var(--color-neutral-700);
+
+   /* Enhanced shadows for dark mode */
+   --shadow-sm: 0 1px 2px 0 oklch(0% 0 0 / 0.3);
+   --shadow-md: 0 4px 6px -1px oklch(0% 0 0 / 0.4), 0 2px 4px -2px oklch(0% 0 0 / 0.3);
+   --shadow-lg: 0 10px 15px -3px oklch(0% 0 0 / 0.4), 0 4px 6px -4px oklch(0% 0 0 / 0.3);
+}
+
+/* ========================================
+   BASE STYLES
+   ======================================== */
+*,
+*::before,
+*::after {
+   box-sizing: border-box;
+}
+
+html {
+   font-size: 16px;
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+   margin: 0;
+   font-family: var(--font-sans);
+   font-size: var(--text-base);
+   line-height: var(--leading-normal);
+   color: var(--color-text-primary);
+   background-color: var(--color-bg-primary);
+   transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+   outline: 2px solid var(--color-primary-500);
+   outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+   background-color: var(--color-primary-200);
+   color: var(--color-primary-900);
+}
+
+[data-theme="dark"] ::selection {
+   background-color: var(--color-primary-800);
+   color: var(--color-primary-100);
+}

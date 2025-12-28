@@ -1,0 +1,472 @@
+/* ===========================================
+   MOBILE INTERACTIONS & PREMIUM ANIMATIONS
+   EstateAnalytics - Touch-Friendly Experience
+   =========================================== */
+
+/* ============================================
+   TOUCH-FRIENDLY SIZING
+   iOS рекомендует минимум 44px для тапов
+   ============================================ */
+
+@media (max-width: 768px) {
+
+    /* Увеличенные зоны касания для кнопок */
+    .btn {
+        min-height: 48px;
+        min-width: 48px;
+        padding: var(--space-4) var(--space-5);
+    }
+
+    .btn-sm {
+        min-height: 44px;
+        padding: var(--space-3) var(--space-4);
+    }
+
+    .btn-icon {
+        min-width: 48px;
+        min-height: 48px;
+    }
+
+    /* Увеличенные поля ввода */
+    .input,
+    .select {
+        min-height: 48px;
+        padding: var(--space-4);
+        font-size: 16px;
+        /* Предотвращает зум на iOS */
+    }
+
+    /* Карточки с активным состоянием */
+    .card {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .card:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
+
+    /* Badge - увеличенный для читаемости */
+    .badge {
+        padding: var(--space-2) var(--space-3);
+        font-size: 11px;
+    }
+}
+
+/* ============================================
+   PREMIUM MOBILE ANIMATIONS
+   ============================================ */
+
+/* Анимация появления карточек с задержкой */
+@keyframes mobileCardEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.mobile-card-animated {
+    animation: mobileCardEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: calc(var(--animation-order, 0) * 80ms);
+    opacity: 0;
+}
+
+/* Pulse эффект для важных элементов */
+@keyframes mobilePulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+    }
+
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    }
+}
+
+.mobile-pulse {
+    animation: mobilePulse 2s ease-in-out infinite;
+}
+
+/* Shimmer эффект загрузки */
+@keyframes mobileShimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.mobile-shimmer {
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.1) 50%,
+            rgba(255, 255, 255, 0) 100%);
+    background-size: 200% 100%;
+    animation: mobileShimmer 1.5s ease-in-out infinite;
+}
+
+/* ============================================
+   SWIPE & GESTURE HINTS
+   ============================================ */
+
+/* Индикатор свайпа */
+.swipe-indicator {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+}
+
+.swipe-indicator__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.swipe-indicator__dot--active {
+    background: var(--gold);
+    width: 24px;
+    border-radius: 4px;
+}
+
+/* ============================================
+   TACTILE FEEDBACK
+   ============================================ */
+
+/* Ripple эффект при нажатии */
+.touch-ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.touch-ripple::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%),
+            rgba(255, 255, 255, 0.2) 0%,
+            transparent 60%);
+    opacity: 0;
+    transform: scale(0);
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.touch-ripple:active::after {
+    opacity: 1;
+    transform: scale(2);
+    transition: transform 0.15s ease;
+}
+
+/* ============================================
+   MOBILE MENU ANIMATIONS
+   ============================================ */
+
+@keyframes mobileMenuSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes mobileMenuFadeIn {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0);
+    }
+
+    to {
+        opacity: 1;
+        backdrop-filter: blur(16px);
+    }
+}
+
+.mobile-menu-overlay {
+    animation: mobileMenuFadeIn 0.3s ease-out forwards;
+}
+
+.mobile-menu-content {
+    animation: mobileMenuSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Staggered навигационные элементы */
+@keyframes mobileNavItemSlide {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.mobile-nav-item {
+    opacity: 0;
+    animation: mobileNavItemSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.mobile-nav-item:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.mobile-nav-item:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.mobile-nav-item:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.mobile-nav-item:nth-child(4) {
+    animation-delay: 0.25s;
+}
+
+.mobile-nav-item:nth-child(5) {
+    animation-delay: 0.3s;
+}
+
+.mobile-nav-item:nth-child(6) {
+    animation-delay: 0.35s;
+}
+
+/* ============================================
+   FLOATING ACTION BUTTON (FAB)
+   ============================================ */
+
+.fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+    color: var(--navy-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        0 0 0 0 rgba(212, 175, 55, 0.4);
+    border: none;
+    cursor: pointer;
+    z-index: 50;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fab:active {
+    transform: scale(0.92);
+}
+
+.fab:hover {
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.4),
+        0 0 0 8px rgba(212, 175, 55, 0.15);
+}
+
+/* ============================================
+   BOTTOM SHEET
+   ============================================ */
+
+@keyframes bottomSheetSlideUp {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+.bottom-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--navy-deep);
+    border-radius: 24px 24px 0 0;
+    padding: 12px 20px 32px;
+    transform: translateY(100%);
+    animation: bottomSheetSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    z-index: 100;
+}
+
+.bottom-sheet__handle {
+    width: 40px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    margin: 0 auto 16px;
+}
+
+/* ============================================
+   PULL-TO-REFRESH INDICATOR
+   ============================================ */
+
+@keyframes pullToRefreshSpin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.pull-refresh-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    color: var(--gold);
+}
+
+.pull-refresh-indicator--loading .pull-refresh-icon {
+    animation: pullToRefreshSpin 1s linear infinite;
+}
+
+/* ============================================
+   SCROLL SNAPPING для галерей
+   ============================================ */
+
+.mobile-gallery {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.mobile-gallery::-webkit-scrollbar {
+    display: none;
+}
+
+.mobile-gallery__item {
+    scroll-snap-align: center;
+    flex-shrink: 0;
+}
+
+/* ============================================
+   SAFE AREA для устройств с вырезом
+   ============================================ */
+
+@supports (padding-top: env(safe-area-inset-top)) {
+    .safe-area-top {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .safe-area-bottom {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .safe-area-left {
+        padding-left: env(safe-area-inset-left);
+    }
+
+    .safe-area-right {
+        padding-right: env(safe-area-inset-right);
+    }
+
+    /* FAB с учетом safe area */
+    .fab {
+        bottom: calc(24px + env(safe-area-inset-bottom));
+        right: calc(24px + env(safe-area-inset-right));
+    }
+
+    /* Bottom sheet с safe area */
+    .bottom-sheet {
+        padding-bottom: calc(32px + env(safe-area-inset-bottom));
+    }
+}
+
+/* ============================================
+   HAPTIC-STYLE VISUAL FEEDBACK
+   ============================================ */
+
+@keyframes hapticBounce {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(0.95);
+    }
+}
+
+.haptic-feedback {
+    animation: hapticBounce 0.15s ease-in-out;
+}
+
+/* Кнопка с эффектом нажатия */
+.btn-haptic:active {
+    animation: hapticBounce 0.15s ease-in-out;
+}
+
+/* ============================================
+   SKELETON LOADERS для mobile
+   ============================================ */
+
+@media (max-width: 768px) {
+    .skeleton {
+        border-radius: var(--radius-lg);
+    }
+
+    /* Упрощенные skeleton для производительности */
+    .skeleton-mobile {
+        background: linear-gradient(90deg,
+                rgba(255, 255, 255, 0.05) 0%,
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0.05) 100%);
+        background-size: 200% 100%;
+        animation: mobileShimmer 1.2s ease-in-out infinite;
+    }
+}
+
+/* ============================================
+   REDUCED MOTION для доступности
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .mobile-card-animated,
+    .mobile-nav-item,
+    .mobile-menu-overlay,
+    .mobile-menu-content,
+    .bottom-sheet {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}

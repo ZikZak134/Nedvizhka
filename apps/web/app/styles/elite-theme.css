@@ -1,0 +1,1435 @@
+/*
+ * Elite Theme System
+ * Inspired by: Rolls-Royce, Bentley, Mercedes-Maybach
+ * Philosophy: "Quiet Luxury" — subtle, refined, premium
+ */
+
+:root {
+    /* ========================================
+     TYPOGRAPHY - Luxury System
+     Inspired by: Sotheby's (serif headings) + Christie's (editorial style)
+     ======================================== */
+    --font-heading: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-accent: 'Cormorant Garamond', Georgia, serif;
+    /* For quotes/highlights */
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+    /* Font Sizes - Refined Hierarchy */
+    --text-hero: 56px;
+    --text-h1: 48px;
+    --text-h2: 40px;
+    --text-h3: 28px;
+    --text-h4: 24px;
+    --text-body: 16px;
+    --text-small: 14px;
+    --text-xs: 12px;
+
+    /* Line Heights */
+    --leading-tight: 1.1;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.75;
+
+    /* ========================================
+     COLOR PALETTE - Premium Luxury
+     Inspired by: Sotheby's + Engel & Völkers
+     ======================================== */
+
+    /* Primary - Deep Navy */
+    --navy-deep: #0a1128;
+    --navy-light: #1a2742;
+    --navy-muted: #2d3e5f;
+
+    /* Accent - Refined Gold */
+    --gold: #d4af37;
+    --gold-light: #e4c76d;
+    --gold-dark: #b8941f;
+
+
+    /* Neutrals */
+    --white: #ffffff;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+    --black: #000000;
+
+    /* Semantic Colors */
+    --success: #059669;
+    /* Investment green */
+    --success-light: #d1fae5;
+    --warning: #ea580c;
+    /* Hot market */
+    --warning-light: #fed7aa;
+    --info: #0ea5e9;
+    --info-light: #e0f2fe;
+
+    /* Elite Variables */
+    --elite-bg-primary: var(--navy-deep);
+    --elite-bg-secondary: var(--navy-light);
+    --elite-accent-gold: var(--gold);
+    --elite-accent-gold-muted: #c3a234;
+    --elite-accent-aqua: #ccfff5;
+    --elite-text-primary: var(--white);
+    --elite-text-secondary: var(--gray-200);
+    /* Boosted contrast from gray-300 */
+    --elite-text-muted: var(--gray-300);
+    /* Boosted contrast from gray-400 */
+
+    /* Legacy Mappings for consistency */
+    --color-text-primary: var(--elite-text-primary);
+    --color-text-secondary: var(--elite-text-secondary);
+    --color-text-tertiary: var(--elite-text-muted);
+    --color-text-muted: var(--elite-text-muted);
+
+    /* ========================================
+     SPACING - Generous 8px Grid System
+     ======================================== */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 64px;
+    --space-3xl: 96px;
+    --space-4xl: 128px;
+    --space-5xl: 160px;
+    --space-ultra: 200px;
+    /* Hero sections on huge screens */
+
+    /* Component Spacing */
+    --section-padding-y: var(--space-3xl);
+    --section-padding-x: var(--space-lg);
+    --card-padding: var(--space-lg);
+    --button-padding-y: 14px;
+    --button-padding-x: 32px;
+
+    /* Radii */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-2xl: 24px;
+    --radius-full: 9999px;
+
+    /* ========================================
+     EFFECTS
+     ======================================== */
+
+    /* Magnetic Buttons */
+    --magnetic-scale: 1.082;
+    /* size: 82 → 1 + 82/1000 */
+    --magnetic-strength: 0.38;
+    /* intensity: 38 → 38/100 */
+    --magnetic-transition: 0.48s;
+    /* speed: 52 → (100-52)/100 */
+
+    /* Glow Trail */
+    --glow-size: 25px;
+    --glow-fade: 0.02s;
+    /* speed: 98 → very fast fade */
+    --glow-intensity: 0.08;
+    /* intensity: 8 → 8/100 */
+    --glow-color: var(--elite-accent-gold-muted);
+
+    /* Glassmorphism */
+    --glass-blur: 1.8px;
+    /* intensity: 9 → 9/5 = 1.8px */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+
+    /* Ripple Effect */
+    --ripple-scale: 7;
+    /* size: 70 → 70/10 */
+    --ripple-duration: 960ms;
+    /* speed: 4 → long slow ripple (1000 - 4*10) */
+    --ripple-opacity: 0.6;
+
+    /* Animated Background */
+    --bg-anim-speed: 81ms;
+    /* speed: 19 → 100-19 */
+
+    /* Glowing Cards */
+    --glow-card-intensity: 0.01;
+    /* intensity: 1 → minimal glow */
+    --glow-card-color: var(--elite-accent-aqua);
+    --glow-card-shadow: 0 0 calc(40px * var(--glow-card-intensity)) var(--glow-card-color);
+
+    /* Preloader */
+    --preloader-speed: 60ms;
+    /* speed: 40 → 100-40 */
+
+    /* ========================================
+     SHADOWS - Refined Depth
+     ======================================== */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
+    --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.25);
+    --shadow-gold: 0 0 30px rgba(212, 175, 55, 0.3);
+
+    /* ========================================
+     TRANSITIONS - Precise Timing
+     ======================================== */
+    --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-fast: 150ms var(--ease-out-expo);
+    --transition-medium: 300ms var(--ease-out-expo);
+    --transition-slow: 600ms var(--ease-in-out-quart);
+}
+
+/* ========================================
+   NOISE TEXTURE BACKGROUND
+   Premium luxury brands use subtle grain
+   ======================================== */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+    /* Понижен с 9999 для предотвращения конфликтов с popup и меню */
+    opacity: 0.03;
+    /* Very subtle */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.card {
+    background: var(--navy-light);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+.card-body {
+    padding: var(--space-lg);
+}
+
+/* Visibility Utilities */
+.hide-mobile {
+    display: none !important;
+}
+
+@media (min-width: 769px) {
+    .hide-mobile {
+        display: block !important;
+    }
+}
+
+.hide-xs {
+    display: none !important;
+}
+
+@media (min-width: 481px) {
+    .hide-xs {
+        display: block !important;
+    }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.heading-1,
+.heading-2,
+.heading-3,
+.heading-4,
+.heading-5,
+.heading-6 {
+    color: var(--elite-text-primary) !important;
+    letter-spacing: -0.01em;
+}
+
+p,
+.body-base,
+.body-small,
+.body-xs {
+    color: var(--elite-text-secondary) !important;
+}
+
+ul,
+ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.badge {
+    color: var(--elite-bg-primary) !important;
+    font-weight: 700 !important;
+}
+
+.badge-primary {
+    background: var(--gold) !important;
+}
+
+.label {
+    color: var(--elite-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 12px;
+    /* Increased from 11px */
+    font-weight: 600;
+}
+
+.map-overlay-text {
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8), 0 0 1px rgba(0, 0, 0, 1);
+}
+
+/* ========================================
+   GLASSMORPHISM UTILITY
+   ======================================== */
+.elite-glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-md);
+}
+
+/* ========================================
+   MAGNETIC BUTTON BASE
+   ======================================== */
+.elite-magnetic-btn {
+    transition: transform var(--magnetic-transition) var(--ease-out-expo);
+    cursor: pointer;
+}
+
+.elite-magnetic-btn:hover {
+    transform: scale(var(--magnetic-scale));
+}
+
+/* For JS-driven magnetic effect, see useMagneticEffect hook */
+
+/* ========================================
+   RIPPLE EFFECT CONTAINER
+   ======================================== */
+.elite-ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.elite-ripple-wave {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, var(--ripple-opacity));
+    transform: translate(-50%, -50%) scale(0);
+    animation: ripple-expand var(--ripple-duration) ease-out;
+    pointer-events: none;
+}
+
+@keyframes ripple-expand {
+    from {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translate(-50%, -50%) scale(var(--ripple-scale));
+        opacity: 0;
+    }
+}
+
+/* ========================================
+   GLOW TRAIL PARTICLES
+   ======================================== */
+.elite-glow-trail-particle {
+    position: fixed;
+    width: var(--glow-size);
+    height: var(--glow-size);
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            var(--glow-color) 0%,
+            transparent 70%);
+    box-shadow: 0 0 30px var(--glow-color);
+    opacity: var(--glow-intensity);
+    pointer-events: none;
+    z-index: 9998;
+    animation: glow-fade-out calc(800ms - var(--glow-fade) * 800ms) ease-out forwards;
+}
+
+@keyframes glow-fade-out {
+    from {
+        opacity: var(--glow-intensity);
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(2);
+    }
+}
+
+/* ========================================
+   GLOWING CARDS
+   ======================================== */
+.elite-glowing-card {
+    position: relative;
+    border: 2px solid var(--glow-card-color);
+    box-shadow: var(--glow-card-shadow),
+        inset 0 0 calc(20px * var(--glow-card-intensity)) rgba(204, 255, 245, 0.1);
+    overflow: hidden;
+}
+
+.elite-glowing-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg,
+            transparent,
+            var(--glow-card-color),
+            transparent);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 200%;
+    }
+}
+
+/* ========================================
+   ANIMATED BACKGROUND
+   ======================================== */
+@keyframes bg-gradient-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.elite-animated-bg {
+    background: linear-gradient(135deg,
+            var(--elite-bg-primary) 0%,
+            var(--elite-bg-secondary) 50%,
+            var(--elite-bg-primary) 100%);
+    background-size: 200% 200%;
+    animation: bg-gradient-shift calc(var(--bg-anim-speed) * 100) ease-in-out infinite;
+}
+
+/* ========================================
+   GRADIENT WAVE PRELOADER
+   ======================================== */
+.elite-preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--elite-bg-primary);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.elite-preloader-wave {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            var(--elite-accent-gold),
+            transparent);
+    animation: wave-move calc(var(--preloader-speed) * 50) linear infinite;
+}
+
+@keyframes wave-move {
+    from {
+        left: -100%;
+    }
+
+    to {
+        left: 100%;
+    }
+}
+
+.elite-preloader-text {
+    position: relative;
+    z-index: 1;
+    color: var(--elite-text-primary);
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* ========================================
+   REDUCED MOTION SUPPORT
+   Respect user preferences
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    /* Disable glow trail */
+    .elite-glow-trail-particle {
+        display: none;
+    }
+
+    /* Disable animated background */
+    .elite-animated-bg {
+        animation: none;
+    }
+}
+
+/* ========================================
+   MOBILE OPTIMIZATIONS
+   ======================================== */
+@media (max-width: 768px) {
+
+    /* Disable heavy effects on mobile */
+    .elite-glow-trail-particle {
+        display: none;
+    }
+
+    /* Reduce magnetic intensity */
+    :root {
+        --magnetic-strength: 0.2;
+        --magnetic-scale: 1.04;
+    }
+
+    /* Hide text in navigation, show only icons */
+    header nav a {
+        padding: 8px !important;
+        font-size: 16px !important;
+    }
+
+    header nav a span,
+    header nav a::after {
+        display: none;
+    }
+
+    /* Map controls - make scrollable */
+    .map-controls-bar {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        max-width: 100vw;
+        padding: 8px !important;
+    }
+
+    .map-controls-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Collapse sidebar panels on mobile */
+    .map-sidebar-left,
+    .map-sidebar-right {
+        display: none !important;
+    }
+
+    /* Show mobile-friendly bottom sheet instead */
+    .map-bottom-sheet {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-height: 40vh;
+        overflow-y: auto;
+        border-radius: 16px 16px 0 0;
+    }
+
+    /* Reduce button size on mobile */
+    .map-filter-btn {
+        padding: 6px 8px !important;
+        font-size: 10px !important;
+        min-width: auto !important;
+    }
+
+    /* Hide price filter labels, show abbreviated */
+    .price-filter-full {
+        display: none !important;
+    }
+
+    .price-filter-short {
+        display: inline !important;
+    }
+
+    /* Stack scenario buttons vertically if needed */
+    .scenario-buttons {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    /* Reduce header height */
+    header {
+        height: 48px !important;
+        padding: 0 12px !important;
+    }
+
+    /* Hide subtitle on mobile */
+    header .subtitle {
+        display: none !important;
+    }
+
+    /* Smaller logo */
+    header .logo-icon {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 12px !important;
+    }
+
+    /* Investment block - stack on mobile */
+    .investment-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: var(--space-md) !important;
+    }
+
+    /* Adaptive Spacing for Mobile */
+    /* Adaptive Spacing for Mobile (XS/SM) */
+    .section-sm,
+    .section-md,
+    .section-lg {
+        padding-top: var(--space-xl) !important;
+        padding-bottom: var(--space-xl) !important;
+    }
+
+    /* Скрываем верхние панели управления картой при открытом popup */
+    /* Это решает проблему перекрытия popup панелями на мобильных */
+    body:has(.leaflet-popup) .map-controls-bar,
+    body:has(.leaflet-popup) [style*="position: absolute"][style*="top: 16px"] {
+        opacity: 0.3 !important;
+        pointer-events: none !important;
+        transition: opacity 0.3s ease;
+    }
+}
+
+/* ========================================
+   TABLET OPTIMIZATIONS (MD/LG: 768px - 1200px)
+   ======================================== */
+@media (min-width: 768px) and (max-width: 1200px) {
+    :root {
+        --section-padding-y: var(--space-2xl);
+    }
+}
+
+/* ========================================
+   ULTRA-WIDE OPTIMIZATIONS (> 1600px - 2XL)
+   ======================================== */
+@media (min-width: 1600px) {
+    :root {
+        --space-3xl: 112px;
+        --space-4xl: 144px;
+        --section-padding-y: var(--space-4xl);
+    }
+
+    .container {
+        padding-inline: var(--space-xl);
+    }
+}
+
+/* ========================================
+   MEGA-WIDE OPTIMIZATIONS (> 2000px - 3XL)
+   ======================================== */
+@media (min-width: 2000px) {
+    :root {
+        --space-3xl: 144px;
+        --space-4xl: 192px;
+        --space-ultra: 240px;
+        --section-padding-y: var(--space-5xl);
+    }
+
+    h1,
+    .heading-1 {
+        font-size: 72px !important;
+    }
+}
+
+.divider {
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin: var(--space-lg) 0;
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    header nav {
+        gap: 2px !important;
+    }
+
+    header nav a {
+        padding: 6px !important;
+    }
+
+    /* Single column for investment stats */
+    .investment-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Hide less important controls */
+    .hide-xs {
+        display: none !important;
+    }
+}
+
+/* ========================================
+   PREMIUM SCROLLBAR
+   ======================================== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--elite-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--elite-accent-gold);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--elite-accent-gold-muted);
+}
+
+/* ========================================
+   MAP MARKERS - Elite Jewel Style
+   Restoring missing styles for map pins
+   ======================================== */
+.premium-marker,
+.custom-marker {
+    background: none;
+    border: none;
+}
+
+.marker-content {
+    width: 36px;
+    height: 36px;
+    background: var(--marker-color, var(--elite-accent-gold));
+    border-radius: 50% 50% 0 50%;
+    transform: rotate(45deg);
+    border: 3px solid white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    cursor: pointer;
+}
+
+.marker-content:hover {
+    transform: rotate(45deg) scale(1.1);
+    z-index: 1000;
+}
+
+.marker-content::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    top: 6px;
+    left: 6px;
+}
+
+.marker-badge {
+    transform: rotate(-45deg);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: var(--font-body);
+    white-space: nowrap;
+}
+
+.infra-marker {
+    transition: transform 0.2s ease;
+}
+
+.infra-marker:hover {
+    transform: scale(1.2);
+    z-index: 1000;
+}
+
+.leaflet-popup-content-wrapper {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    padding: 0;
+}
+
+.leaflet-popup-content {
+    margin: 16px;
+    font-family: var(--font-body);
+}
+
+.leaflet-popup-tip {
+    background: rgba(255, 255, 255, 0.98);
+}
+
+/* Гарантируем видимость popup поверх элементов карты */
+.leaflet-popup {
+    z-index: 400 !important;
+}
+
+.leaflet-popup-pane {
+    z-index: 380 !important;
+}
+
+/* Leaflet контролы - понижаем z-index чтобы мобильное меню их перекрывало */
+.leaflet-control-container {
+    z-index: 400 !important;
+}
+
+.leaflet-top,
+.leaflet-bottom {
+    z-index: 400 !important;
+}
+
+.leaflet-control {
+    z-index: 400 !important;
+}
+
+.leaflet-control-zoom {
+    z-index: 400 !important;
+}
+
+/* 2GIS Specific overrides to match style */
+.dg-popup__wrapper {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.dg-popup__content {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 12px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+    padding: 12px !important;
+}
+
+.dg-popup__tip {
+    background: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Elite Tooltip для маркеров карты */
+.elite-tooltip {
+    background: rgba(15, 23, 42, 0.95) !important;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    border-radius: 8px !important;
+    color: #fff !important;
+    font-family: var(--font-body);
+    font-size: 12px;
+    padding: 8px 12px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+.elite-tooltip::before {
+    border-top-color: rgba(15, 23, 42, 0.95) !important;
+}
+
+.leaflet-tooltip-top.elite-tooltip::before {
+    border-top-color: rgba(15, 23, 42, 0.95) !important;
+}
+
+/* ========================================
+   ABOUT BUTTON - Vintage Style (Center Header)
+   ======================================== */
+
+.about-btn-vintage {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 16px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.about-btn-vintage:hover {
+    transform: translateX(-50%) scale(1.05);
+}
+
+.about-btn-text {
+    font-family: var(--font-accent);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: var(--elite-text-secondary);
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+}
+
+.about-btn-vintage:hover .about-btn-text {
+    color: var(--elite-accent-gold);
+}
+
+.about-btn-arrow {
+    font-size: 10px;
+    color: var(--elite-accent-gold);
+    animation: bounce-arrow 1.5s ease-in-out infinite;
+}
+
+@keyframes bounce-arrow {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    50% {
+        opacity: 0.4;
+        transform: translateY(4px);
+    }
+}
+
+/* ========================================
+   ABOUT DRAWER - 19th Century Vintage Style
+   ======================================== */
+
+/* Backdrop */
+.about-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.about-drawer-backdrop.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Drawer Container - Vintage Paper */
+.about-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    max-height: 90vh;
+    /* Aged paper background */
+    background:
+        linear-gradient(135deg, #faf6f0 0%, #f5efe5 25%, #f0e8d8 50%, #f5efe5 75%, #faf6f0 100%);
+    border-bottom: 3px solid #8b4513;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 0 100px rgba(139, 69, 19, 0.05);
+    z-index: 9999;
+    transform: translateY(-100%);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    color: #2c1810;
+}
+
+.about-drawer.open {
+    transform: translateY(0);
+}
+
+/* Ink Blots Decoration */
+.about-drawer::before,
+.about-drawer::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.15;
+}
+
+.about-drawer::before {
+    top: 60px;
+    left: 40px;
+    width: 120px;
+    height: 80px;
+    background: radial-gradient(ellipse at center, #1a1a2e 0%, transparent 70%);
+    transform: rotate(-15deg);
+    filter: blur(2px);
+}
+
+.about-drawer::after {
+    bottom: 100px;
+    right: 60px;
+    width: 100px;
+    height: 60px;
+    background: radial-gradient(ellipse at center, #1a1a2e 0%, transparent 70%);
+    transform: rotate(20deg);
+    filter: blur(3px);
+}
+
+/* Close Button - Wax Seal Style */
+.about-drawer-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(145deg, #8b4513, #654321);
+    border: none;
+    border-radius: 50%;
+    color: #f5efe5;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        0 4px 12px rgba(139, 69, 19, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.2);
+    z-index: 10;
+}
+
+.about-drawer-close:hover {
+    transform: scale(1.1) rotate(90deg);
+    background: linear-gradient(145deg, #a0522d, #8b4513);
+}
+
+/* Content Container */
+.about-drawer-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 48px 40px 64px;
+    position: relative;
+}
+
+/* Header Section */
+.about-drawer-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid rgba(139, 69, 19, 0.2);
+}
+
+.about-drawer-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    filter: sepia(50%);
+}
+
+.about-drawer-header h1 {
+    font-family: var(--font-accent, 'Cormorant Garamond', serif) !important;
+    font-size: 42px !important;
+    font-weight: 600 !important;
+    color: #2c1810 !important;
+    margin: 0 0 16px 0;
+    letter-spacing: 0.08em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Typing Animation - Призрачная рука пишет текст */
+.about-drawer-typing {
+    font-family: var(--font-accent, 'Cormorant Garamond', serif);
+    font-size: 22px;
+    font-style: italic;
+    color: #5c4a3d !important;
+    line-height: 1.5;
+    min-height: 40px;
+}
+
+.typing-text {
+    opacity: 0.9;
+}
+
+.typing-cursor {
+    display: inline-block;
+    animation: cursor-blink 0.8s infinite;
+    color: #8b4513;
+    font-weight: 300;
+}
+
+@keyframes cursor-blink {
+
+    0%,
+    50% {
+        opacity: 1;
+    }
+
+    51%,
+    100% {
+        opacity: 0;
+    }
+}
+
+/* Poem Styling - Elegant Serif */
+.about-drawer-poem {
+    font-family: var(--font-accent, 'Cormorant Garamond', serif);
+}
+
+/* Fade-in Animation for Sections */
+.fade-in-section {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.poem-intro {
+    text-align: center;
+    font-size: 20px;
+    line-height: 1.7;
+    color: #3d2e24 !important;
+    margin-bottom: 36px;
+    padding: 24px;
+    background: rgba(139, 69, 19, 0.03);
+    border: 1px dashed rgba(139, 69, 19, 0.2);
+    border-radius: 4px;
+    position: relative;
+}
+
+/* Ink drops near poem intro */
+.poem-intro::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: 30px;
+    width: 20px;
+    height: 25px;
+    background: radial-gradient(ellipse, #1a1a2e 0%, transparent 70%);
+    opacity: 0.2;
+    transform: rotate(10deg);
+}
+
+/* Section Blocks */
+.poem-section {
+    margin-bottom: 28px;
+}
+
+.poem-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.poem-icon {
+    font-size: 28px;
+    filter: sepia(30%);
+}
+
+.poem-section h2 {
+    font-family: var(--font-accent, 'Cormorant Garamond', serif) !important;
+    font-size: 22px !important;
+    font-weight: 600 !important;
+    color: #2c1810 !important;
+    margin: 0;
+}
+
+.poem-section p {
+    font-family: var(--font-accent, 'Cormorant Garamond', serif);
+    font-size: 18px;
+    line-height: 1.7;
+    color: #4a3c32 !important;
+    padding-left: 40px;
+}
+
+/* Section Title with Flourish */
+.section-title-gold {
+    font-family: var(--font-accent, 'Cormorant Garamond', serif) !important;
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.1em;
+    color: #8b4513 !important;
+    text-align: center;
+    margin: 0 0 24px 0;
+    position: relative;
+}
+
+.section-title-gold::before,
+.section-title-gold::after {
+    content: '✦';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #8b4513;
+    opacity: 0.5;
+}
+
+.section-title-gold::before {
+    left: calc(50% - 120px);
+}
+
+.section-title-gold::after {
+    right: calc(50% - 120px);
+}
+
+/* Divider - Ornamental */
+.poem-divider {
+    text-align: center;
+    font-size: 16px;
+    letter-spacing: 0.3em;
+    color: #8b4513;
+    margin: 32px 0;
+    opacity: 0.6;
+}
+
+/* How To Use Grid */
+.how-to-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.how-to-item {
+    text-align: center;
+    padding: 20px 12px;
+    background: rgba(139, 69, 19, 0.03);
+    border: 1px solid rgba(139, 69, 19, 0.15);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.how-to-item:hover {
+    background: rgba(139, 69, 19, 0.08);
+    transform: translateY(-2px);
+}
+
+.how-to-icon {
+    font-size: 32px;
+    display: block;
+    margin-bottom: 8px;
+    filter: sepia(30%);
+}
+
+.how-to-item strong {
+    display: block;
+    font-family: var(--font-accent, 'Cormorant Garamond', serif);
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c1810;
+    margin-bottom: 6px;
+}
+
+.how-to-item p {
+    font-family: var(--font-accent, 'Cormorant Garamond', serif);
+    font-size: 14px !important;
+    line-height: 1.5;
+    color: #5c4a3d !important;
+    margin: 0;
+    padding: 0 !important;
+}
+
+/* Stats Row */
+.stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    margin-bottom: 28px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-family: var(--font-heading, 'Playfair Display', serif);
+    font-size: 48px;
+    font-weight: 700;
+    color: #8b4513;
+    line-height: 1;
+}
+
+.stat-label {
+    display: block;
+    font-family: var(--font-accent, 'Cormorant Garamond', serif);
+    font-size: 14px;
+    color: #5c4a3d;
+    margin-top: 4px;
+}
+
+/* Poem Final */
+.poem-final {
+    text-align: center;
+    font-family: var(--font-accent, 'Cormorant Garamond', serif);
+    font-size: 18px;
+    line-height: 1.7;
+    color: #4a3c32 !important;
+    font-style: italic;
+    padding: 0 !important;
+}
+
+/* Footer */
+.poem-footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 2px solid rgba(139, 69, 19, 0.2);
+}
+
+.brand-line {
+    font-family: var(--font-accent, 'Cormorant Garamond', serif);
+    font-size: 20px;
+    line-height: 1.6;
+    color: #3d2e24 !important;
+    margin-bottom: 20px;
+}
+
+.brand-line strong {
+    color: #8b4513;
+    font-weight: 700;
+}
+
+/* Exit Button */
+.exit-badge {
+    display: inline-block;
+    padding: 12px 32px;
+    background: linear-gradient(145deg, #8b4513, #654321);
+    border: none;
+    border-radius: 4px;
+    font-family: var(--font-accent, 'Cormorant Garamond', serif);
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: #f5efe5;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+}
+
+.exit-badge:hover {
+    transform: scale(1.05);
+    background: linear-gradient(145deg, #a0522d, #8b4513);
+    box-shadow: 0 6px 16px rgba(139, 69, 19, 0.4);
+}
+
+/* ========================================
+   ABOUT DRAWER - Mobile Responsive
+   ======================================== */
+@media (max-width: 768px) {
+    .about-btn-vintage {
+        position: relative;
+        left: auto;
+        transform: none;
+    }
+
+    .about-btn-vintage:hover {
+        transform: scale(1.05);
+    }
+
+    .about-btn-text {
+        font-size: 11px;
+    }
+
+    .about-drawer {
+        max-height: 95vh;
+    }
+
+    .about-drawer-content {
+        padding: 32px 20px 48px;
+    }
+
+    .about-drawer-close {
+        top: 12px;
+        right: 12px;
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    .about-drawer-header h1 {
+        font-size: 40px !important;
+    }
+
+    .about-drawer-tagline {
+        font-size: 24px;
+    }
+
+    .poem-intro {
+        font-size: 22px;
+        padding: 16px;
+    }
+
+    .poem-section h2 {
+        font-size: 28px !important;
+    }
+
+    .poem-section p {
+        font-size: 20px;
+        padding-left: 0;
+    }
+
+    .how-to-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .how-to-item strong {
+        font-size: 22px;
+    }
+
+    .how-to-item p {
+        font-size: 18px !important;
+    }
+
+    .stats-row {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .stat-number {
+        font-size: 48px;
+    }
+
+    .stat-label {
+        font-size: 18px;
+    }
+
+    .section-title-gold {
+        font-size: 32px !important;
+    }
+
+    .section-title-gold::before,
+    .section-title-gold::after {
+        display: none;
+    }
+}
