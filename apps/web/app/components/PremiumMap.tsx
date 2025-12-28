@@ -171,39 +171,12 @@ const JK_DATA = [
     },
 ];
 
-const INFRASTRUCTURE_DATA = [
-    // Education
-    { id: 's1', type: 'school', name: 'Гимназия №1', lat: 43.582, lng: 39.721 },
-    { id: 's8', type: 'school', name: 'Лицей №23', lat: 43.595, lng: 39.718 },
-    { id: 'k1', type: 'kindergarten', name: 'Д/С "Малыш"', lat: 43.588, lng: 39.730 },
-
-    // Health
-    { id: 'h1', type: 'hospital', name: 'Гор. Больница №4', lat: 43.600, lng: 39.735 },
-
-    // Shopping
-    { id: 'sh1', type: 'shop', name: 'МореМолл', lat: 43.605, lng: 39.728 },
-    { id: 'sh2', type: 'shop', name: 'Grand Marina', lat: 43.579, lng: 39.718 },
-    { id: 'sh3', type: 'shop', name: 'ЦУМ Сочи', lat: 43.586, lng: 39.722 },
-
-    // Leisure / Promenade
-    { id: 'l1', type: 'promenade', name: 'Набережная (Маяк)', lat: 43.575, lng: 39.720 },
-    { id: 'p1', type: 'park', name: 'Ривьера Парк', lat: 43.590, lng: 39.712 },
-    { id: 'p2', type: 'park', name: 'Дендрарий', lat: 43.568, lng: 39.742 },
-
-    // Water
-    { id: 'w1', type: 'water', name: 'Аквапарк "Маяк"', lat: 43.577, lng: 39.721 },
-    { id: 'w2', type: 'water', name: 'Бассейн Жемчужина', lat: 43.569, lng: 39.732 },
-
-    // Dining
-    { id: 'd1', type: 'food', name: 'Ресторан D.O.M', lat: 43.578, lng: 39.719 },
-    { id: 'd2', type: 'food', name: 'Baran-Rapan', lat: 43.576, lng: 39.725 },
-    { id: 'd3', type: 'food', name: 'Кофемания', lat: 43.580, lng: 39.717 },
-
-    // Accidents (DTP) - Stub
+const STATIC_DATA = [
+    // Accidents (DTP) - Mock / Live Events
     { id: 'dtp1', type: 'dtp', name: 'ДТП: Столкновение', lat: 43.592, lng: 39.722, description: 'Средняя тяжесть. Ожидается патруль.' },
     { id: 'dtp2', type: 'dtp', name: 'ДТП: Затор', lat: 43.585, lng: 39.920, description: 'Пробка 2км. Ремонт дорог.' },
 
-    // Weather / Meteo - Stub
+    // Weather / Meteo - Mock / Real integration later
     { id: 'm1', type: 'meteo', name: 'Метео: +22°C', lat: 43.570, lng: 39.720, description: 'Солнечно, штиль. Температура воды +20°C.' },
     { id: 'm2', type: 'meteo', name: 'Метео: +18°C', lat: 43.680, lng: 40.210, description: 'Облачно, возможен дождь.' },
 ];
@@ -352,18 +325,65 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
             setShowInfra(true);
             setActiveInfraFilters(['school', 'kindergarten', 'park', 'hospital']);
             setShowHeatmap(false);
+            if (activeTab === 'details') setActiveTab('surroundings');
         } else if (scenario === 'investor') {
             setShowHeatmap(true);
             setShowInfra(false);
+            if (activeTab === 'details') setActiveTab('potential');
         } else if (scenario === 'single') {
             setShowInfra(true);
             setActiveInfraFilters(['food', 'shop', 'promenade', 'water']);
             setShowHeatmap(false);
+            if (activeTab === 'details') setActiveTab('social');
         } else {
             // Restore all
             setActiveInfraFilters(['school', 'kindergarten', 'park', 'hospital', 'food', 'shop', 'promenade', 'water', 'dtp', 'meteo']);
+            if (activeTab !== 'details') setActiveTab('details');
         }
     }, [scenario]);
+
+    // Fetch Real Infrastructure from 2GIS
+    const [realInfra, setRealInfra] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchInfra = async () => {
+            if (activeInfraFilters.length === 0) {
+                setRealInfra([]);
+                return;
+            }
+
+            // Filter out static types
+            const remoteTypes = activeInfraFilters.filter(t => !['dtp', 'meteo'].includes(t));
+            if (remoteTypes.length === 0) return;
+
+            try {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+                const centerLat = 43.5855;
+                const centerLon = 39.7231;
+                const typeStr = remoteTypes.join(',');
+
+                const res = await fetch(`${apiUrl}/api/v1/infrastructure?lat=${centerLat}&lon=${centerLon}&radius=5000&types=${typeStr}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    const mapped = data.map((i: any) => ({
+                        id: i.id,
+                        type: i.type,
+                        name: i.name,
+                        lat: i.lat,
+                        lng: i.lon,
+                        description: i.address
+                    }));
+                    setRealInfra(mapped);
+                }
+            } catch (err) {
+                console.error("Failed to fetch infra", err);
+            }
+        };
+
+        // Debounce
+        const t = setTimeout(fetchInfra, 300);
+        return () => clearTimeout(t);
+    }, [activeInfraFilters]);
 
     // Load 2GIS script - ONLY if provider is 2GIS to avoid unnecessary network calls
     useEffect(() => {
@@ -672,7 +692,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
                 // Add Infrastructure (Elite Icons)
                 if (showInfra) {
-                    const visibleItems = INFRASTRUCTURE_DATA.filter(item => activeInfraFilters.includes(item.type));
+                    const visibleItems = [...realInfra, ...STATIC_DATA].filter(item => activeInfraFilters.includes(item.type));
                     visibleItems.forEach(item => {
                         const icon = L.divIcon({
                             className: 'infra-marker',
@@ -820,7 +840,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
             // Add Infrastructure
             if (showInfra) {
                 // Filter items
-                const visibleItems = INFRASTRUCTURE_DATA.filter(item => activeInfraFilters.includes(item.type));
+                const visibleItems = [...realInfra, ...STATIC_DATA].filter(item => activeInfraFilters.includes(item.type));
 
                 visibleItems.forEach(item => {
                     const icon = window.DG.divIcon({
@@ -1089,10 +1109,16 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
             {/* Mobile Widgets Container */}
             <div className="widgets-container">
-                <div style={{ flex: 1, minWidth: '300px' }}><NewsFeed /></div>
-                <div style={{ flex: 1, minWidth: '300px' }}><SocialFeed /></div>
-                {/* Only show SMIFeed if plenty of space or relevant */}
-                {!isMobile && <div style={{ flex: 1, minWidth: '300px' }}><SMIFeed /></div>}
+                {isMobile ? (
+                    <MobileNewsCarousel />
+                ) : (
+                    <>
+                        <div style={{ flex: 1, minWidth: '300px' }}><NewsFeed /></div>
+                        <div style={{ flex: 1, minWidth: '300px' }}><SocialFeed /></div>
+                        {/* Only show SMIFeed if plenty of space or relevant */}
+                        <div style={{ flex: 1, minWidth: '300px' }}><SMIFeed /></div>
+                    </>
+                )}
             </div>
 
             {/* Mobile Top Overlay (Insights) */}
@@ -1346,16 +1372,60 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                                 <div style={{ fontSize: '24px', fontWeight: 700, color: '#d4af37', marginBottom: '8px' }}>
                                     {formatPrice(prop.price)}
                                 </div>
-                                <p style={{ color: '#94a3b8', fontSize: '13px', margin: '0 0 20px' }}>{prop.address}</p>
+                                <p style={{ color: '#94a3b8', fontSize: '13px', margin: '0 0 16px' }}>{prop.address}</p>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '16px' }}>
-                                    <button onClick={() => navigateProperty('prev')} style={{ padding: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', color: 'white', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer' }}>← Назад</button>
-                                    <button onClick={() => navigateProperty('next')} style={{ padding: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', color: 'white', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer' }}>Вперед →</button>
+                                {/* Tabs for Mobile */}
+                                <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', overflowX: 'auto', paddingBottom: '4px' }}>
+                                    {[
+                                        { id: 'details', label: 'Инфо' },
+                                        { id: 'potential', label: 'Потенциал' },
+                                        { id: 'surroundings', label: 'Окружение' },
+                                    ].map(tab => (
+                                        <button
+                                            key={tab.id}
+                                            onClick={() => setActiveTab(tab.id as any)}
+                                            style={{
+                                                padding: '8px 16px',
+                                                borderRadius: '20px',
+                                                border: '1px solid',
+                                                borderColor: activeTab === tab.id ? '#d4af37' : 'rgba(255,255,255,0.1)',
+                                                background: activeTab === tab.id ? 'rgba(212, 175, 55, 0.15)' : 'rgba(255,255,255,0.05)',
+                                                color: activeTab === tab.id ? '#d4af37' : '#94a3b8',
+                                                fontSize: '13px',
+                                                fontWeight: 600,
+                                                whiteSpace: 'nowrap'
+                                            }}
+                                        >
+                                            {tab.label}
+                                        </button>
+                                    ))}
                                 </div>
 
-                                <a href={`/properties/${prop.id}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '16px', background: 'linear-gradient(135deg, #d4af37, #b8860b)', color: '#0a1128', borderRadius: '14px', textDecoration: 'none', fontWeight: 700, fontSize: '16px', boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)' }}>
-                                    Подробнее об объекте
-                                </a>
+                                {/* Content based on Tab */}
+                                {activeTab === 'details' && (
+                                    <>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '16px' }}>
+                                            <button onClick={() => navigateProperty('prev')} style={{ padding: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', color: 'white', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer' }}>← Назад</button>
+                                            <button onClick={() => navigateProperty('next')} style={{ padding: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', color: 'white', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer' }}>Вперед →</button>
+                                        </div>
+
+                                        <a href={`/properties/${prop.id}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '16px', background: 'linear-gradient(135deg, #d4af37, #b8860b)', color: '#0a1128', borderRadius: '14px', textDecoration: 'none', fontWeight: 700, fontSize: '16px', boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)' }}>
+                                            Подробнее об объекте
+                                        </a>
+                                    </>
+                                )}
+
+                                {activeTab === 'potential' && (
+                                    <div style={{ maxHeight: '50vh', overflowY: 'auto' }}>
+                                        <PropertyPotential propertyId={prop.id} currentGrowth={prop.growth_10y} />
+                                    </div>
+                                )}
+
+                                {activeTab === 'surroundings' && (
+                                    <div style={{ maxHeight: '50vh', overflowY: 'auto' }}>
+                                        <PropertySurroundings propertyId={prop.id} />
+                                    </div>
+                                )}
                             </div>
                         );
                     })()}

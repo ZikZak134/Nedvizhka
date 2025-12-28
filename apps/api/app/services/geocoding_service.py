@@ -119,6 +119,74 @@ async def geocode_address_2gis(
     return (43.5855, 39.7231)
 
 
+async def search_items_2gis(
+    lat: float, 
+    lon: float, 
+    query: str, 
+    radius: int = 1000, 
+    limit: int = 10
+) -> list[dict]:
+    """Поиск объектов инфраструктуры через 2GIS API.
+    
+    Args:
+        lat: Широта центра поиска
+        lon: Долгота центра поиска
+        query: Поисковый запрос (например, "школа", "магазин")
+        radius: Радиус поиска в метрах
+        limit: Максимальное количество результатов
+        
+    Returns:
+        Список словарей с данными об объектах (id, name, lat, lon, type)
+    """
+    if DGIS_API_KEY == "demo":
+        # В демо-режиме API поиска недоступен или сильно ограничен.
+        # Возвращаем пустой список или моковые данные, если нужно.
+        # Но пользователь просил реальные данные, подразумевая наличие ключа.
+        logger.warning(f"Demo key used for search: {query}. Returning empty list.")
+        return []
+
+    SEARCH_URL = "https://catalog.api.2gis.com/3.0/items"
+    
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            response = await client.get(
+                SEARCH_URL,
+                params={
+                    "q": query,
+                    "point": f"{lon},{lat}",
+                    "radius": radius,
+                    "key": DGIS_API_KEY,
+                    "fields": "items.point,items.name,items.address",
+                    "page_size": limit,
+                    "locale": "ru_RU",
+                }
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                items = data.get("result", {}).get("items", [])
+                
+                results = []
+                for item in items:
+                    if "point" in item:
+                        results.append({
+                            "id": item.get("id"),
+                            "name": item.get("name"),
+                            "address": item.get("address_name"),
+                            "lat": item["point"]["lat"],
+                            "lon": item["point"]["lon"],
+                            "type": query # Сохраняем тип запроса как тип объекта
+                        })
+                return results
+                
+            logger.warning(f"Search failed: {response.status_code} - {response.text}")
+            
+    except Exception as e:
+        logger.error(f"Error searching 2GIS: {e}")
+        
+    return []
+
+
 def geocode_address_sync(address: str, city: str = "Сочи") -> tuple[float, float]:
     """Синхронная версия геокодера (для seed.py).
     

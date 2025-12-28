@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.v1 import properties, stats, seed, ingest, heatmap, complexes, parse
+from app.api.v1 import properties, stats, seed, ingest, heatmap, complexes, parse, infrastructure
 
 api_router = APIRouter()
 
@@ -11,6 +11,7 @@ api_router.include_router(ingest.router)
 api_router.include_router(heatmap.router)
 api_router.include_router(complexes.router)
 api_router.include_router(parse.router)
+api_router.include_router(infrastructure.router, prefix="/infrastructure", tags=["infrastructure"])
 
 @api_router.get("/version")
 async def version():

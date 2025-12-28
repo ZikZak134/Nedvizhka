@@ -11,7 +11,7 @@ import { NAV_LINKS } from '../constants/routes';
 
 export function Header() {
     const [isAboutOpen, setIsAboutOpen] = useState(false);
-    const logoMagnetic = useMagneticEffect({ strength: 0.38 });
+    const logoMagnetic = useMagneticEffect<HTMLAnchorElement>({ strength: 0.38 });
     const { ripples, createRipple } = useRippleEffect();
 
     return (
