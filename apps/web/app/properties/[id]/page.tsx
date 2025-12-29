@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Header } from '../../components/Header';
+import { Breadcrumbs } from '../../components/Breadcrumbs';
 import { Footer } from '../../components/Footer';
 import { getMockImage } from '../../utils/mockImages';
 import { getMockLocation } from '../../utils/mockLocations';
@@ -203,21 +204,17 @@ export default function PropertyDetailPage() {
     const images = property.images.length > 0 ? property.images : [placeholderImage];
 
     return (
-        <div className="page">
+        <div className="min-h-screen bg-[#0f172a] animate-fadeIn">
             <Header />
 
             <main className="page-main">
                 <div className="container">
-                    {/* Breadcrumb */}
-                    <nav className="mb-8 p-4 elite-glass" style={{ borderRadius: '12px' }}>
-                        <ol className="flex items-center gap-2 body-small" style={{ color: 'var(--gray-400)' }}>
-                            <li><a href="/" className="link hover:text-gold" style={{ color: 'inherit' }}>Главная</a></li>
-                            <li>/</li>
-                            <li><a href="/properties" className="link hover:text-gold" style={{ color: 'inherit' }}>Объекты</a></li>
-                            <li>/</li>
-                            <li style={{ color: 'var(--gold)', fontWeight: 600 }}>{property.title}</li>
-                        </ol>
-                    </nav>
+                    <Breadcrumbs
+                        items={[
+                            { label: 'Недвижимость', href: '/properties' },
+                            { label: property.title }
+                        ]}
+                    />
 
                     <div className="grid lg:grid-cols-3 gap-8">
                         {/* Main Content */}
@@ -447,8 +444,6 @@ export default function PropertyDetailPage() {
                                         </button>
                                     </div>
 
-                                    <hr className="divider" />
-
                                     <div className="stack stack-sm">
                                         <div className="flex justify-between body-small">
                                             <span style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Источник</span>
@@ -485,10 +480,10 @@ export default function PropertyDetailPage() {
                             </div>
                         </aside>
                     </div>
-                </div>
-            </main>
+                </div >
+            </main >
 
             <Footer />
-        </div>
+        </div >
     );
 }

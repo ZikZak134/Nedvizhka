@@ -30,14 +30,13 @@ export function PropertyCard({ property }: PropertyCardProps) {
     const placeholderImage = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='250' viewBox='0 0 400 250'%3E%3Crect fill='%23e5e7eb' width='400' height='250'/%3E%3Ctext fill='%239ca3af' font-family='Arial' font-size='14' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EНет фото%3C/text%3E%3C/svg%3E`;
 
     return (
-        <Link href={`/properties/${property.id}`} className="card property-card touch-ripple" style={{ textDecoration: 'none' }}>
+        <Link href={`/properties/${property.id}`} className="card property-card touch-ripple group transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-transparent hover:border-[#d4af37]/30" style={{ textDecoration: 'none' }}>
             {/* Image */}
-            <div className="relative">
+            <div className="relative overflow-hidden">
                 <img
                     src={property.images?.[0] || placeholderImage}
                     alt={property.title}
-                    className="card-image"
-                    style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                    className="card-image w-full h-[200px] object-cover transition-transform duration-500 group-hover:scale-110"
                     loading="lazy"
                 />
                 <span className="badge badge-neutral" style={{ position: 'absolute', top: '12px', left: '12px' }}>
