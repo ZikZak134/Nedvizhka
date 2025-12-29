@@ -39,10 +39,10 @@ export default function ShowcasePage() {
     const [settings, setSettings] = useState<Record<string, EffectSettings>>(DEFAULT_SETTINGS);
     const currentTheme = THEMES[theme];
 
-    const updateSetting = (id: string, key: keyof EffectSettings, value: any) => {
+    const updateSetting = (id: string, key: string, value: any) => {
         setSettings(prev => ({
             ...prev,
-            [id]: { ...prev[id], [key]: value }
+            [id]: { ...prev[id], [key as keyof EffectSettings]: value }
         }));
     };
 
@@ -120,7 +120,7 @@ export default function ShowcasePage() {
                     title="Magnetic Buttons"
                     description="Кнопки притягивают курсор"
                     settings={settings['magnetic-buttons']}
-                    onUpdate={(key, val) => updateSetting('magnetic-buttons', key, val)}
+                    onUpdate={(key: string, val: any) => updateSetting('magnetic-buttons', key, val)}
                     theme={theme}
                     settingsConfig={[
                         { key: 'size', label: 'Размер', min: 10, max: 100 },
@@ -136,7 +136,7 @@ export default function ShowcasePage() {
                     title="Glow Trail"
                     description="Световой след за курсором"
                     settings={settings['glow-trail']}
-                    onUpdate={(key, val) => updateSetting('glow-trail', key, val)}
+                    onUpdate={(key: string, val: any) => updateSetting('glow-trail', key, val)}
                     theme={theme}
                     settingsConfig={[
                         { key: 'size', label: 'Размер частиц', min: 10, max: 50 },
@@ -156,7 +156,7 @@ export default function ShowcasePage() {
                     title="Glassmorphism ⭐"
                     description="Эффект матового стекла"
                     settings={settings['glassmorphism']}
-                    onUpdate={(key, val) => updateSetting('glassmorphism', key, val)}
+                    onUpdate={(key: string, val: any) => updateSetting('glassmorphism', key, val)}
                     theme={theme}
                     settingsConfig={[
                         { key: 'intensity', label: 'Blur интенсивность', min: 1, max: 100 },
@@ -170,7 +170,7 @@ export default function ShowcasePage() {
                     title="Ripple Effect ⭐"
                     description="Волны от клика"
                     settings={settings['ripple-effect']}
-                    onUpdate={(key, val) => updateSetting('ripple-effect', key, val)}
+                    onUpdate={(key: string, val: any) => updateSetting('ripple-effect', key, val)}
                     theme={theme}
                     settingsConfig={[
                         { key: 'size', label: 'Размер волны', min: 10, max: 100 },
@@ -186,7 +186,7 @@ export default function ShowcasePage() {
                     title="🆕 Glowing Cards"
                     description="Светящиеся карточки с градиентами"
                     settings={settings['glowing-cards']}
-                    onUpdate={(key, val) => updateSetting('glowing-cards', key, val)}
+                    onUpdate={(key: string, val: any) => updateSetting('glowing-cards', key, val)}
                     theme={theme}
                     settingsConfig={[
                         { key: 'intensity', label: 'Интенсивность свечения', min: 1, max: 100 },
@@ -204,7 +204,7 @@ export default function ShowcasePage() {
                     title="🆕 Pull to Refresh"
                     description="Потянуть вниз для обновления"
                     settings={settings['pull-to-refresh']}
-                    onUpdate={(key, val) => updateSetting('pull-to-refresh', key, val)}
+                    onUpdate={(key: string, val: any) => updateSetting('pull-to-refresh', key, val)}
                     theme={theme}
                     settingsConfig={[
                         { key: 'size', label: 'Размер индикатора', min: 20, max: 80 },
@@ -218,7 +218,7 @@ export default function ShowcasePage() {
                     title="🆕 Floating Action Button"
                     description="Плавающая кнопка действия (FAB)"
                     settings={settings['floating-action']}
-                    onUpdate={(key, val) => updateSetting('floating-action', key, val)}
+                    onUpdate={(key: string, val: any) => updateSetting('floating-action', key, val)}
                     theme={theme}
                     settingsConfig={[
                         { key: 'size', label: 'Размер кнопки', min: 40, max: 100 },
@@ -235,7 +235,7 @@ export default function ShowcasePage() {
                     title="Animated Background ⭐"
                     description="Плавно меняющийся gradient"
                     settings={settings['animated-bg']}
-                    onUpdate={(key, val) => updateSetting('animated-bg', key, val)}
+                    onUpdate={(key: string, val: any) => updateSetting('animated-bg', key, val)}
                     theme={theme}
                     settingsConfig={[
                         { key: 'speed', label: 'Скорость анимации', min: 1, max: 100 },
@@ -252,7 +252,7 @@ export default function ShowcasePage() {
                     title="🆕 Spinner Loader"
                     description="Классический спиннер"
                     settings={settings['preloader-spinner']}
-                    onUpdate={(key, val) => updateSetting('preloader-spinner', key, val)}
+                    onUpdate={(key: string, val: any) => updateSetting('preloader-spinner', key, val)}
                     theme={theme}
                     settingsConfig={[
                         { key: 'size', label: 'Размер', min: 20, max: 100 },
@@ -267,7 +267,7 @@ export default function ShowcasePage() {
                     title="🆕 Pulse Dots"
                     description="Пульсирующие точки"
                     settings={settings['preloader-dots']}
-                    onUpdate={(key, val) => updateSetting('preloader-dots', key, val)}
+                    onUpdate={(key: string, val: any) => updateSetting('preloader-dots', key, val)}
                     theme={theme}
                     settingsConfig={[
                         { key: 'size', label: 'Размер точек', min: 10, max: 60 },
@@ -282,7 +282,7 @@ export default function ShowcasePage() {
                     title="🆕 Gradient Wave"
                     description="Градиентная волна (элитная)"
                     settings={settings['preloader-gradient']}
-                    onUpdate={(key, val) => updateSetting('preloader-gradient', key, val)}
+                    onUpdate={(key: string, val: any) => updateSetting('preloader-gradient', key, val)}
                     theme={theme}
                     settingsConfig={[
                         { key: 'speed', label: 'Скорость волны', min: 1, max: 100 },

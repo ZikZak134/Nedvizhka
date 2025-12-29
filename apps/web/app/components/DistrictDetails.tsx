@@ -11,9 +11,10 @@ interface DistrictDetailsProps {
         risk: string;
     };
     onClose: () => void;
+    embedded?: boolean;
 }
 
-export function DistrictDetails({ district, onClose }: DistrictDetailsProps) {
+export function DistrictDetails({ district, onClose, embedded = false }: DistrictDetailsProps) {
     const chartData = useMemo(() => {
         // Generate trend based on growth_10y
         const points = [];
@@ -49,34 +50,44 @@ export function DistrictDetails({ district, onClose }: DistrictDetailsProps) {
 
     const areaD = `${pathD} L ${width - padding} ${height} L ${padding} ${height} Z`;
 
+    // Embedded styles (reset positioning) vs Standalone styles (fixed overlay)
+    const containerStyle: React.CSSProperties = embedded ? {
+        background: 'transparent',
+        padding: '0',
+        color: 'var(--white)',
+        width: '100%',
+    } : {
+        position: 'absolute',
+        top: '80px',
+        right: '16px',
+        width: '320px',
+        background: 'var(--navy-light)',
+        backdropFilter: 'blur(16px)',
+        borderRadius: 'var(--radius-xl)',
+        padding: '24px',
+        color: 'var(--white)',
+        zIndex: 2000,
+        boxShadow: 'var(--shadow-xl)',
+        border: '1px solid rgba(255,255,255,0.1)',
+    };
+
     return (
-        <div className={`district-panel ${district ? 'active' : ''}`} style={{
-            position: 'absolute',
-            top: '80px',
-            right: '16px',
-            width: '320px',
-            background: 'var(--navy-light)',
-            backdropFilter: 'blur(16px)',
-            borderRadius: 'var(--radius-xl)',
-            padding: '24px',
-            color: 'var(--white)',
-            zIndex: 2000,
-            boxShadow: 'var(--shadow-xl)',
-            border: '1px solid rgba(255,255,255,0.1)',
-        }}>
-            {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '20px' }}>
-                <div>
-                    <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 700 }}>{district.name}</h2>
-                    <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>Аналитика района</div>
+        <div className={`district-panel ${district ? 'active' : ''}`} style={containerStyle}>
+            {/* Header - Only if NOT embedded */}
+            {!embedded && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '20px' }}>
+                    <div>
+                        <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 700 }}>{district.name}</h2>
+                        <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>Аналитика района</div>
+                    </div>
+                    <button
+                        onClick={onClose}
+                        style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '20px', cursor: 'pointer' }}
+                    >
+                        ✕
+                    </button>
                 </div>
-                <button
-                    onClick={onClose}
-                    style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '20px', cursor: 'pointer' }}
-                >
-                    ✕
-                </button>
-            </div>
+            )}
 
             {/* Stats Grid */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '24px' }}>
@@ -135,29 +146,32 @@ export function DistrictDetails({ district, onClose }: DistrictDetailsProps) {
                 </div>
             </div>
 
-            <button style={{
-                width: '100%',
-                padding: '12px',
-                background: '#3b82f6',
-                border: 'none',
-                borderRadius: '12px',
-                color: 'white',
-                fontWeight: 600,
-                cursor: 'pointer',
-                fontSize: '14px',
-                transition: 'all 0.2s'
-            }}>
-                Смотреть объекты в районе
-            </button>
+            {!embedded && (
+                <button style={{
+                    width: '100%',
+                    padding: '12px',
+                    background: '#3b82f6',
+                    border: 'none',
+                    borderRadius: '12px',
+                    color: 'white',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    transition: 'all 0.2s'
+                }}>
+                    Смотреть объекты в районе
+                </button>
+            )}
 
             <style jsx>{`
                 .district-panel {
-                    animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                    ${!embedded ? 'animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);' : ''}
                 }
 
                 @media (max-width: 768px) {
                     .district-panel {
-                        position: fixed !important;
+                        ${!embedded ?
+                    `position: fixed !important;
                         top: auto !important;
                         bottom: 0 !important;
                         left: 0 !important;
@@ -168,11 +182,13 @@ export function DistrictDetails({ district, onClose }: DistrictDetailsProps) {
                         max-height: 85vh;
                         overflow-y: auto;
                         animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
-                        z-index: 10002 !important;
+                        z-index: 10002 !important;`
+                    : ''}
                     }
                 }
 
-                @keyframes slideInRight {
+                ${!embedded ?
+                    `@keyframes slideInRight {
                     from { transform: translateX(20px); opacity: 0; }
                     to { transform: translateX(0); opacity: 1; }
                 }
@@ -180,7 +196,7 @@ export function DistrictDetails({ district, onClose }: DistrictDetailsProps) {
                 @keyframes slideUp {
                     from { transform: translateY(100%); }
                     to { transform: translateY(0); }
-                }
+                }` : ''}
             `}</style>
         </div>
     );

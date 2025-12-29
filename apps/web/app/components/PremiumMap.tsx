@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import { useBreakpoint } from '../hooks/useBreakpoint';
+import districtData from '../data/sochi_districts.json';
 
 // Lazy load heavy sidebar components
 const NewsFeed = dynamic(() => import('./NewsFeed').then(m => m.NewsFeed), { ssr: false });
@@ -182,14 +183,28 @@ const STATIC_DATA = [
 ];
 
 const LUXURY_PROPERTY_IMAGES = [
-    'https://images.unsplash.com/photo-1600596542815-60c37c65b567?w=600&q=80', // Modern Villa
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80', // Pool House
-    'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=600&q=80', // Living Room
-    'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=600&q=80', // Dark Kitchen
-    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80', // Balcony
-    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80', // Resort
-    'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=600&q=80', // Palm Villa
-    'https://images.unsplash.com/photo-1580587771525-78b9dba3b91d?w=600&q=80', // Facade
+    'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80', // Modern Villa with Pool
+    'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80', // White Minimalist House
+    'https://images.unsplash.com/photo-1600596542815-60c37c65b567?auto=format&fit=crop&w=800&q=80', // Modern Glass Villa
+    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80', // Pool Deck
+    'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=800&q=80', // Luxury Living Room
+    'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=80', // Black Kitchen
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80', // Balcony View
+    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80', // Tropical Resort
+    'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=800&q=80', // Palm Tree Villa
+    'https://images.unsplash.com/photo-1580587771525-78b9dba3b91d?auto=format&fit=crop&w=800&q=80', // Classic Facade
+    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80', // Modern Stone House
+    'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80', // Cottage
+    'https://images.unsplash.com/photo-1576941089067-2de3c901e126?auto=format&fit=crop&w=800&q=80', // Sunny Home
+    'https://images.unsplash.com/photo-1598228723793-52759bba239c?auto=format&fit=crop&w=800&q=80', // Penthouse Interior
+    'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80', // Cozy Apartment
+    'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80', // Loft
+    'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80', // Blue Room
+    'https://images.unsplash.com/photo-1560184897-ae75f418493e?auto=format&fit=crop&w=800&q=80', // Golden Hour House
+    'https://images.unsplash.com/photo-1484154218962-a1c002085d2f?auto=format&fit=crop&w=800&q=80', // Airbnb Style
+    'https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?auto=format&fit=crop&w=800&q=80', // High Rise
+    'https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=800&q=80', // White Interior
+    'https://images.unsplash.com/photo-1502005229766-939760a58531?auto=format&fit=crop&w=800&q=80', // Grey Facade
 ];
 
 // ============================================
@@ -258,8 +273,14 @@ const formatPrice = (price: number): string => {
 };
 
 const getMockImage = (id: string | number): string => {
-    const index = Number(id) || 0;
-    return LUXURY_PROPERTY_IMAGES[index % LUXURY_PROPERTY_IMAGES.length];
+    const strId = String(id);
+    let hash = 0;
+    for (let i = 0; i < strId.length; i++) {
+        hash = ((hash << 5) - hash) + strId.charCodeAt(i);
+        hash |= 0; // Convert to 32bit integer
+    }
+    const index = Math.abs(hash) % LUXURY_PROPERTY_IMAGES.length;
+    return LUXURY_PROPERTY_IMAGES[index];
 };
 
 import { getMockLocation } from '../utils/mockLocations';
@@ -653,42 +674,47 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
                 mapInstanceRef.current = map;
 
-                // Add district polygons (Elite Style)
-                Object.entries(DISTRICTS_DATA).forEach(([name, district]) => {
-                    if (isCancelled) return;
-                    const isHeatmap = showHeatmap;
+                // Add district polygons (Elite Style via GeoJSON)
+                L.geoJSON(districtData as any, {
+                    style: (feature) => {
+                        const name = feature?.properties?.name;
+                        const distData = DISTRICTS_DATA[name as keyof typeof DISTRICTS_DATA];
+                        const growth = distData?.growth_10y || 0;
+                        const isHeatmap = showHeatmap;
 
-                    // Elite Color Palette
-                    const growth = district.growth_10y;
-                    let color = '#94a3b8'; // Neutral Slate
-                    if (growth > 150) color = '#10b981'; // Emerald
-                    else if (growth > 100) color = '#d97706'; // Bronze/Amber
-                    else if (growth > 50) color = '#f59e0b'; // Gold
-                    else color = '#ef4444'; // Red
+                        // Elite Color Palette
+                        let color = '#94a3b8'; // Neutral Slate
+                        if (growth > 150) color = '#10b981'; // Emerald
+                        else if (growth > 100) color = '#d97706'; // Bronze/Amber
+                        else if (growth > 50) color = '#f59e0b'; // Gold
+                        else if (growth > 0) color = '#ef4444'; // Red
 
-                    let layer;
-                    const opts = {
-                        fillColor: color,
-                        fillOpacity: isHeatmap ? 0.5 : 0.08, // Very subtle normally
-                        color: color,
-                        weight: isHeatmap ? 0 : 1.5,
-                        className: isHeatmap ? 'heatmap-blob' : 'elite-district-border',
-                        interactive: true,
-                        dashArray: isHeatmap ? '' : '4, 4' // Elegant dashed line
-                    };
+                        // Override color from JSON if present and valid
+                        if (feature?.properties?.color) color = feature.properties.color;
 
-                    if (district.coordinates) {
-                        layer = L.polygon(district.coordinates as any, opts);
-                    } else {
-                        layer = L.circle(district.center as [number, number], { ...opts, radius: isHeatmap ? 7000 : 5000 });
+                        return {
+                            fillColor: color,
+                            fillOpacity: isHeatmap ? 0.35 : 0.05, // Slightly more visible for satellite
+                            color: color,
+                            weight: isHeatmap ? 0 : 2,
+                            className: isHeatmap ? 'heatmap-blob' : 'elite-district-border',
+                            dashArray: isHeatmap ? '' : '4, 4'
+                        };
+                    },
+                    onEachFeature: (feature, layer) => {
+                        const name = feature.properties.name;
+                        const distAnalytics = DISTRICTS_DATA[name as keyof typeof DISTRICTS_DATA];
+
+                        layer.on('click', () => {
+                            // Merge GeoJSON props with Analytics data
+                            setSelectedDistrict({
+                                name: name,
+                                ...distAnalytics
+                            });
+                        });
+                        districtLayersRef.current.push(layer);
                     }
-
-                    layer.addTo(map);
-                    layer.on('click', () => {
-                        setSelectedDistrict({ name, ...district });
-                    });
-                    districtLayersRef.current.push(layer);
-                });
+                }).addTo(map);
 
                 // Add Infrastructure (Elite Icons)
                 if (showInfra) {
@@ -1273,13 +1299,13 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                                         )}
                                         {activeTab === 'details' && !p && d && (
                                             <div>
-                                                <DistrictDetails district={d} onClose={() => setSelectedDistrict(null)} />
+                                                <DistrictDetails district={d} onClose={() => setSelectedDistrict(null)} embedded={true} />
                                             </div>
                                         )}
 
-                                        {activeTab === 'location' && <PropertyLocation />}
-                                        {activeTab === 'potential' && <PropertyPotential />}
-                                        {activeTab === 'surroundings' && <PropertySurroundings />}
+                                        {activeTab === 'location' && p && <PropertyLocation propertyId={p.id} address={p.address} />}
+                                        {activeTab === 'potential' && p && <PropertyPotential propertyId={p.id} currentGrowth={p.growth_10y} />}
+                                        {activeTab === 'surroundings' && p && <PropertySurroundings propertyId={p.id} />}
                                         {activeTab === 'news' && <NewsFeed />}
                                         {activeTab === 'social' && <SocialFeed />}
                                     </div>
@@ -1378,6 +1404,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                                         <img
                                             src={prop.image || getMockImage(prop.id)}
                                             alt={prop.title}
+                                            onError={(e) => { e.currentTarget.src = getMockImage(prop.id); }}
                                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                         />
                                         <div style={{
@@ -1411,6 +1438,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                                             { id: 'details', label: 'Инфо' },
                                             { id: 'potential', label: 'Потенциал' },
                                             { id: 'surroundings', label: 'Окружение' },
+                                            { id: 'location', label: 'Локация' }, // Added location tab
                                         ].map(tab => (
                                             <button
                                                 key={tab.id}
@@ -1438,42 +1466,62 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                                         <div className="fade-in">
                                             {/* Key Stats Grid */}
                                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '24px' }}>
-                                                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '12px', borderRadius: '12px', textAlign: 'center' }}>
-                                                    <div style={{ fontSize: '10px', color: '#94a3b8', marginBottom: '4px' }}>Площадь</div>
-                                                    <div style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>{prop.area_sqm} м²</div>
-                                                </div>
-                                                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '12px', borderRadius: '12px', textAlign: 'center' }}>
-                                                    <div style={{ fontSize: '10px', color: '#94a3b8', marginBottom: '4px' }}>Комнат</div>
-                                                    <div style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>{prop.rooms}</div>
-                                                </div>
-                                                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '12px', borderRadius: '12px', textAlign: 'center' }}>
-                                                    <div style={{ fontSize: '10px', color: '#94a3b8', marginBottom: '4px' }}>Рост</div>
-                                                    <div style={{ fontSize: '14px', fontWeight: 600, color: '#22c55e' }}>+{prop.growth_10y}%</div>
-                                                </div>
+                                                {[
+                                                    { label: 'Площадь', value: `${prop.area_sqm} м²` },
+                                                    { label: 'Комнаты', value: prop.rooms || 'Студия' },
+                                                    { label: 'Рост', value: `+${prop.growth_10y}%`, color: '#22c55e' }
+                                                ].map((stat, i) => (
+                                                    <div key={i} style={{
+                                                        background: 'rgba(255,255,255,0.05)',
+                                                        borderRadius: '12px',
+                                                        padding: '10px',
+                                                        textAlign: 'center',
+                                                        border: '1px solid rgba(255,255,255,0.1)'
+                                                    }}>
+                                                        <div style={{ fontSize: '10px', color: '#94a3b8', marginBottom: '4px' }}>{stat.label}</div>
+                                                        <div style={{ fontSize: '14px', fontWeight: 600, color: stat.color || '#fff' }}>{stat.value}</div>
+                                                    </div>
+                                                ))}
                                             </div>
+
+                                            <button style={{
+                                                width: '100%',
+                                                padding: '16px',
+                                                background: 'linear-gradient(135deg, #d4af37 0%, #fcd34d 100%)',
+                                                border: 'none',
+                                                borderRadius: '16px',
+                                                color: '#000',
+                                                fontSize: '16px',
+                                                fontWeight: 700,
+                                                marginBottom: '32px',
+                                                cursor: 'pointer',
+                                                boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)'
+                                            }}>
+                                                📞 Связаться с брокером
+                                            </button>
 
                                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '16px' }}>
                                                 <button onClick={() => navigateProperty('prev')} style={{ padding: '14px', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', color: 'white', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', fontWeight: 600 }}>← Назад</button>
                                                 <button onClick={() => navigateProperty('next')} style={{ padding: '14px', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', color: 'white', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', fontWeight: 600 }}>Вперед →</button>
                                             </div>
-
-                                            <a href={`/properties/${prop.id}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '18px', background: 'linear-gradient(135deg, #d4af37, #b8860b)', color: '#0a1128', borderRadius: '16px', textDecoration: 'none', fontWeight: 800, fontSize: '16px', boxShadow: '0 8px 20px rgba(212, 175, 55, 0.4)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                                                Подробнее об объекте
-                                            </a>
                                         </div>
+                                    )}
+
+                                    {activeTab === 'location' && (
+                                        <PropertyLocation propertyId={prop.id} address={prop.address} />
                                     )}
 
                                     {activeTab === 'potential' && (
-                                        <div style={{ paddingBottom: '20px' }} className="fade-in">
-                                            <PropertyPotential propertyId={prop.id} currentGrowth={prop.growth_10y} />
-                                        </div>
+                                        <PropertyPotential propertyId={prop.id} currentGrowth={prop.growth_10y} />
                                     )}
 
                                     {activeTab === 'surroundings' && (
-                                        <div style={{ paddingBottom: '20px' }} className="fade-in">
-                                            <PropertySurroundings propertyId={prop.id} />
-                                        </div>
+                                        <PropertySurroundings propertyId={prop.id} />
                                     )}
+
+                                    <a href={`/properties/${prop.id}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '18px', background: 'linear-gradient(135deg, #d4af37, #b8860b)', color: '#0a1128', borderRadius: '16px', textDecoration: 'none', fontWeight: 800, fontSize: '16px', boxShadow: '0 8px 20px rgba(212, 175, 55, 0.4)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                        Подробнее об объекте
+                                    </a>
                                 </div>
                             );
                         })()}
