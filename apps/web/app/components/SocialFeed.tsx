@@ -2,7 +2,7 @@
 import { useState } from 'react';
 
 export function SocialFeed() {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
         <div style={{

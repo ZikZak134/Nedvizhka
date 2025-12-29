@@ -1360,75 +1360,124 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                     borderTop: '1px solid rgba(212, 175, 55, 0.3)'
                 }}>
                     <div className="sheet-handle" onClick={() => setSelectedPropertyId(null)}></div>
-                    {(() => {
-                        const prop = filteredFeatures.find(f => f.properties.id === selectedPropertyId)?.properties;
-                        if (!prop) return null;
-                        return (
-                            <div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', alignItems: 'start' }}>
-                                    <h3 style={{ margin: 0, color: 'white', fontSize: '18px', maxWidth: '85%' }}>{prop.title}</h3>
-                                    <button onClick={() => setSelectedPropertyId(null)} style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '24px', padding: '0 8px' }}>✕</button>
-                                </div>
-                                <div style={{ fontSize: '24px', fontWeight: 700, color: '#d4af37', marginBottom: '8px' }}>
-                                    {formatPrice(prop.price)}
-                                </div>
-                                <p style={{ color: '#94a3b8', fontSize: '13px', margin: '0 0 16px' }}>{prop.address}</p>
-
-                                {/* Tabs for Mobile */}
-                                <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', overflowX: 'auto', paddingBottom: '4px' }}>
-                                    {[
-                                        { id: 'details', label: 'Инфо' },
-                                        { id: 'potential', label: 'Потенциал' },
-                                        { id: 'surroundings', label: 'Окружение' },
-                                    ].map(tab => (
-                                        <button
-                                            key={tab.id}
-                                            onClick={() => setActiveTab(tab.id as any)}
-                                            style={{
-                                                padding: '8px 16px',
-                                                borderRadius: '20px',
-                                                border: '1px solid',
-                                                borderColor: activeTab === tab.id ? '#d4af37' : 'rgba(255,255,255,0.1)',
-                                                background: activeTab === tab.id ? 'rgba(212, 175, 55, 0.15)' : 'rgba(255,255,255,0.05)',
-                                                color: activeTab === tab.id ? '#d4af37' : '#94a3b8',
-                                                fontSize: '13px',
-                                                fontWeight: 600,
-                                                whiteSpace: 'nowrap'
-                                            }}
-                                        >
-                                            {tab.label}
-                                        </button>
-                                    ))}
-                                </div>
-
-                                {/* Content based on Tab */}
-                                {activeTab === 'details' && (
-                                    <>
-                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '16px' }}>
-                                            <button onClick={() => navigateProperty('prev')} style={{ padding: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', color: 'white', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer' }}>← Назад</button>
-                                            <button onClick={() => navigateProperty('next')} style={{ padding: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', color: 'white', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer' }}>Вперед →</button>
+                    <div className="sheet-content">
+                        {(() => {
+                            const prop = filteredFeatures.find(f => f.properties.id === selectedPropertyId)?.properties;
+                            if (!prop) return null;
+                            return (
+                                <div>
+                                    {/* Mobile Image */}
+                                    <div style={{
+                                        position: 'relative',
+                                        height: '200px',
+                                        borderRadius: '16px',
+                                        overflow: 'hidden',
+                                        marginBottom: '16px',
+                                        boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                                    }}>
+                                        <img
+                                            src={prop.image || getMockImage(prop.id)}
+                                            alt={prop.title}
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        />
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: '12px',
+                                            right: '12px',
+                                            background: 'rgba(0,0,0,0.6)',
+                                            backdropFilter: 'blur(4px)',
+                                            padding: '4px 8px',
+                                            borderRadius: '8px',
+                                            color: '#fff',
+                                            fontSize: '10px',
+                                            fontWeight: 700
+                                        }}>
+                                            {prop.jk || 'Elite'}
                                         </div>
-
-                                        <a href={`/properties/${prop.id}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '16px', background: 'linear-gradient(135deg, #d4af37, #b8860b)', color: '#0a1128', borderRadius: '14px', textDecoration: 'none', fontWeight: 700, fontSize: '16px', boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)' }}>
-                                            Подробнее об объекте
-                                        </a>
-                                    </>
-                                )}
-
-                                {activeTab === 'potential' && (
-                                    <div style={{ maxHeight: '50vh', overflowY: 'auto' }}>
-                                        <PropertyPotential propertyId={prop.id} currentGrowth={prop.growth_10y} />
                                     </div>
-                                )}
 
-                                {activeTab === 'surroundings' && (
-                                    <div style={{ maxHeight: '50vh', overflowY: 'auto' }}>
-                                        <PropertySurroundings propertyId={prop.id} />
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', alignItems: 'start' }}>
+                                        <h3 style={{ margin: 0, color: 'white', fontSize: '20px', maxWidth: '85%', lineHeight: 1.2 }}>{prop.title}</h3>
+                                        <button onClick={() => setSelectedPropertyId(null)} style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '24px', padding: '0 8px' }}>✕</button>
                                     </div>
-                                )}
-                            </div>
-                        );
-                    })()}
+                                    <div style={{ fontSize: '26px', fontWeight: 700, color: '#d4af37', marginBottom: '8px' }}>
+                                        {formatPrice(prop.price)}
+                                    </div>
+                                    <p style={{ color: '#94a3b8', fontSize: '14px', margin: '0 0 20px' }}>📍 {prop.address}</p>
+
+                                    {/* Tabs for Mobile */}
+                                    <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', overflowX: 'auto', paddingBottom: '4px', scrollbarWidth: 'none' }}>
+                                        {[
+                                            { id: 'details', label: 'Инфо' },
+                                            { id: 'potential', label: 'Потенциал' },
+                                            { id: 'surroundings', label: 'Окружение' },
+                                        ].map(tab => (
+                                            <button
+                                                key={tab.id}
+                                                onClick={() => setActiveTab(tab.id as any)}
+                                                style={{
+                                                    padding: '10px 18px',
+                                                    borderRadius: '20px',
+                                                    border: '1px solid',
+                                                    borderColor: activeTab === tab.id ? '#d4af37' : 'rgba(255,255,255,0.1)',
+                                                    background: activeTab === tab.id ? 'rgba(212, 175, 55, 0.15)' : 'rgba(255,255,255,0.05)',
+                                                    color: activeTab === tab.id ? '#d4af37' : '#94a3b8',
+                                                    fontSize: '14px',
+                                                    fontWeight: 600,
+                                                    whiteSpace: 'nowrap',
+                                                    transition: 'all 0.2s'
+                                                }}
+                                            >
+                                                {tab.label}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    {/* Content based on Tab */}
+                                    {activeTab === 'details' && (
+                                        <div className="fade-in">
+                                            {/* Key Stats Grid */}
+                                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '24px' }}>
+                                                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '12px', borderRadius: '12px', textAlign: 'center' }}>
+                                                    <div style={{ fontSize: '10px', color: '#94a3b8', marginBottom: '4px' }}>Площадь</div>
+                                                    <div style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>{prop.area_sqm} м²</div>
+                                                </div>
+                                                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '12px', borderRadius: '12px', textAlign: 'center' }}>
+                                                    <div style={{ fontSize: '10px', color: '#94a3b8', marginBottom: '4px' }}>Комнат</div>
+                                                    <div style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>{prop.rooms}</div>
+                                                </div>
+                                                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '12px', borderRadius: '12px', textAlign: 'center' }}>
+                                                    <div style={{ fontSize: '10px', color: '#94a3b8', marginBottom: '4px' }}>Рост</div>
+                                                    <div style={{ fontSize: '14px', fontWeight: 600, color: '#22c55e' }}>+{prop.growth_10y}%</div>
+                                                </div>
+                                            </div>
+
+                                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '16px' }}>
+                                                <button onClick={() => navigateProperty('prev')} style={{ padding: '14px', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', color: 'white', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', fontWeight: 600 }}>← Назад</button>
+                                                <button onClick={() => navigateProperty('next')} style={{ padding: '14px', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', color: 'white', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', fontWeight: 600 }}>Вперед →</button>
+                                            </div>
+
+                                            <a href={`/properties/${prop.id}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '18px', background: 'linear-gradient(135deg, #d4af37, #b8860b)', color: '#0a1128', borderRadius: '16px', textDecoration: 'none', fontWeight: 800, fontSize: '16px', boxShadow: '0 8px 20px rgba(212, 175, 55, 0.4)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                                Подробнее об объекте
+                                            </a>
+                                        </div>
+                                    )}
+
+                                    {activeTab === 'potential' && (
+                                        <div style={{ paddingBottom: '20px' }} className="fade-in">
+                                            <PropertyPotential propertyId={prop.id} currentGrowth={prop.growth_10y} />
+                                        </div>
+                                    )}
+
+                                    {activeTab === 'surroundings' && (
+                                        <div style={{ paddingBottom: '20px' }} className="fade-in">
+                                            <PropertySurroundings propertyId={prop.id} />
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })()}
+                    </div>
                 </div>
             )}
 

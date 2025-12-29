@@ -2,7 +2,7 @@
 import { useState } from 'react';
 
 export function NewsFeed() {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
         <div style={{
