@@ -3,6 +3,7 @@
 /**
  * PropertySurroundings — Вкладка «Окружение» в боковой панели объекта
  * Показывает экологию, уровень шума, зелёные зоны и качество жизни
+ * Адаптировано для светлой темы luxury-дизайна
  */
 
 interface EnvironmentScore {
@@ -37,36 +38,20 @@ export function PropertySurroundings({ propertyId }: PropertySurroundingsProps) 
     const avgScore = (MOCK_ENVIRONMENT.reduce((sum, e) => sum + e.score, 0) / MOCK_ENVIRONMENT.length).toFixed(1);
 
     return (
-        <div className="property-surroundings fade-in">
+        <div className="lux-surroundings fade-in">
             {/* Общий рейтинг */}
-            <div style={{
-                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(34, 197, 94, 0.1))',
-                padding: '16px',
-                borderRadius: '12px',
-                marginBottom: '16px',
-                border: '1px solid rgba(16, 185, 129, 0.2)',
-                textAlign: 'center'
-            }}>
-                <div style={{ color: '#94a3b8', fontSize: '12px', marginBottom: '4px' }}>
+            <div className="lux-surroundings-score-card">
+                <div className="lux-surroundings-label">
                     Качество окружения
                 </div>
-                <div style={{
-                    color: '#10b981',
-                    fontSize: '36px',
-                    fontWeight: 800,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px'
-                }}>
+                <div className="lux-surroundings-score-val">
                     {avgScore}
-                    <span style={{ fontSize: '20px', color: '#64748b' }}>/5</span>
+                    <span className="lux-surroundings-score-max">/5</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '4px', marginTop: '8px' }}>
+                <div className="lux-surroundings-stars">
                     {[1, 2, 3, 4, 5].map(star => (
                         <span key={star} style={{
-                            fontSize: '16px',
-                            opacity: star <= Math.round(parseFloat(avgScore)) ? 1 : 0.3
+                            opacity: star <= Math.round(parseFloat(avgScore)) ? 1 : 0.25
                         }}>
                             ⭐
                         </span>
@@ -75,11 +60,11 @@ export function PropertySurroundings({ propertyId }: PropertySurroundingsProps) 
             </div>
 
             {/* Показатели окружения */}
-            <div style={{ marginBottom: '20px' }}>
-                <h4 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, marginBottom: '12px' }}>
+            <div className="lux-surroundings-section">
+                <h4 className="lux-surroundings-title">
                     🎯 Показатели
                 </h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div className="lux-surroundings-list">
                     {MOCK_ENVIRONMENT.map((env, idx) => (
                         <EnvironmentRow key={idx} item={env} />
                     ))}
@@ -87,42 +72,29 @@ export function PropertySurroundings({ propertyId }: PropertySurroundingsProps) 
             </div>
 
             {/* Зелёные зоны */}
-            <div style={{ marginBottom: '16px' }}>
-                <h4 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, marginBottom: '12px' }}>
+            <div className="lux-surroundings-section">
+                <h4 className="lux-surroundings-title">
                     🌲 Зелёные зоны рядом
                 </h4>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                <div className="lux-green-zones-grid">
                     {MOCK_GREEN_ZONES.map((zone, idx) => (
-                        <div key={idx} style={{
-                            background: 'rgba(34, 197, 94, 0.1)',
-                            padding: '8px 12px',
-                            borderRadius: '20px',
-                            border: '1px solid rgba(34, 197, 94, 0.2)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px'
-                        }}>
-                            <span style={{ fontSize: '14px' }}>
+                        <div key={idx} className="lux-green-zone-tag">
+                            <span className="lux-green-zone-icon">
                                 {zone.type === 'park' ? '🌳' : zone.type === 'garden' ? '🌺' : '🌊'}
                             </span>
-                            <span style={{ color: '#e2e8f0', fontSize: '12px' }}>{zone.name}</span>
-                            <span style={{ color: '#64748b', fontSize: '11px' }}>({zone.distance})</span>
+                            <span className="lux-green-zone-name">{zone.name}</span>
+                            <span className="lux-green-zone-dist">({zone.distance})</span>
                         </div>
                     ))}
                 </div>
             </div>
 
             {/* Особенности локации */}
-            <div style={{
-                background: 'rgba(139, 92, 246, 0.1)',
-                padding: '14px',
-                borderRadius: '12px',
-                border: '1px solid rgba(139, 92, 246, 0.2)'
-            }}>
-                <div style={{ color: '#a78bfa', fontSize: '13px', fontWeight: 700, marginBottom: '8px' }}>
+            <div className="lux-surroundings-features">
+                <div className="lux-surroundings-label" style={{ color: '#7c3aed' }}>
                     ✨ Особенности
                 </div>
-                <div style={{ color: '#cbd5e1', fontSize: '12px', lineHeight: 1.6 }}>
+                <div className="lux-surroundings-text">
                     Объект расположен в элитном курортном районе с видом на море.
                     Закрытая охраняемая территория, развитая инфраструктура для отдыха.
                 </div>
@@ -133,36 +105,28 @@ export function PropertySurroundings({ propertyId }: PropertySurroundingsProps) 
 
 function EnvironmentRow({ item }: { item: EnvironmentScore }) {
     const getScoreColor = (score: number) => {
-        if (score >= 4) return '#22c55e';
-        if (score >= 3) return '#eab308';
-        return '#f97316';
+        if (score >= 4) return '#16a34a';
+        if (score >= 3) return '#ca8a04';
+        return '#ea580c';
     };
 
     return (
-        <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '10px 12px',
-            background: 'rgba(255,255,255,0.03)',
-            borderRadius: '10px',
-            border: '1px solid rgba(255,255,255,0.05)'
-        }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ fontSize: '18px' }}>{item.icon}</span>
+        <div className="lux-env-row">
+            <div className="lux-env-row-left">
+                <span className="lux-env-icon">{item.icon}</span>
                 <div>
-                    <div style={{ color: '#e2e8f0', fontSize: '13px' }}>{item.name}</div>
-                    <div style={{ color: '#64748b', fontSize: '11px' }}>{item.description}</div>
+                    <div className="lux-env-name">{item.name}</div>
+                    <div className="lux-env-desc">{item.description}</div>
                 </div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <div className="lux-env-dots">
                 {[1, 2, 3, 4, 5].map(n => (
-                    <div key={n} style={{
-                        width: '8px',
-                        height: '8px',
-                        borderRadius: '50%',
-                        background: n <= item.score ? getScoreColor(item.score) : 'rgba(255,255,255,0.1)'
-                    }} />
+                    <div key={n}
+                        className="lux-env-dot"
+                        style={{
+                            background: n <= item.score ? getScoreColor(item.score) : 'rgba(0,0,0,0.1)'
+                        }}
+                    />
                 ))}
             </div>
         </div>

@@ -1,6 +1,11 @@
 'use client';
 import { useState } from 'react';
 
+/**
+ * SMIFeed — Лента новостей из СМИ о рынке недвижимости
+ * Адаптировано для светлой темы luxury-дизайна
+ */
+
 const SMI_DATA = [
     {
         id: 1,
@@ -36,42 +41,38 @@ export function SMIFeed() {
 
     return (
         <div style={{
-            background: 'rgba(15, 23, 42, 0.95)',
-            backdropFilter: 'blur(16px)',
-            borderRadius: 'var(--radius-xl)',
+            background: '#ffffff',
+            borderRadius: '8px',
             width: '100%',
-            maxWidth: '340px',
-            color: 'white',
+            maxWidth: '100%',
+            color: '#1a1a1a',
             overflow: 'hidden',
             transition: 'all 0.3s ease',
-            border: '1px solid rgba(255,255,255,0.1)',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
-            marginBottom: '10px'
+            border: '1px solid rgba(0,0,0,0.1)',
         }}>
             {/* Header */}
             <div
                 onClick={() => setIsOpen(!isOpen)}
-                className="touch-ripple"
                 style={{
                     padding: '16px 20px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     cursor: 'pointer',
-                    background: 'rgba(255,255,255,0.03)',
-                    borderBottom: isOpen ? '1px solid rgba(255,255,255,0.1)' : 'none',
+                    background: 'rgba(0,0,0,0.02)',
+                    borderBottom: isOpen ? '1px solid rgba(0,0,0,0.08)' : 'none',
                     minHeight: '56px'
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <span style={{ fontSize: '20px' }}>📰</span>
-                    <span style={{ fontWeight: 600, fontSize: '15px' }}>СМИ обзор</span>
+                    <span style={{ fontWeight: 600, fontSize: '15px', color: '#1a1a1a' }}>СМИ обзор</span>
                 </div>
                 <button
                     style={{
                         background: 'transparent',
                         border: 'none',
-                        color: '#94a3b8',
+                        color: '#666666',
                         cursor: 'pointer',
                         padding: '8px',
                         minWidth: '44px',
@@ -94,44 +95,49 @@ export function SMIFeed() {
 
             {/* Content */}
             {isOpen && (
-                <div style={{ padding: '12px', maxHeight: '360px', overflowY: 'auto' }}>
+                <div style={{ padding: '16px', maxHeight: '400px', overflowY: 'auto' }}>
                     {SMI_DATA.map((item) => (
                         <div
                             key={item.id}
                             style={{
                                 marginBottom: '12px',
-                                padding: '12px',
-                                background: 'rgba(255,255,255,0.03)',
-                                borderRadius: '12px',
+                                padding: '16px',
+                                background: item.sentiment === 'positive'
+                                    ? 'rgba(22, 163, 74, 0.04)'
+                                    : item.sentiment === 'negative'
+                                        ? 'rgba(220, 38, 38, 0.04)'
+                                        : 'rgba(0,0,0,0.02)',
+                                borderRadius: '8px',
                                 border: `1px solid ${item.sentiment === 'positive'
-                                        ? 'rgba(34, 197, 94, 0.2)'
-                                        : item.sentiment === 'negative'
-                                            ? 'rgba(239, 68, 68, 0.2)'
-                                            : 'rgba(255,255,255,0.05)'
+                                    ? 'rgba(22, 163, 74, 0.15)'
+                                    : item.sentiment === 'negative'
+                                        ? 'rgba(220, 38, 38, 0.15)'
+                                        : 'rgba(0,0,0,0.08)'
                                     }`
                             }}
                         >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
                                 <span style={{ fontSize: '14px' }}>{item.sourceIcon}</span>
                                 <span style={{
-                                    fontSize: '11px',
+                                    fontSize: '12px',
                                     fontWeight: 700,
-                                    color: 'var(--elite-accent-gold)'
+                                    color: '#b8860b'
                                 }}>{item.source}</span>
-                                <span style={{ fontSize: '10px', color: '#64748b' }}>{item.date}</span>
+                                <span style={{ fontSize: '11px', color: '#666666' }}>{item.date}</span>
                             </div>
                             <div style={{
-                                fontSize: '13px',
+                                fontSize: '14px',
                                 fontWeight: 600,
-                                marginBottom: '6px',
-                                lineHeight: 1.3
+                                marginBottom: '8px',
+                                lineHeight: 1.4,
+                                color: '#1a1a1a'
                             }}>
                                 {item.title}
                             </div>
                             <div style={{
-                                fontSize: '11px',
-                                color: '#94a3b8',
-                                lineHeight: 1.5
+                                fontSize: '13px',
+                                color: '#666666',
+                                lineHeight: 1.6
                             }}>
                                 {item.excerpt}
                             </div>

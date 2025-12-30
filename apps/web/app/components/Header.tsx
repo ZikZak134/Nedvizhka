@@ -19,7 +19,7 @@ export function Header() {
             <header className="page-header elite-glass" style={{
                 position: 'sticky',
                 top: 0,
-                zIndex: 1000,
+                zIndex: 10000, /* Выше bottom-sheet (9990) чтобы мобильное меню перекрывало карточку */
             }}>
                 <div className="container">
                     <div className="page-header-inner" style={{ position: 'relative' }}>

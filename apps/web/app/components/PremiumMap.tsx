@@ -312,6 +312,42 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
     const [activeTab, setActiveTab] = useState<'details' | 'location' | 'potential' | 'surroundings' | 'news' | 'social'>('details');
     const [showSimilar, setShowSimilar] = useState(false);
 
+    // Resizable Side Panel
+    const [panelWidth, setPanelWidth] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('sidePanelWidth');
+            return saved ? parseInt(saved, 10) : 420;
+        }
+        return 420;
+    });
+    const [isResizing, setIsResizing] = useState(false);
+    const resizeRef = useRef<HTMLDivElement>(null);
+
+    // Drag-to-resize handler
+    useEffect(() => {
+        if (!isResizing) return;
+
+        const handleMouseMove = (e: MouseEvent) => {
+            const containerRect = mapRef.current?.getBoundingClientRect();
+            if (!containerRect) return;
+            const newWidth = containerRect.right - e.clientX - 24; // 24px = right offset
+            const clampedWidth = Math.max(360, Math.min(600, newWidth));
+            setPanelWidth(clampedWidth);
+        };
+
+        const handleMouseUp = () => {
+            setIsResizing(false);
+            localStorage.setItem('sidePanelWidth', String(panelWidth));
+        };
+
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+        return () => {
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        };
+    }, [isResizing, panelWidth]);
+
     // Sync showNavPanel with mobile state
     useEffect(() => {
         if (isMobile) {
@@ -470,15 +506,15 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                 // Generate 20 mock properties (reduced for performance)
                 for (let i = 0; i < 20; i++) {
                     const loc = getMockLocation(i);
-                    // Minimal jitter (~50m) to prevent overlap while staying on land
-                    const lat = loc.lat + (Math.random() - 0.5) * 0.0005;
-                    const lng = loc.lng + (Math.random() - 0.5) * 0.0005;
+                    // Фиксированные координаты из локаций — без джиттера для стабильности
+                    const lat = loc.lat;
+                    const lng = loc.lng;
 
                     features.push({
                         geometry: { coordinates: [lng, lat] },
                         properties: {
-                            id: `mock-${i}`,
-                            title: `Элитный объект #${i + 1}`,
+                            id: `mock-prop-${i}`,  // Исправлен ID для консистентности с роутами
+                            title: loc.address || `Элитный объект #${i + 1}`,
                             price: 15000000 + Math.random() * 150000000,
                             price_per_sqm: 300000 + Math.random() * 1000000,
                             area_sqm: 40 + Math.floor(Math.random() * 200),
@@ -1187,7 +1223,25 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
             {/* Desktop Side Panel */}
             {!isMobile && (selectedPropertyId || selectedDistrict) && (
-                <div className="property-side-panel slide-right" style={{ display: 'flex', flexDirection: 'column' }}>
+                <div className="property-side-panel slide-right" style={{ display: 'flex', flexDirection: 'column', width: `${panelWidth}px` }}>
+                    {/* Resize Handle */}
+                    <div
+                        ref={resizeRef}
+                        onMouseDown={() => setIsResizing(true)}
+                        style={{
+                            position: 'absolute',
+                            left: 0,
+                            top: 0,
+                            bottom: 0,
+                            width: '8px',
+                            cursor: 'ew-resize',
+                            background: isResizing ? 'rgba(212, 175, 55, 0.3)' : 'transparent',
+                            transition: 'background 0.2s',
+                            zIndex: 10,
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(212, 175, 55, 0.2)'}
+                        onMouseLeave={(e) => !isResizing && (e.currentTarget.style.background = 'transparent')}
+                    />
                     <div className="side-panel-content" style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
                         {(() => {
                             // Find property
@@ -1228,8 +1282,19 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                                         >✕</button>
                                     </div>
 
-                                    {/* Tabs */}
-                                    <div style={{ display: 'flex', gap: '8px', marginBottom: '24px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '12px' }}>
+                                    {/* Tabs - горизонтальный скролл */}
+                                    <div className="tabs-container" style={{
+                                        display: 'flex',
+                                        gap: '6px',
+                                        marginBottom: '24px',
+                                        borderBottom: '1px solid rgba(255,255,255,0.1)',
+                                        paddingBottom: '12px',
+                                        overflowX: 'auto',
+                                        overflowY: 'hidden',
+                                        scrollbarWidth: 'none',
+                                        msOverflowStyle: 'none',
+                                        WebkitOverflowScrolling: 'touch',
+                                    }}>
                                         {[
                                             { id: 'details', icon: '📝', label: 'Инфо' },
                                             { id: 'location', icon: '📍', label: 'Локация' },
@@ -1381,7 +1446,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                     padding: '20px',
                     background: '#0a1128',
                     borderRadius: '24px 24px 0 0',
-                    zIndex: 2001,
+                    zIndex: 9990, /* Ниже мобильного меню (9999) */
                     boxShadow: '0 -4px 20px rgba(0,0,0,0.6)',
                     borderTop: '1px solid rgba(212, 175, 55, 0.3)'
                 }}>
@@ -1681,7 +1746,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                         background: #0a1128;
                         border-top: 1px solid rgba(212, 175, 55, 0.3);
                         border-radius: 20px 20px 0 0;
-                        z-index: 10001;
+                        z-index: 9990; /* Ниже мобильного меню (9999) */
                         max-height: 80vh;
                         box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
                     }
@@ -1715,7 +1780,8 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                     position: absolute;
                     top: 100px;
                     right: 24px;
-                    width: 420px;
+                    min-width: 360px;
+                    max-width: 600px;
                     height: calc(100% - 132px);
                     background: rgba(15, 23, 42, 0.9);
                     backdrop-filter: blur(24px) saturate(160%);
@@ -1726,6 +1792,15 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                     overflow: hidden;
                     display: flex;
                     flex-direction: column;
+                    transition: box-shadow 0.2s;
+                }
+                .property-side-panel:has(.resize-active) {
+                    box-shadow: -20px 0 60px rgba(212, 175, 55, 0.3);
+                }
+                
+                /* Hide scrollbar for tabs */
+                .tabs-container::-webkit-scrollbar {
+                    display: none;
                 }
 
                 .side-panel-content {
@@ -1765,8 +1840,8 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                 .nav-btn:hover { background: rgba(212, 175, 55, 0.2); transform: scale(1.1); }
 
                 .tab-btn {
-                    flex: 1;
-                    padding: 10px;
+                    flex: 0 0 auto;
+                    padding: 8px 12px;
                     border-radius: 10px;
                     background: transparent;
                     color: #94a3b8;
@@ -1776,15 +1851,17 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                     flex-direction: column;
                     align-items: center;
                     gap: 4px;
-                    font-size: 12px;
+                    font-size: 11px;
                     font-weight: 600;
                     transition: all 0.3s;
+                    white-space: nowrap;
+                    min-width: 56px;
                 }
                 .tab-btn.active {
                     background: rgba(212, 175, 55, 0.15);
                     color: var(--elite-accent-gold);
                 }
-                .tab-btn span { fontSize: 20px; }
+                .tab-btn span { font-size: 18px; }
 
                 .action-btn {
                    flex: 1;

@@ -3,6 +3,7 @@
 /**
  * PropertyPotential — Вкладка «Потенциал» в боковой панели объекта
  * Показывает прогнозы развития, планы застройки района и ценовые тренды
+ * Адаптировано для светлой темы luxury-дизайна
  */
 
 interface GrowthForecast {
@@ -43,53 +44,55 @@ export function PropertyPotential({ propertyId, currentGrowth = 127 }: PropertyP
         <div className="property-potential fade-in">
             {/* Текущий рейтинг */}
             <div style={{
-                background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(16, 185, 129, 0.1))',
-                padding: '16px',
-                borderRadius: '12px',
-                marginBottom: '16px',
-                border: '1px solid rgba(34, 197, 94, 0.2)',
+                background: 'rgba(22, 163, 74, 0.08)',
+                padding: '20px',
+                borderRadius: '8px',
+                marginBottom: '24px',
+                border: '1px solid rgba(22, 163, 74, 0.15)',
                 textAlign: 'center'
             }}>
-                <div style={{ color: '#94a3b8', fontSize: '12px', marginBottom: '4px' }}>
+                <div style={{ color: '#666666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>
                     Инвестиционный потенциал
                 </div>
                 <div style={{
-                    color: '#22c55e',
-                    fontSize: '32px',
-                    fontWeight: 800,
+                    color: '#16a34a',
+                    fontSize: '42px',
+                    fontWeight: 700,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '8px'
+                    gap: '8px',
+                    fontFamily: 'var(--font-serif, Georgia, serif)'
                 }}>
-                    <span style={{ fontSize: '28px' }}>📈</span>
+                    <span style={{ fontSize: '32px' }}>📈</span>
                     +{currentGrowth}%
                 </div>
-                <div style={{ color: '#64748b', fontSize: '11px', marginTop: '4px' }}>
+                <div style={{ color: '#666666', fontSize: '12px', marginTop: '6px' }}>
                     Прогноз роста на 10 лет
                 </div>
             </div>
 
             {/* Прогноз по периодам */}
-            <div style={{ marginBottom: '20px' }}>
-                <h4 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, marginBottom: '12px' }}>
+            <div style={{ marginBottom: '28px' }}>
+                <h4 style={{ color: '#1a1a1a', fontSize: '13px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '16px' }}>
                     🎯 Прогноз роста стоимости
                 </h4>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
                     {MOCK_FORECASTS.map((forecast, idx) => (
                         <div key={idx} style={{
-                            background: 'rgba(255,255,255,0.03)',
-                            padding: '12px',
-                            borderRadius: '10px',
-                            border: '1px solid rgba(255,255,255,0.05)'
+                            background: '#ffffff',
+                            padding: '16px',
+                            borderRadius: '8px',
+                            border: '1px solid rgba(0,0,0,0.08)'
                         }}>
-                            <div style={{ color: '#94a3b8', fontSize: '11px', marginBottom: '4px' }}>
+                            <div style={{ color: '#666666', fontSize: '12px', marginBottom: '6px' }}>
                                 {forecast.period}
                             </div>
                             <div style={{
-                                color: forecast.growth >= 50 ? '#22c55e' : forecast.growth >= 20 ? '#84cc16' : '#eab308',
-                                fontSize: '18px',
-                                fontWeight: 700
+                                color: forecast.growth >= 50 ? '#16a34a' : forecast.growth >= 20 ? '#65a30d' : '#ca8a04',
+                                fontSize: '22px',
+                                fontWeight: 700,
+                                fontFamily: 'var(--font-serif, Georgia, serif)'
                             }}>
                                 +{forecast.growth}%
                             </div>
@@ -100,8 +103,8 @@ export function PropertyPotential({ propertyId, currentGrowth = 127 }: PropertyP
             </div>
 
             {/* Проекты развития */}
-            <div style={{ marginBottom: '16px' }}>
-                <h4 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, marginBottom: '12px' }}>
+            <div style={{ marginBottom: '24px' }}>
+                <h4 style={{ color: '#1a1a1a', fontSize: '13px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '16px' }}>
                     🏗️ Развитие района
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -113,15 +116,15 @@ export function PropertyPotential({ propertyId, currentGrowth = 127 }: PropertyP
 
             {/* Факторы роста */}
             <div style={{
-                background: 'rgba(59, 130, 246, 0.1)',
-                padding: '14px',
-                borderRadius: '12px',
-                border: '1px solid rgba(59, 130, 246, 0.2)'
+                background: 'rgba(37, 99, 235, 0.06)',
+                padding: '18px',
+                borderRadius: '8px',
+                border: '1px solid rgba(37, 99, 235, 0.12)'
             }}>
-                <div style={{ color: '#3b82f6', fontSize: '13px', fontWeight: 700, marginBottom: '8px' }}>
+                <div style={{ color: '#2563eb', fontSize: '12px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '12px' }}>
                     💡 Ключевые факторы роста
                 </div>
-                <ul style={{ color: '#cbd5e1', fontSize: '12px', margin: 0, paddingLeft: '16px', lineHeight: 1.6 }}>
+                <ul style={{ color: '#333333', fontSize: '14px', margin: 0, paddingLeft: '20px', lineHeight: 1.8 }}>
                     <li>Развитие курортной инфраструктуры</li>
                     <li>Ограниченное предложение на первой линии</li>
                     <li>Рост туристического потока</li>
@@ -133,9 +136,9 @@ export function PropertyPotential({ propertyId, currentGrowth = 127 }: PropertyP
 
 function ConfidenceBadge({ level }: { level: 'high' | 'medium' | 'low' }) {
     const colors = {
-        high: { bg: 'rgba(34, 197, 94, 0.15)', text: '#22c55e', label: '●●●' },
-        medium: { bg: 'rgba(234, 179, 8, 0.15)', text: '#eab308', label: '●●○' },
-        low: { bg: 'rgba(239, 68, 68, 0.15)', text: '#ef4444', label: '●○○' },
+        high: { bg: 'rgba(22, 163, 74, 0.1)', text: '#16a34a', label: '●●●' },
+        medium: { bg: 'rgba(202, 138, 4, 0.1)', text: '#ca8a04', label: '●●○' },
+        low: { bg: 'rgba(220, 38, 38, 0.1)', text: '#dc2626', label: '●○○' },
     };
     const style = colors[level];
 
@@ -143,11 +146,11 @@ function ConfidenceBadge({ level }: { level: 'high' | 'medium' | 'low' }) {
         <span style={{
             background: style.bg,
             color: style.text,
-            padding: '2px 6px',
+            padding: '3px 8px',
             borderRadius: '4px',
-            fontSize: '10px',
+            fontSize: '11px',
             fontWeight: 600,
-            marginTop: '4px',
+            marginTop: '6px',
             display: 'inline-block'
         }}>
             {style.label}
@@ -157,9 +160,9 @@ function ConfidenceBadge({ level }: { level: 'high' | 'medium' | 'low' }) {
 
 function ProjectRow({ project }: { project: DevelopmentProject }) {
     const statusColors = {
-        planned: { bg: 'rgba(59, 130, 246, 0.15)', text: '#3b82f6', label: 'Планируется' },
-        in_progress: { bg: 'rgba(234, 179, 8, 0.15)', text: '#eab308', label: 'В процессе' },
-        completed: { bg: 'rgba(34, 197, 94, 0.15)', text: '#22c55e', label: 'Завершён' },
+        planned: { bg: 'rgba(37, 99, 235, 0.1)', text: '#2563eb', label: 'Планируется' },
+        in_progress: { bg: 'rgba(202, 138, 4, 0.1)', text: '#ca8a04', label: 'В процессе' },
+        completed: { bg: 'rgba(22, 163, 74, 0.1)', text: '#16a34a', label: 'Завершён' },
     };
     const status = statusColors[project.status];
 
@@ -168,29 +171,29 @@ function ProjectRow({ project }: { project: DevelopmentProject }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '10px 12px',
-            background: 'rgba(255,255,255,0.03)',
-            borderRadius: '10px',
-            border: '1px solid rgba(255,255,255,0.05)'
+            padding: '14px 16px',
+            background: '#ffffff',
+            borderRadius: '8px',
+            border: '1px solid rgba(0,0,0,0.08)'
         }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <span style={{
                     fontSize: '16px',
-                    color: project.impact === 'positive' ? '#22c55e' : '#94a3b8'
+                    color: project.impact === 'positive' ? '#16a34a' : '#666666'
                 }}>
                     {project.impact === 'positive' ? '↗️' : '➡️'}
                 </span>
                 <div>
-                    <div style={{ color: '#e2e8f0', fontSize: '13px' }}>{project.name}</div>
-                    <div style={{ color: '#64748b', fontSize: '11px' }}>{project.year}</div>
+                    <div style={{ color: '#1a1a1a', fontSize: '14px', fontWeight: 500 }}>{project.name}</div>
+                    <div style={{ color: '#666666', fontSize: '12px' }}>{project.year}</div>
                 </div>
             </div>
             <span style={{
                 background: status.bg,
                 color: status.text,
-                padding: '4px 8px',
+                padding: '5px 10px',
                 borderRadius: '6px',
-                fontSize: '10px',
+                fontSize: '11px',
                 fontWeight: 600
             }}>
                 {status.label}

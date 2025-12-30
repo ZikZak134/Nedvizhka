@@ -1,0 +1,1276 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   LUXURY PROPERTY LANDING — MICHELIN / SOTHEBY'S STYLE
+   Editorial design with generous whitespace and premium typography
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CSS VARIABLES — Premium Palette
+   ───────────────────────────────────────────────────────────────────────────── */
+:root {
+    /* Основные цвета — минимализм */
+    --lux-white: #ffffff;
+    --lux-black: #0a0a0a;
+    --lux-cream: #faf9f7;
+    --lux-charcoal: #1a1a1a;
+    --lux-warm-gray: #f5f4f2;
+
+    /* Акцент — благородное золото */
+    --lux-gold: #b8860b;
+    --lux-gold-light: #d4af37;
+    --lux-gold-subtle: rgba(184, 134, 11, 0.1);
+
+    /* Текст */
+    --lux-text-primary: #1a1a1a;
+    --lux-text-secondary: #666666;
+    --lux-text-muted: #999999;
+    --lux-text-inverse: #ffffff;
+
+    /* Границы */
+    --lux-border: rgba(0, 0, 0, 0.08);
+    --lux-border-dark: rgba(0, 0, 0, 0.15);
+
+    /* Типографика */
+    --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    /* Размеры */
+    --container-max: 1200px;
+    --container-narrow: 800px;
+    --section-padding: clamp(60px, 10vw, 120px);
+    --content-gap: clamp(24px, 4vw, 48px);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BASE LAYOUT
+   ───────────────────────────────────────────────────────────────────────────── */
+.lux-page {
+    min-height: 100vh;
+    background: var(--lux-white);
+    color: var(--lux-text-primary);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+}
+
+.lux-container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 clamp(20px, 5vw, 60px);
+}
+
+.lux-container--narrow {
+    max-width: var(--container-narrow);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HEADER WRAPPER (transparent on hero)
+   ───────────────────────────────────────────────────────────────────────────── */
+.lux-header-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.lux-header-wrapper.scrolled {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 1px 0 var(--lux-border);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BREADCRUMBS & NAVIGATION BAR
+   ───────────────────────────────────────────────────────────────────────────── */
+.lux-nav-bar {
+    position: sticky;
+    top: 70px;
+    z-index: 90;
+    background: var(--lux-white);
+    border-bottom: 1px solid var(--lux-border);
+    padding: 16px 0;
+}
+
+.lux-nav-bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.lux-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--lux-text-secondary);
+}
+
+.lux-breadcrumb-link {
+    color: var(--lux-text-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+    white-space: nowrap;
+}
+
+.lux-breadcrumb-link:hover {
+    color: var(--lux-gold);
+}
+
+.lux-breadcrumb-back {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--lux-charcoal);
+    color: var(--lux-white);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: background 0.2s;
+}
+
+.lux-breadcrumb-back:hover {
+    background: var(--lux-black);
+}
+
+.lux-breadcrumb-sep {
+    color: var(--lux-text-muted);
+}
+
+.lux-breadcrumb-current {
+    color: var(--lux-text-primary);
+    font-weight: 500;
+}
+
+/* Property Navigation (prev/next) */
+.lux-property-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.lux-property-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid var(--lux-border-dark);
+    color: var(--lux-text-primary);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.lux-property-nav-btn:hover {
+    background: var(--lux-charcoal);
+    border-color: var(--lux-charcoal);
+    color: var(--lux-white);
+}
+
+.lux-property-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HERO SECTION — Cinematic, Full-Screen
+   ───────────────────────────────────────────────────────────────────────────── */
+.lux-hero {
+    position: relative;
+    height: 100vh;
+    min-height: 600px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+}
+
+.lux-hero-media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.lux-hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    animation: luxHeroZoom 20s ease-out forwards;
+}
+
+@keyframes luxHeroZoom {
+    from {
+        transform: scale(1.1);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+.lux-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top,
+            rgba(0, 0, 0, 0.7) 0%,
+            rgba(0, 0, 0, 0.3) 40%,
+            rgba(0, 0, 0, 0.1) 100%);
+}
+
+.lux-hero-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    padding: 0 clamp(24px, 6vw, 80px) clamp(48px, 8vw, 100px);
+    color: var(--lux-text-inverse);
+}
+
+.lux-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: var(--lux-gold);
+    color: var(--lux-white);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.lux-hero-complex {
+    font-family: var(--font-sans);
+    font-size: clamp(12px, 1.5vw, 14px);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 12px;
+}
+
+.lux-hero-title {
+    font-family: var(--font-serif);
+    font-size: clamp(32px, 5vw, 64px);
+    font-weight: 400;
+    line-height: 1.1;
+    margin: 0 0 16px 0;
+    max-width: 800px;
+}
+
+.lux-hero-location {
+    font-size: clamp(14px, 1.8vw, 18px);
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 24px;
+}
+
+.lux-hero-price {
+    font-family: var(--font-serif);
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 400;
+    color: var(--lux-gold-light);
+}
+
+.lux-hero-price-label {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 8px;
+}
+
+/* Scroll indicator */
+.lux-scroll-hint {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    animation: luxPulse 2s ease-in-out infinite;
+}
+
+@keyframes luxPulse {
+
+    0%,
+    100% {
+        opacity: 0.5;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-5px);
+    }
+}
+
+.lux-scroll-arrow {
+    width: 20px;
+    height: 20px;
+    border-right: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    transform: rotate(45deg);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   KEY FACTS — Minimal Data Display
+   ───────────────────────────────────────────────────────────────────────────── */
+.lux-facts {
+    padding: var(--section-padding) 0;
+    background: var(--lux-white) !important;
+    border-bottom: 1px solid var(--lux-border);
+}
+
+.lux-facts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0;
+}
+
+.lux-fact {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 20px;
+    border-right: 1px solid var(--lux-border);
+    text-align: center;
+}
+
+.lux-fact:last-child {
+    border-right: none;
+}
+
+.lux-fact-value {
+    font-family: var(--font-serif);
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 400;
+    color: var(--lux-text-primary) !important;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.lux-fact-unit {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--lux-text-muted);
+}
+
+.lux-fact-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--lux-text-secondary) !important;
+    margin-top: 4px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GALLERY — Editorial Layout
+   ───────────────────────────────────────────────────────────────────────────── */
+.lux-gallery {
+    padding: var(--section-padding) 0;
+    background: var(--lux-cream);
+}
+
+.lux-gallery-main {
+    position: relative;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    margin-bottom: 16px;
+    cursor: pointer;
+}
+
+.lux-gallery-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.lux-gallery-main:hover img {
+    transform: scale(1.02);
+}
+
+.lux-gallery-counter {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    padding: 8px 16px;
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--lux-white);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+}
+
+.lux-gallery-thumbs {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--lux-border-dark) transparent;
+}
+
+.lux-gallery-thumb {
+    flex-shrink: 0;
+    width: 120px;
+    height: 80px;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.lux-gallery-thumb:hover,
+.lux-gallery-thumb.active {
+    opacity: 1;
+}
+
+.lux-gallery-thumb.active {
+    outline: 2px solid var(--lux-gold);
+    outline-offset: 2px;
+}
+
+.lux-gallery-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SECTION HEADERS — Editorial Style
+   ───────────────────────────────────────────────────────────────────────────── */
+.lux-section-header {
+    text-align: center;
+    margin-bottom: var(--content-gap);
+}
+
+.lux-section-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--lux-gold);
+    margin-bottom: 16px;
+}
+
+.lux-section-title {
+    font-family: var(--font-serif);
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--lux-text-primary) !important;
+    margin: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ABOUT SECTION — Editorial Paragraph
+   ───────────────────────────────────────────────────────────────────────────── */
+.lux-about {
+    padding: var(--section-padding) 0;
+    background: var(--lux-white) !important;
+}
+
+.lux-about-content {
+    max-width: var(--container-narrow);
+    margin: 0 auto;
+}
+
+.lux-about-text {
+    font-size: clamp(17px, 2vw, 20px);
+    line-height: 1.9;
+    color: var(--lux-text-secondary) !important;
+    text-align: center;
+}
+
+.lux-about-text p {
+    margin: 0 0 1.5em 0;
+}
+
+.lux-about-text p:last-child {
+    margin-bottom: 0;
+}
+
+.lux-about-highlight {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: clamp(24px, 3vw, 32px);
+    font-style: italic;
+    color: var(--lux-text-primary);
+    margin: 2em 0;
+    padding: 1.5em 0;
+    border-top: 1px solid var(--lux-border);
+    border-bottom: 1px solid var(--lux-border);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FEATURES — Clean Two-Column List
+   ───────────────────────────────────────────────────────────────────────────── */
+.lux-features {
+    padding: var(--section-padding) 0;
+    background: var(--lux-warm-gray);
+}
+
+.lux-features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border: 1px solid var(--lux-border);
+}
+
+.lux-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px 32px;
+    background: var(--lux-white);
+    border-bottom: 1px solid var(--lux-border);
+    transition: background 0.2s;
+}
+
+.lux-feature-item:nth-child(odd) {
+    border-right: 1px solid var(--lux-border);
+}
+
+.lux-feature-item:hover {
+    background: var(--lux-gold-subtle);
+}
+
+.lux-feature-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--lux-gold);
+}
+
+.lux-feature-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.lux-feature-content {
+    flex: 1;
+}
+
+.lux-feature-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--lux-text-primary) !important;
+    margin-bottom: 2px;
+}
+
+.lux-feature-value {
+    font-size: 13px;
+    color: var(--lux-text-secondary) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   OWNER'S INSIGHT — Quote Section
+   ───────────────────────────────────────────────────────────────────────────── */
+.lux-owner {
+    padding: var(--section-padding) 0;
+    background: var(--lux-charcoal);
+    color: var(--lux-text-inverse);
+}
+
+.lux-owner-card {
+    max-width: var(--container-narrow);
+    margin: 0 auto;
+    text-align: center;
+}
+
+.lux-owner-quote-icon {
+    font-family: var(--font-serif);
+    font-size: 80px;
+    line-height: 1;
+    color: var(--lux-gold);
+    margin-bottom: 24px;
+}
+
+.lux-owner-quote {
+    font-family: var(--font-serif);
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 40px 0;
+}
+
+.lux-owner-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.lux-owner-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--lux-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--lux-white);
+}
+
+.lux-owner-details {
+    text-align: left;
+}
+
+.lux-owner-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--lux-white);
+    margin-bottom: 2px;
+}
+
+.lux-owner-role {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.lux-owner-verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 4px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   INVESTMENT SECTION — Clean Data
+   ───────────────────────────────────────────────────────────────────────────── */
+.lux-investment {
+    padding: var(--section-padding) 0;
+    background: var(--lux-white);
+}
+
+.lux-investment-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 1px solid var(--lux-border);
+}
+
+.lux-investment-item {
+    padding: 40px 32px;
+    text-align: center;
+    border-right: 1px solid var(--lux-border);
+    background: var(--lux-white);
+}
+
+.lux-investment-item:last-child {
+    border-right: none;
+}
+
+.lux-investment-value {
+    font-family: var(--font-serif);
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 400;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.lux-investment-value.positive {
+    color: #16a34a;
+}
+
+.lux-investment-value.gold {
+    color: var(--lux-gold);
+}
+
+.lux-investment-value.blue {
+    color: #2563eb;
+}
+
+.lux-investment-label {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--lux-text-secondary);
+    letter-spacing: 0.02em;
+}
+
+.lux-investment-bar {
+    height: 3px;
+    background: var(--lux-border);
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+.lux-investment-bar-fill {
+    height: 100%;
+    transition: width 1s ease;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TABS — Minimal Navigation
+   ───────────────────────────────────────────────────────────────────────────── */
+.lux-tabs {
+    padding: var(--section-padding) 0;
+    background: var(--lux-cream);
+}
+
+.lux-tabs-nav {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: var(--content-gap);
+    border-bottom: 1px solid var(--lux-border);
+}
+
+.lux-tab-btn {
+    padding: 16px 32px;
+    background: transparent;
+    border: none;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--lux-text-secondary);
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+}
+
+.lux-tab-btn:hover {
+    color: var(--lux-text-primary);
+}
+
+.lux-tab-btn.active {
+    color: var(--lux-gold);
+}
+
+.lux-tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--lux-gold);
+}
+
+.lux-tabs-content {
+    min-height: 300px;
+}
+
+/* Исправление контраста: переопределяем глобальные стили elite-theme.css */
+.lux-tabs-content h1,
+.lux-tabs-content h2,
+.lux-tabs-content h3,
+.lux-tabs-content h4,
+.lux-tabs-content h5,
+.lux-tabs-content h6 {
+    color: var(--lux-text-primary) !important;
+}
+
+.lux-tabs-content p {
+    color: var(--lux-text-secondary) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PROPERTY SURROUNDINGS — Styling
+   ───────────────────────────────────────────────────────────────────────────── */
+.lux-surroundings {
+    animation: fadeIn 0.4s ease-out;
+}
+
+.lux-surroundings-score-card {
+    background: rgba(22, 163, 74, 0.06);
+    padding: 24px;
+    border-radius: 8px;
+    margin-bottom: 32px;
+    border: 1px solid rgba(22, 163, 74, 0.15);
+    text-align: center;
+}
+
+.lux-surroundings-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--lux-text-secondary);
+    margin-bottom: 12px;
+}
+
+.lux-surroundings-score-val {
+    color: #16a34a;
+    font-size: 48px;
+    font-weight: 400;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 8px;
+    font-family: var(--font-serif);
+    line-height: 1;
+    margin-bottom: 12px;
+}
+
+.lux-surroundings-score-max {
+    font-size: 20px;
+    color: var(--lux-text-muted);
+}
+
+.lux-surroundings-stars {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    font-size: 18px;
+}
+
+.lux-surroundings-section {
+    margin-bottom: 32px;
+}
+
+.lux-surroundings-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--lux-text-primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lux-env-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: var(--lux-white);
+    border: 1px solid var(--lux-border);
+    margin-bottom: 8px;
+    transition: transform 0.2s;
+}
+
+.lux-env-row:hover {
+    transform: translateX(4px);
+    border-color: var(--lux-gold-subtle);
+}
+
+.lux-env-row-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.lux-env-icon {
+    font-size: 20px;
+}
+
+.lux-env-name {
+    color: var(--lux-text-primary);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.lux-env-desc {
+    color: var(--lux-text-secondary);
+    font-size: 12px;
+}
+
+.lux-env-dots {
+    display: flex;
+    gap: 4px;
+}
+
+.lux-env-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.lux-green-zones-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.lux-green-zone-tag {
+    background: rgba(22, 163, 74, 0.04);
+    padding: 10px 16px;
+    border-radius: 100px;
+    border: 1px solid rgba(22, 163, 74, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+}
+
+.lux-green-zone-tag:hover {
+    background: rgba(22, 163, 74, 0.1);
+    transform: translateY(-2px);
+}
+
+.lux-green-zone-icon {
+    font-size: 14px;
+}
+
+.lux-green-zone-name {
+    color: var(--lux-text-primary);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.lux-green-zone-dist {
+    color: var(--lux-text-secondary);
+    font-size: 12px;
+}
+
+.lux-surroundings-features {
+    background: rgba(139, 92, 246, 0.04);
+    padding: 24px;
+    border-radius: 8px;
+    border: 1px solid rgba(139, 92, 246, 0.1);
+}
+
+.lux-surroundings-text {
+    color: var(--lux-text-primary);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   AGENT SECTION — Contact Card
+   ───────────────────────────────────────────────────────────────────────────── */
+.lux-agent {
+    padding: var(--section-padding) 0;
+    background: var(--lux-white);
+}
+
+.lux-agent-card {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+    border: 1px solid var(--lux-border);
+}
+
+.lux-agent-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: var(--lux-warm-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lux-agent-photo-placeholder {
+    font-family: var(--font-serif);
+    font-size: 40px;
+    color: var(--lux-text-muted);
+}
+
+.lux-agent-info {
+    flex: 1;
+}
+
+.lux-agent-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--lux-gold);
+    margin-bottom: 8px;
+}
+
+.lux-agent-name {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    color: var(--lux-text-primary);
+    margin-bottom: 8px;
+}
+
+.lux-agent-role {
+    font-size: 14px;
+    color: var(--lux-text-secondary);
+    margin-bottom: 24px;
+}
+
+.lux-agent-actions {
+    display: flex;
+    gap: 16px;
+}
+
+.lux-btn {
+    padding: 14px 28px;
+    font-size: 13px;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.lux-btn--primary {
+    background: var(--lux-black);
+    color: var(--lux-white);
+    border: 1px solid var(--lux-black);
+}
+
+.lux-btn--primary:hover {
+    background: var(--lux-gold);
+    border-color: var(--lux-gold);
+}
+
+.lux-btn--secondary {
+    background: transparent;
+    color: var(--lux-text-primary);
+    border: 1px solid var(--lux-border-dark);
+}
+
+.lux-btn--secondary:hover {
+    border-color: var(--lux-black);
+    background: var(--lux-white);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CTA — Prominent Call to Action
+   ───────────────────────────────────────────────────────────────────────────── */
+.lux-cta {
+    padding: var(--section-padding) 0;
+    background: var(--lux-charcoal);
+    color: var(--lux-white);
+    text-align: center;
+}
+
+.lux-cta-title {
+    font-family: var(--font-serif);
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 400;
+    margin: 0 0 24px 0;
+}
+
+.lux-cta-text {
+    font-size: clamp(16px, 2vw, 20px);
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 48px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.lux-cta-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.lux-cta-actions .lux-btn--primary {
+    background: var(--lux-white);
+    color: var(--lux-black);
+    border-color: var(--lux-white);
+}
+
+.lux-cta-actions .lux-btn--primary:hover {
+    background: var(--lux-gold);
+    border-color: var(--lux-gold);
+    color: var(--lux-white);
+}
+
+.lux-cta-actions .lux-btn--secondary {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: var(--lux-white);
+}
+
+.lux-cta-actions .lux-btn--secondary:hover {
+    border-color: var(--lux-white);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   NEARBY PROPERTIES — Horizontal Scroll
+   ───────────────────────────────────────────────────────────────────────────── */
+.lux-nearby {
+    padding: var(--section-padding) 0;
+    background: var(--lux-warm-gray);
+    overflow: hidden;
+}
+
+.lux-nearby-scroll {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    padding-bottom: 24px;
+    margin-right: -24px;
+    scrollbar-width: none;
+}
+
+.lux-nearby-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.lux-nearby-card {
+    flex-shrink: 0;
+    width: 300px;
+    background: var(--lux-white);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.lux-nearby-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+}
+
+.lux-nearby-card-image {
+    aspect-ratio: 4/3;
+    overflow: hidden;
+}
+
+.lux-nearby-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.lux-nearby-card-content {
+    padding: 20px;
+}
+
+.lux-nearby-card-title {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    color: var(--lux-text-primary);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lux-nearby-card-address {
+    font-size: 13px;
+    color: var(--lux-text-secondary);
+    margin-bottom: 12px;
+}
+
+.lux-nearby-card-price {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--lux-gold);
+    margin-bottom: 12px;
+}
+
+.lux-nearby-card-stats {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--lux-text-muted);
+    border-top: 1px solid var(--lux-border);
+    padding-top: 12px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ANIMATIONS & UTILS
+   ───────────────────────────────────────────────────────────────────────────── */
+.fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    :root {
+        --section-padding: 60px;
+    }
+
+    .lux-hero-title {
+        font-size: 36px;
+    }
+
+    .lux-hero-price {
+        font-size: 28px;
+    }
+
+    .lux-features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .lux-feature-item:nth-child(odd) {
+        border-right: none;
+    }
+
+    .lux-investment-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .lux-investment-item {
+        border-right: none;
+        border-bottom: 1px solid var(--lux-border);
+    }
+
+    .lux-agent-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px;
+    }
+
+    .lux-agent-actions {
+        flex-direction: column;
+    }
+
+    .lux-cta-actions {
+        flex-direction: column;
+    }
+
+    .lux-tabs-nav {
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 0;
+        border-bottom: 1px solid var(--lux-border);
+    }
+
+    .lux-tab-btn {
+        padding: 12px 20px;
+        white-space: nowrap;
+    }
+}

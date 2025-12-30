@@ -4,6 +4,7 @@ import { useState } from 'react';
 /**
  * PropertyLocation — Вкладка «Локация» в боковой панели объекта
  * Показывает транспортную доступность, время до ключевых точек и ближайшие достопримечательности
+ * Адаптировано для светлой темы luxury-дизайна
  */
 
 interface LocationPoint {
@@ -57,28 +58,28 @@ export function PropertyLocation({ propertyId, address }: PropertyLocationProps)
 
     return (
         <div className="property-location fade-in">
-            {/* ... Existing Address ... */}
+            {/* Адрес */}
             <div style={{
-                background: 'rgba(212, 175, 55, 0.1)',
-                padding: '14px',
-                borderRadius: '12px',
-                marginBottom: '16px',
-                border: '1px solid rgba(212, 175, 55, 0.2)'
+                background: 'rgba(184, 134, 11, 0.08)',
+                padding: '16px 20px',
+                borderRadius: '8px',
+                marginBottom: '24px',
+                border: '1px solid rgba(184, 134, 11, 0.15)'
             }}>
-                <div style={{ color: '#d4af37', fontSize: '13px', fontWeight: 700, marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div style={{ color: '#b8860b', fontSize: '11px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '6px' }}>
                     📍 Адрес
                 </div>
-                <div style={{ color: '#e2e8f0', fontSize: '14px' }}>
+                <div style={{ color: '#1a1a1a', fontSize: '15px', fontWeight: 500 }}>
                     {address || 'Сочи, Центральный район, ул. Приморская 24'}
                 </div>
             </div>
 
             {/* Экспресс-маршруты */}
-            <div style={{ marginBottom: '20px' }}>
-                <h4 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, marginBottom: '12px' }}>
+            <div style={{ marginBottom: '28px' }}>
+                <h4 style={{ color: '#1a1a1a', fontSize: '13px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '16px' }}>
                     🚀 Экспресс-маршруты
                 </h4>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '16px' }}>
                     {[
                         { id: 'sea', label: 'До моря', icon: '🌊' },
                         { id: 'airport', label: 'Аэропорт', icon: '✈️' },
@@ -89,16 +90,17 @@ export function PropertyLocation({ propertyId, address }: PropertyLocationProps)
                             key={route.id}
                             onClick={() => calculateRoute(route.id)}
                             style={{
-                                background: activeRoute === route.id ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255,255,255,0.05)',
-                                border: activeRoute === route.id ? '1px solid #3b82f6' : '1px solid rgba(255,255,255,0.05)',
-                                padding: '10px',
-                                borderRadius: '10px',
-                                color: '#fff',
+                                background: activeRoute === route.id ? 'rgba(26, 26, 26, 0.08)' : '#ffffff',
+                                border: activeRoute === route.id ? '1px solid #1a1a1a' : '1px solid rgba(0,0,0,0.1)',
+                                padding: '12px',
+                                borderRadius: '8px',
+                                color: '#1a1a1a',
                                 cursor: 'pointer',
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '8px',
-                                transition: 'all 0.2s'
+                                gap: '10px',
+                                transition: 'all 0.2s',
+                                fontWeight: activeRoute === route.id ? 600 : 400
                             }}
                         >
                             <span style={{ fontSize: '18px' }}>{route.icon}</span>
@@ -108,24 +110,23 @@ export function PropertyLocation({ propertyId, address }: PropertyLocationProps)
                 </div>
                 {activeRoute && (
                     <div className="fade-in" style={{
-                        background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
-                        padding: '12px',
-                        borderRadius: '10px',
+                        background: '#1a1a1a',
+                        padding: '14px 18px',
+                        borderRadius: '8px',
                         display: 'flex',
                         justifyContent: 'space-between',
-                        alignItems: 'center',
-                        boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+                        alignItems: 'center'
                     }}>
-                        <div style={{ color: '#fff', fontSize: '13px', fontWeight: 600 }}>Время в пути:</div>
-                        <div style={{ color: '#fff', fontSize: '16px', fontWeight: 800 }}>{routeTime}</div>
+                        <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px' }}>Время в пути:</div>
+                        <div style={{ color: '#ffffff', fontSize: '16px', fontWeight: 600 }}>{routeTime}</div>
                     </div>
                 )}
             </div>
 
             {/* Транспорт */}
-            <div style={{ marginBottom: '20px' }}>
-                <h4 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '18px' }}>🚗</span> Транспортная доступность
+            <div style={{ marginBottom: '28px' }}>
+                <h4 style={{ color: '#1a1a1a', fontSize: '13px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '16px' }}>
+                    🚗 Транспортная доступность
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {transportPoints.map((point, idx) => (
@@ -135,9 +136,9 @@ export function PropertyLocation({ propertyId, address }: PropertyLocationProps)
             </div>
 
             {/* Достопримечательности */}
-            <div style={{ marginBottom: '20px' }}>
-                <h4 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '18px' }}>⭐</span> Рядом
+            <div style={{ marginBottom: '24px' }}>
+                <h4 style={{ color: '#1a1a1a', fontSize: '13px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '16px' }}>
+                    ⭐ Рядом
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {attractionPoints.map((point, idx) => (
@@ -151,14 +152,14 @@ export function PropertyLocation({ propertyId, address }: PropertyLocationProps)
 
             {/* Мини-карта области (placeholder) */}
             <div style={{
-                background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1))',
-                borderRadius: '12px',
+                background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.06), rgba(139, 92, 246, 0.06))',
+                borderRadius: '8px',
                 height: '120px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                border: '1px solid rgba(59, 130, 246, 0.2)',
-                color: '#94a3b8',
+                border: '1px solid rgba(0, 0, 0, 0.08)',
+                color: '#666666',
                 fontSize: '13px',
                 gap: '8px'
             }}>
@@ -175,23 +176,23 @@ function LocationRow({ point }: { point: LocationPoint }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '10px 12px',
-            background: 'rgba(255,255,255,0.03)',
-            borderRadius: '10px',
-            border: '1px solid rgba(255,255,255,0.05)'
+            padding: '12px 16px',
+            background: '#ffffff',
+            borderRadius: '8px',
+            border: '1px solid rgba(0,0,0,0.08)'
         }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <span style={{ fontSize: '18px' }}>{point.icon}</span>
-                <span style={{ color: '#e2e8f0', fontSize: '13px' }}>{point.name}</span>
+                <span style={{ color: '#1a1a1a', fontSize: '14px' }}>{point.name}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ color: '#94a3b8', fontSize: '12px' }}>{point.distance}</span>
+                <span style={{ color: '#666666', fontSize: '13px' }}>{point.distance}</span>
                 <span style={{
-                    background: 'rgba(34, 197, 94, 0.15)',
-                    color: '#22c55e',
-                    padding: '4px 8px',
+                    background: 'rgba(22, 163, 74, 0.1)',
+                    color: '#16a34a',
+                    padding: '5px 10px',
                     borderRadius: '6px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     fontWeight: 600
                 }}>
                     {point.time}
