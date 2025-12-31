@@ -504,6 +504,7 @@
 }
 
 .lux-about-text p {
+    color: #1a1a1a !important;
     margin: 0 0 1.5em 0;
 }
 

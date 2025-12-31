@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 /**
  * SMIFeed — Лента новостей из СМИ о рынке недвижимости
- * Адаптировано для светлой темы luxury-дизайна
+ * Стилизована под темную тему (glassmorphism)
  */
 
 const SMI_DATA = [
@@ -37,18 +37,21 @@ const SMI_DATA = [
 ];
 
 export function SMIFeed() {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
         <div style={{
-            background: '#ffffff',
-            borderRadius: '8px',
+            background: 'rgba(15, 23, 42, 0.95)',
+            backdropFilter: 'blur(16px)',
+            borderRadius: '16px',
             width: '100%',
-            maxWidth: '100%',
-            color: '#1a1a1a',
+            maxWidth: '340px',
+            color: 'white',
             overflow: 'hidden',
             transition: 'all 0.3s ease',
-            border: '1px solid rgba(0,0,0,0.1)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+            marginBottom: '10px'
         }}>
             {/* Header */}
             <div
@@ -59,20 +62,20 @@ export function SMIFeed() {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     cursor: 'pointer',
-                    background: 'rgba(0,0,0,0.02)',
-                    borderBottom: isOpen ? '1px solid rgba(0,0,0,0.08)' : 'none',
+                    background: 'rgba(255,255,255,0.03)',
+                    borderBottom: isOpen ? '1px solid rgba(255,255,255,0.1)' : 'none',
                     minHeight: '56px'
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <span style={{ fontSize: '20px' }}>📰</span>
-                    <span style={{ fontWeight: 600, fontSize: '15px', color: '#1a1a1a' }}>СМИ обзор</span>
+                    <span style={{ fontWeight: 600, fontSize: '15px', color: 'white' }}>СМИ обзор</span>
                 </div>
                 <button
                     style={{
                         background: 'transparent',
                         border: 'none',
-                        color: '#666666',
+                        color: '#94a3b8',
                         cursor: 'pointer',
                         padding: '8px',
                         minWidth: '44px',
@@ -100,49 +103,32 @@ export function SMIFeed() {
                         <div
                             key={item.id}
                             style={{
-                                marginBottom: '12px',
-                                padding: '16px',
-                                background: item.sentiment === 'positive'
-                                    ? 'rgba(22, 163, 74, 0.04)'
-                                    : item.sentiment === 'negative'
-                                        ? 'rgba(220, 38, 38, 0.04)'
-                                        : 'rgba(0,0,0,0.02)',
-                                borderRadius: '8px',
-                                border: `1px solid ${item.sentiment === 'positive'
-                                    ? 'rgba(22, 163, 74, 0.15)'
-                                    : item.sentiment === 'negative'
-                                        ? 'rgba(220, 38, 38, 0.15)'
-                                        : 'rgba(0,0,0,0.08)'
-                                    }`
+                                marginBottom: '16px',
                             }}
                         >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                                <span style={{ fontSize: '14px' }}>{item.sourceIcon}</span>
+                            <div style={{ display: 'flex', gap: '6px', marginBottom: '4px' }}>
                                 <span style={{
-                                    fontSize: '12px',
+                                    background: item.sentiment === 'positive' ? '#22c55e' : item.sentiment === 'negative' ? '#ef4444' : '#eab308',
+                                    fontSize: '9px',
+                                    padding: '2px 6px',
+                                    borderRadius: '4px',
                                     fontWeight: 700,
-                                    color: '#b8860b'
-                                }}>{item.source}</span>
-                                <span style={{ fontSize: '11px', color: '#666666' }}>{item.date}</span>
+                                    color: 'white',
+                                    textTransform: 'uppercase'
+                                }}>
+                                    {item.source}
+                                </span>
+                                <span style={{ color: '#94a3b8', fontSize: '10px' }}>{item.date}</span>
                             </div>
-                            <div style={{
-                                fontSize: '14px',
-                                fontWeight: 600,
-                                marginBottom: '8px',
-                                lineHeight: 1.4,
-                                color: '#1a1a1a'
-                            }}>
-                                {item.title}
-                            </div>
-                            <div style={{
-                                fontSize: '13px',
-                                color: '#666666',
-                                lineHeight: 1.6
-                            }}>
+                            <h4 style={{ margin: '0 0 4px', fontSize: '13px', fontWeight: 600, color: 'white' }}>{item.title}</h4>
+                            <p style={{ margin: 0, fontSize: '11px', color: '#cbd5e1', lineHeight: 1.4 }}>
                                 {item.excerpt}
-                            </div>
+                            </p>
                         </div>
                     ))}
+                    <div style={{ fontSize: '10px', color: '#64748b', fontStyle: 'italic', marginTop: '12px' }}>
+                        Агрегатор новостей EstateAnalytics
+                    </div>
                 </div>
             )}
         </div>
