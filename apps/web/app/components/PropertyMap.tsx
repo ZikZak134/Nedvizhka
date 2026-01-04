@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import 'leaflet/dist/leaflet.css';
+import maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 // Types
 interface Property {
@@ -61,10 +62,10 @@ const getPriceColor = (price: number): string => {
 };
 
 const getMarkerRadius = (price: number): number => {
-    if (price >= 100_000_000) return 15;
-    if (price >= 50_000_000) return 12;
-    if (price >= 30_000_000) return 10;
-    return 8;
+    if (price >= 100_000_000) return 8; // Smaller for MapLibre circle-radius (pixels)
+    if (price >= 50_000_000) return 7;
+    if (price >= 30_000_000) return 6;
+    return 5;
 };
 
 const formatPrice = (price: number): string => {
@@ -127,84 +128,118 @@ export function PropertyMap({ height = '500px', showHeatmap = true, onPropertyCl
         }
     }, [properties]);
 
-    // Initialize Leaflet map (manual approach - avoids react-leaflet issues)
+    // Initialize MapLibre map
     useEffect(() => {
         if (!mounted || loading || !mapRef.current) return;
 
         const initMap = async () => {
-            const L = (await import('leaflet')).default;
-
             // Clean up any existing map
-            const container = mapRef.current as any;
-            if (container && (container._leaflet_id || container.childElementCount > 0)) {
-                if (mapInstanceRef.current) {
-                    try { mapInstanceRef.current.remove(); } catch (e) { }
-                    mapInstanceRef.current = null;
-                }
-                container._leaflet_id = null;
-                container.innerHTML = '';
+            if (mapInstanceRef.current) {
+                if(mapInstanceRef.current.remove) mapInstanceRef.current.remove();
+                mapInstanceRef.current = null;
             }
+             if (mapRef.current) mapRef.current.innerHTML = '';
 
-            // Create map
-            const map = L.map(mapRef.current!, {
-                center: [43.585, 39.720],
-                zoom: 14,
-                zoomControl: true,
+            const map = new maplibregl.Map({
+                container: mapRef.current,
+                style: {
+                    version: 8,
+                    sources: {
+                        'osm': {
+                            type: 'raster',
+                            tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+                            tileSize: 256,
+                            attribution: '&copy; OpenStreetMap Contributors'
+                        }
+                    },
+                    layers: [{
+                        id: 'simple-tiles',
+                        type: 'raster',
+                        source: 'osm',
+                        minzoom: 0,
+                        maxzoom: 22
+                    }]
+                },
+                center: [39.720, 43.585],
+                zoom: 13,
+                attributionControl: true
             });
             mapInstanceRef.current = map;
 
-            // Add tile layer
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(map);
+            map.on('load', () => {
+                if (data?.features) {
+                     // Add source
+                    map.addSource('properties', {
+                        type: 'geojson',
+                        data: data as any
+                    });
 
-            // Add markers
-            if (data?.features) {
-                data.features.forEach((feature, idx) => {
-                    const [lng, lat] = feature.geometry.coordinates;
-                    const props = feature.properties;
+                    // Add circle layer
+                    map.addLayer({
+                        id: 'property-circles',
+                        type: 'circle',
+                        source: 'properties',
+                        paint: {
+                            'circle-radius': [
+                                'interpolate', ['linear'], ['get', 'price'],
+                                15000000, 5,
+                                100000000, 10
+                            ],
+                            'circle-color': [
+                                'step', ['get', 'price'],
+                                '#3b82f6', 15000000,
+                                '#22c55e', 30000000,
+                                '#eab308', 50000000,
+                                '#f97316', 100000000,
+                                '#ef4444'
+                            ],
+                            'circle-stroke-width': 1,
+                            'circle-stroke-color': '#fff',
+                            'circle-opacity': 0.8
+                        }
+                    });
 
-                    const marker = L.circleMarker([lat, lng], {
-                        radius: getMarkerRadius(props.price),
-                        fillColor: getPriceColor(props.price),
-                        color: '#fff',
-                        weight: 2,
-                        opacity: 1,
-                        fillOpacity: 0.8,
-                    }).addTo(map);
+                    // Popups
+                    map.on('click', 'property-circles', (e) => {
+                        const coordinates = (e.features![0].geometry as any).coordinates.slice();
+                        const props = e.features![0].properties;
 
-                    // Popup
-                    marker.bindPopup(`
-                        <div style="min-width: 200px;">
-                            <h4 style="margin: 0 0 8px; font-size: 14px; font-weight: 700; color: var(--navy-deep);">${props.title}</h4>
-                            <p style="margin: 0 0 4px; font-size: 12px; color: var(--gray-700);">📍 ${props.address}</p>
-                            <div style="display: flex; gap: 12px; margin: 8px 0;">
-                                <div>
-                                    <div style="font-size: 18px; font-weight: 700; color: ${getPriceColor(props.price)};">${formatPrice(props.price)} ₽</div>
-                                    <div style="font-size: 11px; color: var(--gray-600); font-weight: 500;">Цена</div>
+                        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                        }
+
+                        new maplibregl.Popup()
+                            .setLngLat(coordinates)
+                            .setHTML(`
+                                <div style="min-width: 200px; color: #000;">
+                                    <h4 style="margin: 0 0 8px; font-size: 14px; font-weight: 700; color: #0f172a;">${props.title}</h4>
+                                    <p style="margin: 0 0 4px; font-size: 12px; color: #64748b;">📍 ${props.address}</p>
+                                    <div style="font-weight: 700; margin-top: 4px;">${formatPrice(props.price)} ₽</div>
+                                    <a href="/properties/${props.id}" style="display: block; margin-top: 8px; padding: 6px; background: #3b82f6; color: #fff; border-radius: 4px; text-decoration: none; text-align: center; font-size: 12px;">Подробнее</a>
                                 </div>
-                                <div>
-                                    <div style="font-size: 14px; font-weight: 600; color: var(--navy-deep);">${formatPrice(props.price_per_sqm)} ₽/м²</div>
-                                    <div style="font-size: 11px; color: var(--gray-600); font-weight: 500;">За м²</div>
-                                </div>
-                            </div>
-                            <a href="/properties/${props.id}" style="display: block; margin-top: 8px; padding: 6px 12px; background: #3b82f6; color: #fff; border-radius: 6px; text-align: center; font-size: 12px; text-decoration: none;">Подробнее →</a>
-                        </div>
-                    `);
-
-                    // Click handler
-                    if (onPropertyClick) {
-                        marker.on('click', () => onPropertyClick(props.id));
-                    }
-                });
-            }
+                            `)
+                            .addTo(map);
+                        
+                        if (onPropertyClick) {
+                            onPropertyClick(props.id);
+                        }
+                    });
+                     // Change cursor on hover
+                    map.on('mouseenter', 'property-circles', () => {
+                        map.getCanvas().style.cursor = 'pointer';
+                    });
+                    map.on('mouseleave', 'property-circles', () => {
+                        map.getCanvas().style.cursor = '';
+                    });
+                }
+            });
         };
 
         initMap();
 
         return () => {
             if (mapInstanceRef.current) {
-                try { mapInstanceRef.current.remove(); } catch (e) { }
+                if(mapInstanceRef.current.remove) mapInstanceRef.current.remove();
                 mapInstanceRef.current = null;
             }
         };
@@ -236,15 +271,13 @@ export function PropertyMap({ height = '500px', showHeatmap = true, onPropertyCl
                 position: 'absolute',
                 bottom: '20px',
                 right: '20px',
-                background: 'rgba(15, 23, 42, 0.9)',
-                backdropFilter: 'blur(8px)',
+                background: 'rgba(255, 255, 255, 0.9)',
                 padding: '12px',
-                borderRadius: '12px',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                boxShadow: 'var(--shadow-xl)',
-                color: 'var(--white)',
-                zIndex: 500,
+                borderRadius: '8px',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                zIndex: 10,
                 fontSize: '12px',
+                color: '#333'
             }}>
                 <div style={{ fontWeight: 600, marginBottom: '8px' }}>Цена объекта</div>
                 {[
@@ -260,35 +293,11 @@ export function PropertyMap({ height = '500px', showHeatmap = true, onPropertyCl
                             height: '12px',
                             borderRadius: '50%',
                             background: item.color,
-                            border: '1px solid #fff',
-                            boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
                         }} />
                         <span>{item.label} ₽</span>
                     </div>
                 ))}
             </div>
-
-            {/* Stats overlay */}
-            {data?.metadata && (
-                <div style={{
-                    position: 'absolute',
-                    top: '10px',
-                    left: '10px',
-                    background: 'rgba(15, 23, 42, 0.9)',
-                    backdropFilter: 'blur(8px)',
-                    padding: '10px 14px',
-                    borderRadius: '12px',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    boxShadow: 'var(--shadow-xl)',
-                    color: 'var(--white)',
-                    zIndex: 500,
-                    fontSize: '12px',
-                }}>
-                    <div style={{ fontWeight: 600 }}>📊 {data.metadata.total} объектов</div>
-                    <div style={{ color: 'var(--gray-300)' }}>Ср. цена: {formatPrice(data.metadata.avg_price)} ₽</div>
-                    <div style={{ color: 'var(--gray-300)' }}>Ср. цена/м²: {formatPrice(data.metadata.avg_price_per_sqm)} ₽</div>
-                </div>
-            )}
         </div>
     );
 }

@@ -9,20 +9,13 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@types/leaflet": "^1.9.21",
-        "@types/mapbox-gl": "^3.4.1",
-        "@types/react-map-gl": "^6.1.7",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.1",
         "deck.gl": "^9.2.5",
-        "leaflet": "^1.9.4",
         "lucide-react": "^0.454.0",
-        "mapbox-gl": "^3.17.0",
         "next": "^16.1.1",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
-        "react-leaflet": "^4.2.1",
-        "react-map-gl": "^7.1.7",
         "tailwind-merge": "^2.5.4"
     },
     "devDependencies": {
