@@ -91,7 +91,7 @@ export function PropertySurroundings({ propertyId }: PropertySurroundingsProps) 
 
             {/* Особенности локации */}
             <div className="lux-surroundings-features">
-                <div className="lux-surroundings-label" style={{ color: '#7c3aed' }}>
+                <div className="lux-surroundings-label lux-surroundings-label--features">
                     ✨ Особенности
                 </div>
                 <div className="lux-surroundings-text">
@@ -104,28 +104,32 @@ export function PropertySurroundings({ propertyId }: PropertySurroundingsProps) 
 }
 
 function EnvironmentRow({ item }: { item: EnvironmentScore }) {
-    const getScoreColor = (score: number) => {
-        if (score >= 4) return '#16a34a';
-        if (score >= 3) return '#ca8a04';
-        return '#ea580c';
+    const getScoreClass = (score: number) => {
+        if (score >= 4) return 'lux-dot-success';
+        if (score >= 3) return 'lux-dot-warning';
+        return 'lux-dot-danger';
     };
+    const scoreClass = getScoreClass(item.score);
 
     return (
-        <div className="lux-env-row">
+        <div className="lux-env-row" style={{
+            background: 'rgba(255,255,255,0.05)',
+            padding: '12px',
+            borderRadius: '12px',
+            marginBottom: '8px',
+            border: '1px solid rgba(255,255,255,0.1)'
+        }}>
             <div className="lux-env-row-left">
                 <span className="lux-env-icon">{item.icon}</span>
                 <div>
-                    <div className="lux-env-name">{item.name}</div>
-                    <div className="lux-env-desc">{item.description}</div>
+                    <div className="lux-env-name" style={{ color: '#fff' }}>{item.name}</div>
+                    <div className="lux-env-desc" style={{ color: 'rgba(255,255,255,0.6)' }}>{item.description}</div>
                 </div>
             </div>
             <div className="lux-env-dots">
                 {[1, 2, 3, 4, 5].map(n => (
                     <div key={n}
-                        className="lux-env-dot"
-                        style={{
-                            background: n <= item.score ? getScoreColor(item.score) : 'rgba(0,0,0,0.1)'
-                        }}
+                        className={`lux-env-dot ${n <= item.score ? scoreClass : ''}`}
                     />
                 ))}
             </div>

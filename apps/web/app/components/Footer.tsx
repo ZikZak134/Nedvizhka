@@ -1,96 +1,136 @@
+'use client';
+
 import { NAV_LINKS, UTILITY_LINKS } from '../constants/routes';
 
 export function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="page-footer" style={{
-            background: 'linear-gradient(to bottom, transparent, var(--navy-deep))',
-            paddingTop: 'var(--space-2xl)',
-            borderTop: '1px solid rgba(212, 175, 55, 0.1)'
+        <footer style={{
+            background: '#0a0a0a',
+            color: '#fff',
+            paddingTop: '80px',
+            borderTop: '1px solid rgba(212, 175, 55, 0.2)',
+            fontFamily: 'var(--font-sans)',
         }}>
-            <div className="container">
-                <div className="grid md:grid-cols-4 gap-12 mb-16">
-                    {/* Brand Section */}
-                    <div className="col-span-full md:col-span-1">
-                        <div className="flex items-center gap-3 mb-6">
+            <div className="lux-container">
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                    gap: '40px',
+                    marginBottom: '60px'
+                }}>
+                    {/* Brand */}
+                    <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
                             <div style={{
-                                width: '32px',
-                                height: '32px',
-                                background: 'var(--gold)',
+                                width: '40px', height: '40px',
+                                background: 'linear-gradient(135deg, #d4af37, #b8860b)',
                                 borderRadius: '8px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: 'var(--navy-deep)',
-                                fontWeight: 'bold'
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                color: '#000', fontWeight: 'bold', fontSize: '18px',
+                                fontFamily: 'var(--font-serif)'
                             }}>EA</div>
-                            <span className="heading-5" style={{ margin: 0, letterSpacing: '0.05em' }}>EstateAnalytics</span>
+                            <span style={{ fontSize: '24px', fontWeight: 600, letterSpacing: '-0.02em', fontFamily: 'var(--font-serif)' }}>EstateAnalytics</span>
                         </div>
-                        <p className="body-small" style={{ opacity: 0.8, lineHeight: 1.6 }}>
-                            Интеллектуальный анализ и поиск элитной недвижимости в Сочи. Экспертный подход к вашим инвестициям.
+                        <p style={{ color: '#9ca3af', lineHeight: 1.6, fontSize: '14px', maxWidth: '300px' }}>
+                            Интеллектуальная платформа для поиска и анализа премиальной недвижимости в Сочи.
+                            Инсайты рынка, точные прогнозы и эксклюзивные предложения.
                         </p>
                     </div>
 
                     {/* Navigation */}
                     <div>
-                        <h4 className="label mb-6" style={{ color: 'var(--gold)' }}>Навигация</h4>
-                        <ul className="stack stack-sm">
-                            {NAV_LINKS.map(link => (
-                                <li key={link.href}>
-                                    <a href={link.href} className="link body-small hover:text-gold transition-colors">
-                                        {link.label}
+                        <h4 style={{ color: '#d4af37', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '24px' }}>
+                            Навигация
+                        </h4>
+                        <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                            {['Карта объектов', 'Аналитика', 'Районы', 'Блог'].map(item => (
+                                <li key={item}>
+                                    <a href="#" style={{ color: '#d1d5db', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
+                                        onMouseOver={(e) => e.currentTarget.style.color = '#d4af37'}
+                                        onMouseOut={(e) => e.currentTarget.style.color = '#d1d5db'}>
+                                        {item}
                                     </a>
                                 </li>
                             ))}
                         </ul>
                     </div>
 
-                    {/* Important pages */}
+                    {/* Contacts */}
                     <div>
-                        <h4 className="label mb-6" style={{ color: 'var(--gold)' }}>Компания</h4>
-                        <ul className="stack stack-sm">
-                            {UTILITY_LINKS.map(link => (
-                                <li key={link.href}>
-                                    <a href={link.href} className="link body-small hover:text-gold transition-colors">
-                                        {link.label}
-                                    </a>
-                                </li>
-                            ))}
-                            <li><a href="mailto:info@estate-analytics.ru" className="link body-small hover:text-gold transition-colors">Связаться</a></li>
+                        <h4 style={{ color: '#d4af37', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '24px' }}>
+                            Контакты
+                        </h4>
+                        <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                            <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <span style={{ color: '#d4af37' }}>📍</span>
+                                <span style={{ color: '#e5e7eb', fontSize: '14px' }}>Сочи, Курортный проспект, 59</span>
+                            </li>
+                            <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <span style={{ color: '#d4af37' }}>📞</span>
+                                <a href="tel:+79990000000" style={{ color: '#e5e7eb', fontSize: '14px', textDecoration: 'none' }}>+7 (999) 000-00-00</a>
+                            </li>
+                            <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <span style={{ color: '#d4af37' }}>✉️</span>
+                                <a href="mailto:vip@estate-analytics.ru" style={{ color: '#e5e7eb', fontSize: '14px', textDecoration: 'none' }}>vip@estate-analytics.ru</a>
+                            </li>
                         </ul>
                     </div>
 
-                    {/* Newsletter/Trust */}
+                    {/* Subscribe */}
                     <div>
-                        <h4 className="label mb-6" style={{ color: 'var(--gold)' }}>Подписка</h4>
-                        <p className="body-xs mb-4" style={{ color: 'var(--gray-400)' }}>Получайте закрытые отчеты о рынке недвижимости раз в месяц.</p>
-                        <div className="flex gap-2">
+                        <h4 style={{ color: '#d4af37', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '24px' }}>
+                            Дайджест
+                        </h4>
+                        <p style={{ color: '#9ca3af', fontSize: '13px', marginBottom: '16px' }}>
+                            Получайте закрытые отчеты о росте цен раз в месяц.
+                        </p>
+                        <div style={{ display: 'flex', gap: '8px' }}>
                             <input
                                 type="email"
-                                placeholder="Email"
+                                placeholder="Ваш Email"
                                 style={{
                                     background: 'rgba(255,255,255,0.05)',
                                     border: '1px solid rgba(255,255,255,0.1)',
                                     borderRadius: '8px',
-                                    padding: '8px 12px',
-                                    fontSize: '12px',
+                                    padding: '10px 14px',
+                                    fontSize: '13px',
                                     color: 'white',
-                                    width: '100%'
+                                    flex: 1,
+                                    outline: 'none'
                                 }}
                             />
-                            <button className="btn btn-primary" style={{ padding: '8px 16px', fontSize: '12px' }}>→</button>
+                            <button style={{
+                                background: '#d4af37',
+                                color: '#000',
+                                border: 'none',
+                                borderRadius: '8px',
+                                padding: '0 16px',
+                                cursor: 'pointer',
+                                fontWeight: 700
+                            }}>→</button>
                         </div>
                     </div>
                 </div>
 
-                <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
-                    <p className="caption" style={{ color: 'var(--gray-500)' }}>
-                        © {currentYear} EstateAnalytics. Проект группы компаний Elite.
-                    </p>
-                    <div className="flex gap-6">
-                        <a href="/privacy" className="link caption hover:text-gold">Конфиденциальность</a>
-                        <a href="/terms" className="link caption hover:text-gold">Условия</a>
+                <div style={{
+                    borderTop: '1px solid rgba(255,255,255,0.1)',
+                    padding: '32px 0 40px',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: '20px',
+                    fontSize: '12px',
+                    color: '#6b7280'
+                }}>
+                    <div>
+                        © {currentYear} EstateAnalytics. Premium Real Estate Intelligence.
+                    </div>
+                    <div style={{ display: 'flex', gap: '24px' }}>
+                        <a href="#" style={{ color: '#6b7280', textDecoration: 'none' }}>Конфиденциальность</a>
+                        <a href="#" style={{ color: '#6b7280', textDecoration: 'none' }}>Условия использования</a>
                     </div>
                 </div>
             </div>

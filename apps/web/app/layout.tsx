@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import './styles/elite-theme.css';
+import './styles/luxury-property.css';
 import './styles/luxury-typography.css';
 import { ThemeProvider } from './providers/ThemeProvider';
 import { GlowTrailOverlay } from './components/effects/GlowTrailOverlay';

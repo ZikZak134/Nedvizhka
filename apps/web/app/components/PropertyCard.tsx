@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { getMockImage } from '../utils/mockImages';
 
 interface Property {
     id: string;
@@ -34,10 +35,13 @@ export function PropertyCard({ property }: PropertyCardProps) {
             {/* Image */}
             <div className="relative overflow-hidden">
                 <img
-                    src={property.images?.[0] || placeholderImage}
+                    src={property.images?.[0] || getMockImage(property.id)}
                     alt={property.title}
                     className="card-image w-full h-[200px] object-cover transition-transform duration-500 group-hover:scale-110"
                     loading="lazy"
+                    onError={(e) => {
+                        e.currentTarget.src = getMockImage(property.id + '-fallback');
+                    }}
                 />
                 <span className="badge badge-neutral" style={{ position: 'absolute', top: '12px', left: '12px' }}>
                     {property.source === 'cian' ? 'ЦИАН' :

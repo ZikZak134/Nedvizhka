@@ -41,59 +41,35 @@ const MOCK_PROJECTS: DevelopmentProject[] = [
 
 export function PropertyPotential({ propertyId, currentGrowth = 127 }: PropertyPotentialProps) {
     return (
-        <div className="property-potential fade-in">
+        <div className="property-potential fade-in lux-potential-container">
             {/* Текущий рейтинг */}
-            <div style={{
-                background: 'rgba(22, 163, 74, 0.08)',
-                padding: '20px',
-                borderRadius: '8px',
-                marginBottom: '24px',
-                border: '1px solid rgba(22, 163, 74, 0.15)',
-                textAlign: 'center'
-            }}>
-                <div style={{ color: '#666666', fontSize: '11px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>
+            <div className="lux-potential-card lux-potential-card--primary">
+                <div className="lux-potential-label">
                     Инвестиционный потенциал
                 </div>
-                <div style={{
-                    color: '#16a34a',
-                    fontSize: '42px',
-                    fontWeight: 700,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
-                    fontFamily: 'var(--font-serif, Georgia, serif)'
-                }}>
-                    <span style={{ fontSize: '32px' }}>📈</span>
+                <div className="lux-potential-score">
+                    <span className="lux-potential-score-icon">📈</span>
                     +{currentGrowth}%
                 </div>
-                <div style={{ color: '#666666', fontSize: '12px', marginTop: '6px' }}>
+                <div className="lux-potential-subtext">
                     Прогноз роста на 10 лет
                 </div>
             </div>
 
             {/* Прогноз по периодам */}
-            <div style={{ marginBottom: '28px' }}>
-                <h4 style={{ color: '#1a1a1a', fontSize: '13px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '16px' }}>
+            <div className="lux-potential-section">
+                <h4 className="lux-potential-title">
                     🎯 Прогноз роста стоимости
                 </h4>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
+                <div className="lux-potential-grid">
                     {MOCK_FORECASTS.map((forecast, idx) => (
-                        <div key={idx} style={{
-                            background: '#ffffff',
-                            padding: '16px',
-                            borderRadius: '8px',
-                            border: '1px solid rgba(0,0,0,0.08)'
-                        }}>
-                            <div style={{ color: '#666666', fontSize: '12px', marginBottom: '6px' }}>
+                        <div key={idx} className="lux-potential-item">
+                            <div className="lux-potential-item-period">
                                 {forecast.period}
                             </div>
-                            <div style={{
-                                color: forecast.growth >= 50 ? '#16a34a' : forecast.growth >= 20 ? '#65a30d' : '#ca8a04',
-                                fontSize: '22px',
-                                fontWeight: 700,
-                                fontFamily: 'var(--font-serif, Georgia, serif)'
-                            }}>
+                            <div className={`lux-potential-item-growth ${forecast.growth >= 50 ? 'growth-high' :
+                                forecast.growth >= 20 ? 'growth-med' : 'growth-low'
+                                }`}>
                                 +{forecast.growth}%
                             </div>
                             <ConfidenceBadge level={forecast.confidence} />
@@ -103,11 +79,11 @@ export function PropertyPotential({ propertyId, currentGrowth = 127 }: PropertyP
             </div>
 
             {/* Проекты развития */}
-            <div style={{ marginBottom: '24px' }}>
-                <h4 style={{ color: '#1a1a1a', fontSize: '13px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '16px' }}>
+            <div className="lux-potential-section">
+                <h4 className="lux-potential-title">
                     🏗️ Развитие района
                 </h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div className="lux-potential-list">
                     {MOCK_PROJECTS.map((project, idx) => (
                         <ProjectRow key={idx} project={project} />
                     ))}
@@ -115,16 +91,11 @@ export function PropertyPotential({ propertyId, currentGrowth = 127 }: PropertyP
             </div>
 
             {/* Факторы роста */}
-            <div style={{
-                background: 'rgba(37, 99, 235, 0.06)',
-                padding: '18px',
-                borderRadius: '8px',
-                border: '1px solid rgba(37, 99, 235, 0.12)'
-            }}>
-                <div style={{ color: '#2563eb', fontSize: '12px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '12px' }}>
+            <div className="lux-potential-card lux-potential-card--factors">
+                <div className="lux-potential-factors-title">
                     💡 Ключевые факторы роста
                 </div>
-                <ul style={{ color: '#333333', fontSize: '14px', margin: 0, paddingLeft: '20px', lineHeight: 1.8 }}>
+                <ul className="lux-potential-factors-list">
                     <li>Развитие курортной инфраструктуры</li>
                     <li>Ограниченное предложение на первой линии</li>
                     <li>Рост туристического потока</li>
@@ -136,66 +107,39 @@ export function PropertyPotential({ propertyId, currentGrowth = 127 }: PropertyP
 
 function ConfidenceBadge({ level }: { level: 'high' | 'medium' | 'low' }) {
     const colors = {
-        high: { bg: 'rgba(22, 163, 74, 0.1)', text: '#16a34a', label: '●●●' },
-        medium: { bg: 'rgba(202, 138, 4, 0.1)', text: '#ca8a04', label: '●●○' },
-        low: { bg: 'rgba(220, 38, 38, 0.1)', text: '#dc2626', label: '●○○' },
+        high: { label: '●●●', className: 'confidence-high' },
+        medium: { label: '●●○', className: 'confidence-medium' },
+        low: { label: '●○○', className: 'confidence-low' },
     };
     const style = colors[level];
 
     return (
-        <span style={{
-            background: style.bg,
-            color: style.text,
-            padding: '3px 8px',
-            borderRadius: '4px',
-            fontSize: '11px',
-            fontWeight: 600,
-            marginTop: '6px',
-            display: 'inline-block'
-        }}>
+        <span className={`lux-confidence-badge ${style.className}`}>
             {style.label}
         </span>
     );
 }
 
 function ProjectRow({ project }: { project: DevelopmentProject }) {
-    const statusColors = {
-        planned: { bg: 'rgba(37, 99, 235, 0.1)', text: '#2563eb', label: 'Планируется' },
-        in_progress: { bg: 'rgba(202, 138, 4, 0.1)', text: '#ca8a04', label: 'В процессе' },
-        completed: { bg: 'rgba(22, 163, 74, 0.1)', text: '#16a34a', label: 'Завершён' },
+    const statusMap = {
+        planned: { label: 'Планируется', className: 'status-planned' },
+        in_progress: { label: 'В процессе', className: 'status-progress' },
+        completed: { label: 'Завершён', className: 'status-completed' },
     };
-    const status = statusColors[project.status];
+    const status = statusMap[project.status];
 
     return (
-        <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '14px 16px',
-            background: '#ffffff',
-            borderRadius: '8px',
-            border: '1px solid rgba(0,0,0,0.08)'
-        }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{
-                    fontSize: '16px',
-                    color: project.impact === 'positive' ? '#16a34a' : '#666666'
-                }}>
+        <div className="lux-project-row">
+            <div className="lux-project-info">
+                <span className={`lux-project-icon ${project.impact}`}>
                     {project.impact === 'positive' ? '↗️' : '➡️'}
                 </span>
                 <div>
-                    <div style={{ color: '#1a1a1a', fontSize: '14px', fontWeight: 500 }}>{project.name}</div>
-                    <div style={{ color: '#666666', fontSize: '12px' }}>{project.year}</div>
+                    <div className="lux-project-name">{project.name}</div>
+                    <div className="lux-project-year">{project.year}</div>
                 </div>
             </div>
-            <span style={{
-                background: status.bg,
-                color: status.text,
-                padding: '5px 10px',
-                borderRadius: '6px',
-                fontSize: '11px',
-                fontWeight: 600
-            }}>
+            <span className={`lux-project-status ${status.className}`}>
                 {status.label}
             </span>
         </div>

@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
+import { LeadCaptureModal } from '../../components/LeadCaptureModal';
 import { getMockImage } from '../../utils/mockImages';
 import { getMockLocation } from '../../utils/mockLocations';
 import '../../styles/luxury-property.css';
@@ -110,6 +111,9 @@ export default function PropertyDetailPage() {
                 const res = await fetch(`${apiUrl}/api/v1/properties/${params.id}`);
                 if (!res.ok) throw new Error('Property not found');
                 const data = await res.json();
+                if (!data.images || data.images.length === 0) {
+                    data.images = [getMockImage(data.id), getMockImage(data.id + '-2'), getMockImage(data.id + '-3')];
+                }
                 setProperty(data);
             } catch {
                 // Mock data fallback
@@ -273,13 +277,30 @@ export default function PropertyDetailPage() {
     const images = property.images.length > 0 ? property.images : [getMockImage(0)];
     const currentIndex = getCurrentIndex();
 
+    // Lead Capture State
+    const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
+    const [leadMode, setLeadMode] = useState<'showing' | 'report' | 'question'>('showing');
+
+    const openLeadModal = (mode: 'showing' | 'report' | 'question') => {
+        setLeadMode(mode);
+        setIsLeadModalOpen(true);
+    };
+
     return (
         <div className="lux-page">
+            <LeadCaptureModal
+                isOpen={isLeadModalOpen}
+                onClose={() => setIsLeadModalOpen(false)}
+                mode={leadMode}
+                propertyTitle={property.title}
+            />
+
             {/* Header */}
             <div className="lux-header-wrapper">
                 <Header />
             </div>
 
+            {/* ... Existing Hero ... */}
             {/* ═══════════════════════════════════════════════════════════════════
                 HERO SECTION — Full-Screen Cinematic
             ═══════════════════════════════════════════════════════════════════ */}
@@ -304,6 +325,17 @@ export default function PropertyDetailPage() {
                     </p>
                     <div className="lux-hero-price">{formatPrice(property.price)}</div>
                     <div className="lux-hero-price-label">Стоимость объекта</div>
+                    {/* Ask Owner Link */}
+                    <button
+                        onClick={() => openLeadModal('question')}
+                        style={{
+                            background: 'transparent', border: 'none', color: '#d4af37',
+                            textDecoration: 'underline', marginTop: '12px', fontSize: '13px',
+                            cursor: 'pointer', fontFamily: 'var(--font-sans)'
+                        }}
+                    >
+                        💬 Задать вопрос представителю владельца
+                    </button>
                 </div>
 
                 <div className="lux-scroll-hint">
@@ -312,18 +344,16 @@ export default function PropertyDetailPage() {
                 </div>
             </section>
 
-            {/* ═══════════════════════════════════════════════════════════════════
-                NAVIGATION BAR — Breadcrumbs + Property Navigation
-            ═══════════════════════════════════════════════════════════════════ */}
+            {/* ... Existing Nav & Facts ... */}
             <nav className="lux-nav-bar">
                 <div className="lux-container">
                     <div className="lux-nav-bar-inner">
                         <div className="lux-breadcrumbs">
-                            <a href="/map" className="lux-breadcrumb-back">
-                                ← Карта
+                            <a href="/" className="lux-breadcrumb-back">
+                                ← На главную
                             </a>
                             <span className="lux-breadcrumb-sep">/</span>
-                            <a href={`/map?district=${property.district}`} className="lux-breadcrumb-link">
+                            <a href={`/?district=${property.district}`} className="lux-breadcrumb-link">
                                 {property.district || 'Район'}
                             </a>
                             <span className="lux-breadcrumb-sep">/</span>
@@ -354,9 +384,6 @@ export default function PropertyDetailPage() {
                 </div>
             </nav>
 
-            {/* ═══════════════════════════════════════════════════════════════════
-                KEY FACTS — Minimal Data Display
-            ═══════════════════════════════════════════════════════════════════ */}
             <section className="lux-facts">
                 <div className="lux-container">
                     <div className="lux-facts-grid">
@@ -389,9 +416,6 @@ export default function PropertyDetailPage() {
                 </div>
             </section>
 
-            {/* ═══════════════════════════════════════════════════════════════════
-                GALLERY — Editorial Layout
-            ═══════════════════════════════════════════════════════════════════ */}
             <section className="lux-gallery">
                 <div className="lux-container">
                     <div className="lux-gallery-main">
@@ -412,9 +436,6 @@ export default function PropertyDetailPage() {
                 </div>
             </section>
 
-            {/* ═══════════════════════════════════════════════════════════════════
-                ABOUT — Editorial Description
-            ═══════════════════════════════════════════════════════════════════ */}
             <section className="lux-about">
                 <div className="lux-container lux-container--narrow">
                     <div className="lux-section-header">
@@ -431,9 +452,6 @@ export default function PropertyDetailPage() {
                 </div>
             </section>
 
-            {/* ═══════════════════════════════════════════════════════════════════
-                FEATURES — Clean Two-Column List
-            ═══════════════════════════════════════════════════════════════════ */}
             <section className="lux-features">
                 <div className="lux-container">
                     <div className="lux-section-header">
@@ -487,9 +505,6 @@ export default function PropertyDetailPage() {
                 </div>
             </section>
 
-            {/* ═══════════════════════════════════════════════════════════════════
-                OWNER'S INSIGHT — Quote Section
-            ═══════════════════════════════════════════════════════════════════ */}
             <section className="lux-owner">
                 <div className="lux-container">
                     <div className="lux-owner-card">
@@ -511,9 +526,6 @@ export default function PropertyDetailPage() {
                 </div>
             </section>
 
-            {/* ═══════════════════════════════════════════════════════════════════
-                INVESTMENT — Clean Data Visualization
-            ═══════════════════════════════════════════════════════════════════ */}
             <section className="lux-investment">
                 <div className="lux-container">
                     <div className="lux-section-header">
@@ -555,9 +567,6 @@ export default function PropertyDetailPage() {
                 </div>
             </section>
 
-            {/* ═══════════════════════════════════════════════════════════════════
-                TABS — Additional Information
-            ═══════════════════════════════════════════════════════════════════ */}
             <section className="lux-tabs">
                 <div className="lux-container">
                     <nav className="lux-tabs-nav">
@@ -596,9 +605,6 @@ export default function PropertyDetailPage() {
                 </div>
             </section>
 
-            {/* ═══════════════════════════════════════════════════════════════════
-                AGENT SECTION — Contact Card
-            ═══════════════════════════════════════════════════════════════════ */}
             <section className="lux-agent">
                 <div className="lux-container">
                     <div className="lux-agent-card">
@@ -610,10 +616,10 @@ export default function PropertyDetailPage() {
                             <div className="lux-agent-name">Анна Петрова</div>
                             <div className="lux-agent-role">Эксперт по премиальной недвижимости • 12 лет опыта</div>
                             <div className="lux-agent-actions">
-                                <button className="lux-btn lux-btn--primary">
-                                    Записаться на просмотр
+                                <button className="lux-btn lux-btn--primary" onClick={() => openLeadModal('showing')}>
+                                    🔑 Заказать показ
                                 </button>
-                                <button className="lux-btn lux-btn--secondary">
+                                <button className="lux-btn lux-btn--secondary" onClick={() => openLeadModal('question')}>
                                     Задать вопрос
                                 </button>
                             </div>
@@ -622,27 +628,22 @@ export default function PropertyDetailPage() {
                 </div>
             </section>
 
-            {/* ═══════════════════════════════════════════════════════════════════
-                CTA — Prominent Call to Action
-            ═══════════════════════════════════════════════════════════════════ */}
             <section className="lux-cta">
                 <div className="lux-container">
                     <h2 className="lux-cta-title">Готовы увидеть вживую?</h2>
                     <p className="lux-cta-text">Запишитесь на приватный просмотр и почувствуйте атмосферу лично</p>
                     <div className="lux-cta-actions">
-                        <button className="lux-btn lux-btn--primary">
-                            Назначить показ
+                        <button className="lux-btn lux-btn--primary" onClick={() => openLeadModal('showing')}>
+                            🔑 Назначить показ
                         </button>
-                        <button className="lux-btn lux-btn--secondary">
+                        <button className="lux-btn lux-btn--secondary" onClick={() => openLeadModal('question')}>
                             Связаться с экспертом
                         </button>
                     </div>
                 </div>
             </section>
 
-            {/* ═══════════════════════════════════════════════════════════════════
-                NEARBY PROPERTIES — Horizontal Scroll
-            ═══════════════════════════════════════════════════════════════════ */}
+            {/* ... Existing Nearby ... */}
             <section className="lux-nearby">
                 <div className="lux-container">
                     <div className="lux-section-header">
@@ -674,6 +675,43 @@ export default function PropertyDetailPage() {
                     </div>
                 </div>
             </section>
+
+            {/* STICKY FOOTER (Mobile) */}
+            <div className="lux-sticky-footer" style={{
+                position: 'fixed', bottom: 0, left: 0, right: 0,
+                background: '#0f172a', borderTop: '1px solid rgba(255,255,255,0.1)',
+                padding: '12px 24px', zIndex: 100, display: 'none' // Hidden by default, shown via CSS media query
+            }}>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                    <button
+                        onClick={() => openLeadModal('showing')}
+                        style={{
+                            flex: 2, padding: '14px', borderRadius: '12px',
+                            background: '#d4af37', border: 'none',
+                            color: '#000', fontWeight: 700, fontSize: '16px'
+                        }}
+                    >
+                        🔑 Заказать показ
+                    </button>
+                    <button
+                        onClick={() => openLeadModal('question')}
+                        style={{
+                            flex: 1, padding: '14px', borderRadius: '12px',
+                            background: 'rgba(255,255,255,0.1)', border: 'none',
+                            color: '#fff', fontWeight: 600, fontSize: '13px'
+                        }}
+                    >
+                        💬 Вопрос
+                    </button>
+                </div>
+            </div>
+
+            <style jsx>{`
+                @media (max-width: 768px) {
+                    .lux-sticky-footer { display: block !important; }
+                    .lux-agent, .lux-cta { padding-bottom: 80px; } /* Add padding for footer */
+                }
+            `}</style>
 
             <Footer />
         </div>

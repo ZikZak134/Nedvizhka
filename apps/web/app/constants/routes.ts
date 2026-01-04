@@ -7,7 +7,6 @@ export interface NavLink {
 export const NAV_LINKS: NavLink[] = [
     { href: '/', label: 'Главная', icon: '🏠' },
     { href: '/properties', label: 'Объекты', icon: '📋' },
-    { href: '/map', label: 'Карта', icon: '🗺️' },
     { href: '/complexes', label: 'ЖК', icon: '🏢' },
     { href: '/analytics', label: 'Аналитика', icon: '📊' },
 ];

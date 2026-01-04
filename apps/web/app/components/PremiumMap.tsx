@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 import districtData from '../data/sochi_districts.json';
+import { getMockImage } from '../utils/mockImages';
 
 // Lazy load heavy sidebar components
 const NewsFeed = dynamic(() => import('./NewsFeed').then(m => m.NewsFeed), { ssr: false });
@@ -182,30 +184,7 @@ const STATIC_DATA = [
     { id: 'm2', type: 'meteo', name: 'Метео: +18°C', lat: 43.680, lng: 40.210, description: 'Облачно, возможен дождь.' },
 ];
 
-const LUXURY_PROPERTY_IMAGES = [
-    'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80', // Modern Villa with Pool
-    'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80', // White Minimalist House
-    'https://images.unsplash.com/photo-1600596542815-60c37c65b567?auto=format&fit=crop&w=800&q=80', // Modern Glass Villa
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80', // Pool Deck
-    'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=800&q=80', // Luxury Living Room
-    'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=80', // Black Kitchen
-    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80', // Balcony View
-    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80', // Tropical Resort
-    'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=800&q=80', // Palm Tree Villa
-    'https://images.unsplash.com/photo-1580587771525-78b9dba3b91d?auto=format&fit=crop&w=800&q=80', // Classic Facade
-    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80', // Modern Stone House
-    'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80', // Cottage
-    'https://images.unsplash.com/photo-1576941089067-2de3c901e126?auto=format&fit=crop&w=800&q=80', // Sunny Home
-    'https://images.unsplash.com/photo-1598228723793-52759bba239c?auto=format&fit=crop&w=800&q=80', // Penthouse Interior
-    'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80', // Cozy Apartment
-    'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80', // Loft
-    'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80', // Blue Room
-    'https://images.unsplash.com/photo-1560184897-ae75f418493e?auto=format&fit=crop&w=800&q=80', // Golden Hour House
-    'https://images.unsplash.com/photo-1484154218962-a1c002085d2f?auto=format&fit=crop&w=800&q=80', // Airbnb Style
-    'https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?auto=format&fit=crop&w=800&q=80', // High Rise
-    'https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=800&q=80', // White Interior
-    'https://images.unsplash.com/photo-1502005229766-939760a58531?auto=format&fit=crop&w=800&q=80', // Grey Facade
-];
+
 
 // ============================================
 // Types
@@ -272,16 +251,7 @@ const formatPrice = (price: number): string => {
     return `${price} ₽`;
 };
 
-const getMockImage = (id: string | number): string => {
-    const strId = String(id);
-    let hash = 0;
-    for (let i = 0; i < strId.length; i++) {
-        hash = ((hash << 5) - hash) + strId.charCodeAt(i);
-        hash |= 0; // Convert to 32bit integer
-    }
-    const index = Math.abs(hash) % LUXURY_PROPERTY_IMAGES.length;
-    return LUXURY_PROPERTY_IMAGES[index];
-};
+
 
 import { getMockLocation } from '../utils/mockLocations';
 
@@ -290,6 +260,7 @@ import { getMockLocation } from '../utils/mockLocations';
 // ============================================
 
 export function PremiumMap({ height = '100%' }: PremiumMapProps) {
+    const router = useRouter();
     const mapRef = useRef<HTMLDivElement>(null);
     const mapInstanceRef = useRef<any>(null);
     const tileLayerRef = useRef<any>(null);
@@ -1003,7 +974,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
         return `
             <div style="padding: 12px; background: #0f172a; color: white; border-radius: 12px; min-width: 220px;">
                 <div style="margin-bottom: 12px; position: relative; height: 120px; border-radius: 8px; overflow: hidden;">
-                     <img src="${props.image || ''}" style="width: 100%; height: 100%; object-fit: cover;" />
+                     <img src="${props.image || getMockImage(props.id)}" style="width: 100%; height: 100%; object-fit: cover;" />
                      <div style="position: absolute; top: 6px; right: 6px; background: ${priceColor}; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700;">
                         ${props.growth_10y ? '+' + props.growth_10y + '%' : ''}
                      </div>
@@ -1086,6 +1057,33 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                             {item.label}
                         </button>
                     ))}
+
+                    {/* List Button */}
+                    <button
+                        onClick={() => router.push('/properties')}
+                        style={{
+                            padding: '8px 16px',
+                            borderRadius: '8px',
+                            border: 'none',
+                            fontSize: '12px',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            background: 'rgba(255,255,255,0.1)',
+                            color: '#fff',
+                            transition: 'all 0.2s',
+                            marginLeft: '8px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                    >
+                        📋 <span>Список</span>
+                    </button>
+
+                    {/* Add Property (Admin/Owner) - Hidden for now */}
+                    {/* <button ... >+</button> */}
                 </div>
 
                 {/* Filters Bar - Mobile Horizontal Scroll */}
@@ -1127,20 +1125,30 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
                     {/* Price Filter */}
                     <div style={{ display: 'flex', gap: '4px', background: 'rgba(15,23,42,0.8)', padding: '4px', borderRadius: '12px', backdropFilter: 'blur(12px)' }}>
-                        {['all', 'low', 'mid', 'high', 'premium', 'luxury'].map(f => (
-                            <button
-                                key={f}
-                                onClick={() => setPriceFilter(f as any)}
-                                style={{
-                                    padding: '8px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer',
-                                    background: priceFilter === f ? '#d4af37' : 'transparent',
-                                    color: priceFilter === f ? '#000' : '#94a3b8',
-                                    fontSize: '12px', fontWeight: 600
-                                }}
-                            >
-                                {f === 'all' ? 'Все' : f === 'luxury' ? 'Luxury' : f === 'high' ? 'High' : f}
-                            </button>
-                        ))}
+                        {['all', 'low', 'mid', 'high', 'premium', 'luxury'].map(f => {
+                            const labels: Record<string, string> = {
+                                'all': 'Все',
+                                'low': 'Эконом',
+                                'mid': 'Комфорт',
+                                'high': 'Бизнес',
+                                'premium': 'Премиум',
+                                'luxury': 'Элит'
+                            };
+                            return (
+                                <button
+                                    key={f}
+                                    onClick={() => setPriceFilter(f as any)}
+                                    style={{
+                                        padding: '8px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer',
+                                        background: priceFilter === f ? '#d4af37' : 'transparent',
+                                        color: priceFilter === f ? '#000' : '#94a3b8',
+                                        fontSize: '12px', fontWeight: 600, flexShrink: 0
+                                    }}
+                                >
+                                    {labels[f] || f}
+                                </button>
+                            );
+                        })}
                     </div>
 
                     {/* Scenario Filter - Restored */}
@@ -1223,7 +1231,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
             {/* Desktop Side Panel */}
             {!isMobile && (selectedPropertyId || selectedDistrict) && (
-                <div className="property-side-panel slide-right" style={{ display: 'flex', flexDirection: 'column', width: `${panelWidth}px` }}>
+                <div className="property-side-panel slide-right lux-dark-theme" style={{ display: 'flex', flexDirection: 'column', width: `${panelWidth}px` }}>
                     {/* Resize Handle */}
                     <div
                         ref={resizeRef}
@@ -1319,7 +1327,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                                         {activeTab === 'details' && p && (
                                             <div className="fade-in">
                                                 <img
-                                                    src={p.image}
+                                                    src={p.image || getMockImage(p.id)}
                                                     style={{ width: '100%', height: '240px', objectFit: 'cover', borderRadius: '16px', marginBottom: '24px' }}
                                                 />
                                                 {/* Price Block */}
@@ -1442,7 +1450,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
             {/* Mobile Property Sheet */}
             {widgetsReady && isMobile && selectedPropertyId && (
-                <div className="map-bottom-sheet" style={{
+                <div className="map-bottom-sheet lux-dark-theme" style={{
                     padding: '20px',
                     background: '#0a1128',
                     borderRadius: '24px 24px 0 0',

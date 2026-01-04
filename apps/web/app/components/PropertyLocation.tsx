@@ -1,5 +1,25 @@
 'use client';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import dynamic from 'next/dynamic';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import { getMockLocation } from '../utils/mockLocations';
+
+// Dynamic imports for Leaflet
+const MapContainer = dynamic(() => import('react-leaflet').then(m => m.MapContainer), { ssr: false });
+const TileLayer = dynamic(() => import('react-leaflet').then(m => m.TileLayer), { ssr: false });
+const Marker = dynamic(() => import('react-leaflet').then(m => m.Marker), { ssr: false });
+
+// Fix default icon
+const DefaultIcon = L.icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+    iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
 
 /**
  * PropertyLocation — Вкладка «Локация» в боковой панели объекта
@@ -34,6 +54,12 @@ const MOCK_LOCATIONS: Record<string, LocationPoint[]> = {
 
 export function PropertyLocation({ propertyId, address }: PropertyLocationProps) {
     const locations = MOCK_LOCATIONS.default;
+
+    // Resolve location (mock or prop)
+    const location = useMemo(() => {
+        const idNum = parseInt(propertyId.replace(/\D/g, '') || '0', 10);
+        return getMockLocation(idNum);
+    }, [propertyId]);
 
     const transportPoints = locations.filter(l => l.type === 'transport');
     const attractionPoints = locations.filter(l => l.type === 'attraction');
@@ -150,21 +176,36 @@ export function PropertyLocation({ propertyId, address }: PropertyLocationProps)
                 </div>
             </div>
 
-            {/* Мини-карта области (placeholder) */}
+            {/* Мини-карта области */}
             <div style={{
-                background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.06), rgba(139, 92, 246, 0.06))',
-                borderRadius: '8px',
-                height: '120px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                border: '1px solid rgba(0, 0, 0, 0.08)',
-                color: '#666666',
-                fontSize: '13px',
-                gap: '8px'
+                height: '180px',
+                borderRadius: '12px',
+                overflow: 'hidden',
+                border: '1px solid rgba(0,0,0,0.1)',
+                position: 'relative'
             }}>
-                <span style={{ fontSize: '24px' }}>🗺️</span>
-                Мини-карта окрестностей
+                <MapContainer
+                    center={[location.lat, location.lng]}
+                    zoom={15}
+                    style={{ height: '100%', width: '100%' }}
+                    zoomControl={false}
+                    attributionControl={false}
+                >
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    <Marker position={[location.lat, location.lng]} icon={DefaultIcon} />
+                </MapContainer>
+
+                {/* Overlay to prevent accidental scroll interaction if needed, or just style */}
+                <div style={{
+                    position: 'absolute', bottom: '10px', right: '10px',
+                    background: 'rgba(255,255,255,0.9)', padding: '4px 8px',
+                    borderRadius: '4px', fontSize: '10px', fontWeight: 600,
+                    zIndex: 400
+                }}>
+                    📍 {location.district}
+                </div>
             </div>
         </div>
     );
