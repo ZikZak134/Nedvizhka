@@ -141,7 +141,7 @@ export function PropertyMap({ height = '500px', showHeatmap = true, onPropertyCl
              if (mapRef.current) mapRef.current.innerHTML = '';
 
             const map = new maplibregl.Map({
-                container: mapRef.current,
+                container: mapRef.current!,
                 style: {
                     version: 8,
                     sources: {
@@ -161,8 +161,7 @@ export function PropertyMap({ height = '500px', showHeatmap = true, onPropertyCl
                     }]
                 },
                 center: [39.720, 43.585],
-                zoom: 13,
-                attributionControl: true
+                zoom: 13
             });
             mapInstanceRef.current = map;
 

@@ -274,6 +274,10 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
     const mapRef = useRef<HTMLDivElement>(null);
     const mapInstanceRef = useRef<any>(null);
     const markersRef = useRef<any[]>([]);
+    
+    // 2GIS dedicated refs
+    const twoGisMapRef = useRef<any>(null);
+    const twoGisContainerRef = useRef<HTMLDivElement>(null);
 
     const [data, setData] = useState<GeoJSONData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -593,22 +597,21 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
             };
 
             const map = new maplibregl.Map({
-                container: mapRef.current,
+                container: mapRef.current!,
                 style: style as any,
                 center: [39.720, 43.585],
                 zoom: 13,
-                pitch: 60, // Angled view
-                bearing: -17.6,
-                antialias: true
+                pitch: 0, 
+                bearing: 0
             });
 
             // Add navigation controls
-            map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'bottom-right');
+            map.addControl(new maplibregl.NavigationControl({ visualizePitch: false }), 'bottom-right');
 
             map.on('load', () => {
                 if (isCancelled) return;
                 
-                // --- Add Districts (3D Extrusion) ---
+                // --- Add Districts (Flat) ---
                 if (districtData) {
                     const enrichedFeatures = (districtData as any).features.map((f: any) => {
                          const name = f?.properties?.name;
@@ -625,8 +628,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                              ...f,
                              properties: {
                                  ...f.properties,
-                                 color: color,
-                                 height: growth * 10 // Mock height based on growth
+                                 color: color
                              }
                          };
                     });
@@ -638,13 +640,12 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
                     map.addLayer({
                         id: 'districts-fill',
-                        type: 'fill-extrusion',
+                        type: 'fill',
                         source: 'districts',
                         paint: {
-                            'fill-extrusion-color': ['get', 'color'],
-                            'fill-extrusion-height': showHeatmap ? ['get', 'height'] : 20,
-                            'fill-extrusion-base': 0,
-                            'fill-extrusion-opacity': showHeatmap ? 0.6 : 0.1
+                            'fill-color': ['get', 'color'],
+                            'fill-opacity': showHeatmap ? 0.4 : 0.05,
+                            'fill-outline-color': '#ffffff'
                         }
                     });
                     
@@ -727,29 +728,33 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
     }, [mapProvider, filteredFeatures, showHeatmap, showInfra, activeInfraFilters]);
 
 
-    // 2GIS Implementation (Kept separate)
+    // 2GIS Implementation
     useEffect(() => {
-        if (mapProvider !== '2gis' || !dgReady || !mapRef.current) return;
-        let isCancelled = false;
-
-        // Cleanup previous
-         if (mapInstanceRef.current) {
-             // If it was MapLibre
-            if (mapInstanceRef.current.remove) mapInstanceRef.current.remove();
-            mapInstanceRef.current = null;
+        if (mapProvider !== '2gis') return;
+        
+        // Wait for container ref to be ready
+        if (!twoGisContainerRef.current) return;
+        
+        // If map already exists, just ensure it's resized? 
+        // 2GIS might need invalidatesize if it was hidden.
+        if (twoGisMapRef.current) {
+             twoGisMapRef.current.invalidateSize();
+             return;
         }
-        if (mapRef.current) mapRef.current.innerHTML = '';
-        markersRef.current = [];
+
+        if (!dgReady) return; // Wait for script
 
         window.DG.then(() => {
-            if (isCancelled || !isMounted.current) return;
-            const map = window.DG.map(mapRef.current, {
+            if (!twoGisContainerRef.current) return;
+            
+            // Initialize map
+            const map = window.DG.map(twoGisContainerRef.current, {
                 center: [43.585, 39.720],
-                zoom: 14,
+                zoom: 13,
                 fullscreenControl: false,
                 zoomControl: true,
             });
-            mapInstanceRef.current = map;
+            twoGisMapRef.current = map;
 
             // ... 2GIS Layers ...
              Object.entries(DISTRICTS_DATA).forEach(([name, district]) => {
@@ -793,17 +798,13 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                     setSelectedPropertyId(props.id);
                     map.setView([lat, lng], 18, { animate: true });
                 });
-                markersRef.current.push(marker);
             });
         });
 
-        return () => {
-            if (mapInstanceRef.current && mapProvider === '2gis') {
-                 mapInstanceRef.current.remove();
-                 mapInstanceRef.current = null;
-            }
-        };
+        // No cleanup - keep instance alive
     }, [mapProvider, dgReady, filteredFeatures]);
+
+
 
 
     if (loading) {
@@ -818,23 +819,41 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
     }
 
     return (
-        <div style={{ height, position: 'relative', background: '#0f172a' }}>
-            <div key={mapProvider} ref={mapRef} style={{ height: '100%', width: '100%' }} />
+        <div style={{ height, position: 'relative', background: '#0f172a', overflow: 'hidden' }}>
+            {/* MapLibre Container (OSM/Satellite) */}
+            <div 
+                ref={mapRef} 
+                style={{ 
+                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                    visibility: mapProvider === '2gis' ? 'hidden' : 'visible',
+                    zIndex: mapProvider === '2gis' ? 0 : 1
+                }} 
+            />
             
-            {/* ... Rest of UI (Controls, Side Panel, etc) ... */}
+            {/* 2GIS Container */}
+            <div 
+                ref={twoGisContainerRef}
+                style={{
+                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                    visibility: mapProvider === '2gis' ? 'visible' : 'hidden',
+                    zIndex: mapProvider === '2gis' ? 1 : 0,
+                    background: '#e2e8f0' // Placeholder
+                }}
+            />
+            
             {/* Top Controls Container */}
             <div style={{
                 position: 'absolute',
-                top: '16px',
-                left: '50%',
-                transform: 'translateX(-50%)',
+                top: 0,
+                left: 0,
+                right: 0,
+                padding: '16px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 gap: '12px',
-                zIndex: 300,
-                width: 'auto',
-                maxWidth: '90%',
+                zIndex: 50, // Ensure above maps
+                pointerEvents: 'none' // Let clicks pass through empty areas
             }}>
                 {/* Map Provider Toggle */}
                 <div style={{
@@ -845,6 +864,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                     display: 'flex',
                     gap: '4px',
                     boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+                    pointerEvents: 'auto'
                 }}>
                     {[
                         { key: 'osm', label: '🗺️ Схема', color: '#3b82f6' },
@@ -858,11 +878,11 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                                 padding: '8px 16px',
                                 borderRadius: '8px',
                                 border: 'none',
-                                fontSize: '12px',
+                                fontSize: '13px',
                                 fontWeight: 600,
                                 cursor: 'pointer',
                                 background: mapProvider === item.key ? item.color : 'transparent',
-                                color: '#fff',
+                                color: mapProvider === item.key ? '#fff' : '#94a3b8',
                                 transition: 'all 0.2s',
                             }}
                         >
@@ -876,7 +896,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                             padding: '8px 16px',
                             borderRadius: '8px',
                             border: 'none',
-                            fontSize: '12px',
+                            fontSize: '13px',
                             fontWeight: 600,
                             cursor: 'pointer',
                             background: 'rgba(255,255,255,0.1)',
@@ -887,8 +907,6 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                             alignItems: 'center',
                             gap: '6px'
                         }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
-                        onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
                     >
                         📋 <span>Список</span>
                     </button>
@@ -899,21 +917,22 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                     display: 'flex',
                     gap: '8px',
                     overflowX: 'auto',
-                    maxWidth: '100vw',
-                    padding: '0 16px',
+                    maxWidth: '100%',
+                    padding: '0 4px',
                     scrollbarWidth: 'none',
-                    justifyContent: isMobile ? 'flex-start' : 'center',
-                    pointerEvents: 'auto'
+                    justifyContent: 'center',
+                    pointerEvents: 'auto',
+                    flexWrap: isMobile ? 'nowrap' : 'wrap'
                 }}>
-                    <div style={{ display: 'flex', gap: '8px', background: 'rgba(15,23,42,0.8)', padding: '4px', borderRadius: '12px', backdropFilter: 'blur(12px)' }}>
+                    <div style={{ display: 'flex', gap: '8px', background: 'rgba(15,23,42,0.8)', padding: '4px', borderRadius: '12px', backdropFilter: 'blur(12px)', flexShrink: 0 }}>
                         <button onClick={() => setShowHeatmap(!showHeatmap)} style={{ padding: '8px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: showHeatmap ? 'rgba(239, 68, 68, 0.2)' : 'transparent', color: showHeatmap ? '#f87171' : '#94a3b8', fontSize: '12px', fontWeight: 600, display: 'flex', gap: '6px', alignItems: 'center' }}>🔥 <span>Спрос</span></button>
                         <button onClick={() => setShowInfra(!showInfra)} style={{ padding: '8px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: showInfra ? 'rgba(59, 130, 246, 0.2)' : 'transparent', color: showInfra ? '#60a5fa' : '#94a3b8', fontSize: '12px', fontWeight: 600, display: 'flex', gap: '6px', alignItems: 'center' }}>🏗️ <span>Инфра</span></button>
                     </div>
-                     <div style={{ display: 'flex', gap: '4px', background: 'rgba(15,23,42,0.8)', padding: '4px', borderRadius: '12px', backdropFilter: 'blur(12px)' }}>
+                     <div style={{ display: 'flex', gap: '4px', background: 'rgba(15,23,42,0.8)', padding: '4px', borderRadius: '12px', backdropFilter: 'blur(12px)', flexShrink: 0 }}>
                         {['all', 'low', 'mid', 'high', 'premium', 'luxury'].map(f => {
                              const labels: Record<string, string> = { 'all': 'Все', 'low': 'Эконом', 'mid': 'Комфорт', 'high': 'Бизнес', 'premium': 'Премиум', 'luxury': 'Элит' };
                             return (
-                                <button key={f} onClick={() => setPriceFilter(f as any)} style={{ padding: '8px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: priceFilter === f ? '#d4af37' : 'transparent', color: priceFilter === f ? '#000' : '#94a3b8', fontSize: '12px', fontWeight: 600, flexShrink: 0 }}>
+                                <button key={f} onClick={() => setPriceFilter(f as any)} style={{ padding: '8px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: priceFilter === f ? '#d4af37' : 'transparent', color: priceFilter === f ? '#000' : '#94a3b8', fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap' }}>
                                     {labels[f] || f}
                                 </button>
                             );
@@ -933,7 +952,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                 )}
             </div>
 
-            {/* Side Panel logic (Copied from original) */}
+            {/* Side Panel logic */}
             {!isMobile && (selectedPropertyId || selectedDistrict) && (
                 <div className="property-side-panel slide-right lux-dark-theme" style={{ display: 'flex', flexDirection: 'column', width: `${panelWidth}px` }}>
                     <div ref={resizeRef} onMouseDown={() => setIsResizing(true)} style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '8px', cursor: 'ew-resize', background: isResizing ? 'rgba(212, 175, 55, 0.3)' : 'transparent', zIndex: 10 }} />
@@ -998,7 +1017,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                 </div>
             )}
 
-             <style jsx>{`
+            <style jsx>{`
                 .property-side-panel {
                     position: absolute;
                     top: 0;
@@ -1012,6 +1031,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                     display: flex;
                     flex-direction: column;
                     transition: box-shadow 0.2s;
+                    box-shadow: -10px 0 30px rgba(0,0,0,0.3);
                 }
                 .tabs-container::-webkit-scrollbar { display: none; }
                 .side-panel-content { padding: 24px; height: 100%; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(212, 175, 55, 0.3) transparent; }

@@ -1,25 +1,9 @@
 'use client';
-import { useState, useMemo } from 'react';
-import dynamic from 'next/dynamic';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
+
+import { useState, useMemo, useEffect, useRef } from 'react';
+import maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import { getMockLocation } from '../utils/mockLocations';
-
-// Dynamic imports for Leaflet
-const MapContainer = dynamic(() => import('react-leaflet').then(m => m.MapContainer), { ssr: false });
-const TileLayer = dynamic(() => import('react-leaflet').then(m => m.TileLayer), { ssr: false });
-const Marker = dynamic(() => import('react-leaflet').then(m => m.Marker), { ssr: false });
-
-// Fix default icon
-const DefaultIcon = L.icon({
-    iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-    iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
 
 /**
  * PropertyLocation — Вкладка «Локация» в боковой панели объекта
@@ -67,6 +51,8 @@ export function PropertyLocation({ propertyId, address }: PropertyLocationProps)
 
     const [routeTime, setRouteTime] = useState<string | null>(null);
     const [activeRoute, setActiveRoute] = useState<string | null>(null);
+    const mapContainerRef = useRef<HTMLDivElement>(null);
+    const mapInstanceRef = useRef<any>(null);
 
     const calculateRoute = (type: string) => {
         setRouteTime('Считаем...');
@@ -81,6 +67,67 @@ export function PropertyLocation({ propertyId, address }: PropertyLocationProps)
             setRouteTime(times[type] || '10 мин');
         }, 800);
     };
+
+    // Init Mini Map
+    useEffect(() => {
+        if (!mapContainerRef.current) return;
+
+        // Cleanup
+        if (mapInstanceRef.current) {
+            if (mapInstanceRef.current.remove) mapInstanceRef.current.remove();
+        }
+        
+        mapContainerRef.current.innerHTML = '';
+
+        const map = new maplibregl.Map({
+            container: mapContainerRef.current!,
+            style: {
+                version: 8,
+                sources: {
+                    'osm': {
+                        type: 'raster',
+                        tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+                        tileSize: 256,
+                        attribution: '&copy; OpenStreetMap Contributors'
+                    }
+                },
+                layers: [{
+                    id: 'simple-tiles',
+                    type: 'raster',
+                    source: 'osm',
+                    minzoom: 0,
+                    maxzoom: 22
+                }]
+            },
+            center: [location.lng, location.lat],
+            zoom: 15,
+            interactive: false, // Static mini-map
+            attributionControl: false
+        });
+
+        // Add Marker
+        const el = document.createElement('div');
+        el.className = 'mini-map-marker';
+        el.style.width = '24px';
+        el.style.height = '24px';
+        el.style.background = '#ef4444';
+        el.style.borderRadius = '50%';
+        el.style.border = '2px solid white';
+        el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+
+        new maplibregl.Marker({ element: el })
+            .setLngLat([location.lng, location.lat])
+            .addTo(map);
+
+        mapInstanceRef.current = map;
+
+        return () => {
+             if (mapInstanceRef.current) {
+                if (mapInstanceRef.current.remove) mapInstanceRef.current.remove();
+                mapInstanceRef.current = null;
+            }
+        };
+    }, [location]);
 
     return (
         <div className="property-location fade-in">
@@ -184,20 +231,9 @@ export function PropertyLocation({ propertyId, address }: PropertyLocationProps)
                 border: '1px solid rgba(0,0,0,0.1)',
                 position: 'relative'
             }}>
-                <MapContainer
-                    center={[location.lat, location.lng]}
-                    zoom={15}
-                    style={{ height: '100%', width: '100%' }}
-                    zoomControl={false}
-                    attributionControl={false}
-                >
-                    <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    <Marker position={[location.lat, location.lng]} icon={DefaultIcon} />
-                </MapContainer>
+                <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} />
 
-                {/* Overlay to prevent accidental scroll interaction if needed, or just style */}
+                {/* Overlay */}
                 <div style={{
                     position: 'absolute', bottom: '10px', right: '10px',
                     background: 'rgba(255,255,255,0.9)', padding: '4px 8px',
