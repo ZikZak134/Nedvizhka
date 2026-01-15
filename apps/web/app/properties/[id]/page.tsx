@@ -6,8 +6,6 @@ import dynamic from 'next/dynamic';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
 import { LeadCaptureModal } from '../../components/LeadCaptureModal';
-import { getMockImage } from '../../utils/mockImages';
-import { getMockLocation } from '../../utils/mockLocations';
 import '../../styles/luxury-property.css';
 
 // Lazy load components
@@ -135,9 +133,7 @@ export default function PropertyDetailPage() {
                 const res = await fetch(`${apiUrl}/api/v1/properties/${params.id}`);
                 if (!res.ok) throw new Error('Property not found');
                 const data = await res.json();
-                if (!data.images || data.images.length === 0) {
-                    data.images = [getMockImage(data.id), getMockImage(data.id + '-2'), getMockImage(data.id + '-3')];
-                }
+                // Изображения берутся только из API, без fallback
                 setProperty(data);
             } catch {
                 // Показываем ошибку вместо моковых данных
@@ -207,7 +203,7 @@ export default function PropertyDetailPage() {
         );
     }
 
-    const images = property.images.length > 0 ? property.images : [getMockImage(0)];
+    const images = property.images.length > 0 ? property.images : [];
     const currentIndex = getCurrentIndex();
 
 
@@ -337,7 +333,7 @@ export default function PropertyDetailPage() {
                                 <div className="lux-fact-label">Площадь</div>
                             </div>
                             <div className="lux-fact">
-                                <div className="lux-fact-value">{property.rooms || '2'}</div>
+                                <div className="lux-fact-value">{property.rooms || '—'}</div>
                                 <div className="lux-fact-unit">комн.</div>
                                 <div className="lux-fact-label">Комнаты</div>
                             </div>
@@ -352,7 +348,7 @@ export default function PropertyDetailPage() {
                                 <div className="lux-fact-label">Цена за метр</div>
                             </div>
                             <div className="lux-fact">
-                                <div className="lux-fact-value">{property.quality_score || 94}</div>
+                                <div className="lux-fact-value">{property.quality_score || '—'}</div>
                                 <div className="lux-fact-unit">/ 100</div>
                                 <div className="lux-fact-label">Рейтинг</div>
                             </div>
@@ -413,42 +409,42 @@ export default function PropertyDetailPage() {
                             <div className="lux-feature-icon">{FeatureIcons.view}</div>
                             <div className="lux-feature-content">
                                 <div className="lux-feature-title">Панорамный вид</div>
-                                <div className="lux-feature-value">{String(property.features?.["Вид"] || "Море и горы")}</div>
+                                <div className="lux-feature-value">{String(property.features?.["Вид"] || "—")}</div>
                             </div>
                         </div>
                         <div className="lux-feature-item">
                             <div className="lux-feature-icon">{FeatureIcons.terrace}</div>
                             <div className="lux-feature-content">
                                 <div className="lux-feature-title">Терраса</div>
-                                <div className="lux-feature-value">{String(property.features?.["Терраса"] || "45 м²")}</div>
+                                <div className="lux-feature-value">{String(property.features?.["Терраса"] || "—")}</div>
                             </div>
                         </div>
                         <div className="lux-feature-item">
                             <div className="lux-feature-icon">{FeatureIcons.parking}</div>
                             <div className="lux-feature-content">
                                 <div className="lux-feature-title">Паркинг</div>
-                                <div className="lux-feature-value">{String(property.features?.["Паркинг"] || "2 места")}</div>
+                                <div className="lux-feature-value">{String(property.features?.["Паркинг"] || "—")}</div>
                             </div>
                         </div>
                         <div className="lux-feature-item">
                             <div className="lux-feature-icon">{FeatureIcons.finish}</div>
                             <div className="lux-feature-content">
                                 <div className="lux-feature-title">Отделка</div>
-                                <div className="lux-feature-value">{String(property.features?.["Отделка"] || "Премиум")}</div>
+                                <div className="lux-feature-value">{String(property.features?.["Отделка"] || "—")}</div>
                             </div>
                         </div>
                         <div className="lux-feature-item">
                             <div className="lux-feature-icon">{FeatureIcons.ceiling}</div>
                             <div className="lux-feature-content">
                                 <div className="lux-feature-title">Высота потолков</div>
-                                <div className="lux-feature-value">{String(property.features?.["Потолки"] || "3.2 м")}</div>
+                                <div className="lux-feature-value">{String(property.features?.["Потолки"] || "—")}</div>
                             </div>
                         </div>
                         <div className="lux-feature-item">
                             <div className="lux-feature-icon">{FeatureIcons.pool}</div>
                             <div className="lux-feature-content">
                                 <div className="lux-feature-title">Бассейн</div>
-                                <div className="lux-feature-value">{String(property.features?.["Бассейн"] || "Rooftop")}</div>
+                                <div className="lux-feature-value">{String(property.features?.["Бассейн"] || "—")}</div>
                             </div>
                         </div>
                     </div>
@@ -583,8 +579,8 @@ export default function PropertyDetailPage() {
                         </div>
                         <div className="lux-agent-info">
                             <div className="lux-agent-title">Ваш эксперт</div>
-                            <div className="lux-agent-name">{property.agent_profile?.name || 'Анна Петрова'}</div>
-                            <div className="lux-agent-role">{property.agent_profile?.role || 'Эксперт по премиальной недвижимости'}</div>
+                            <div className="lux-agent-name">{property.agent_profile?.name || 'Эксперт'}</div>
+                            <div className="lux-agent-role">{property.agent_profile?.role || 'Консультант'}</div>
                             <div className="lux-agent-actions">
 
                                 <motion.button 
