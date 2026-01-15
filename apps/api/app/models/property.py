@@ -34,7 +34,28 @@ class Property(Base):
     
     # Rich Data
     features: Mapped[dict] = mapped_column(JSON, default={}) # {"pool": true, "view": "sea"}
+    distances: Mapped[dict] = mapped_column(JSON, default={}) # {"sea": 800, "airport": 25000}
     images: Mapped[List[str]] = mapped_column(JSON, default=[])
+    
+    # Extended Data (Admin Full Control)
+    quality_score: Mapped[Optional[int]] = mapped_column(Integer, default=95)
+    complex_name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    district: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    badges: Mapped[List[str]] = mapped_column(JSON, default=[]) # e.g. ["Exclusive", "Sea View"]
+    
+    # Investment & Analytics
+    investment_metrics: Mapped[dict] = mapped_column(JSON, default={}) # {roi: 15, growth: 120}
+    growth_forecasts: Mapped[List[dict]] = mapped_column(JSON, default=[]) # [{year: "2025", val: 10}]
+    development_projects: Mapped[List[dict]] = mapped_column(JSON, default=[]) # [{name: "New Marina", status: "planned"}]
+    
+    # Environment
+    eco_score: Mapped[dict] = mapped_column(JSON, default={}) # {air: 5, noise: 4}
+    green_zones: Mapped[List[dict]] = mapped_column(JSON, default=[]) # [{name: "Park", dist: "100m"}]
+    
+    # Owner & Agent
+    owner_quote: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    owner_name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    agent_profile: Mapped[dict] = mapped_column(JSON, default={}) # {name: "Anna", role: "Expert", photo: "url"}
     
     # System
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

@@ -22,6 +22,20 @@ class PropertyBase(BaseModel):
     url: Optional[str] = None
     features: dict = Field(default_factory=dict)
     images: List[str] = Field(default_factory=list)
+    
+    # Extended Fields
+    quality_score: Optional[int] = Field(default=95, ge=0, le=100)
+    complex_name: Optional[str] = None
+    district: Optional[str] = None
+    badges: List[str] = Field(default_factory=list)
+    investment_metrics: dict = Field(default_factory=dict)
+    growth_forecasts: List[dict] = Field(default_factory=list)
+    development_projects: List[dict] = Field(default_factory=list)
+    eco_score: dict = Field(default_factory=dict)
+    green_zones: List[dict] = Field(default_factory=list)
+    owner_quote: Optional[str] = None
+    owner_name: Optional[str] = None
+    agent_profile: dict = Field(default_factory=dict)
 
 
 class PropertyCreate(PropertyBase):
@@ -47,6 +61,20 @@ class PropertyUpdate(BaseModel):
     url: Optional[str] = None
     features: Optional[dict] = None
     images: Optional[List[str]] = None
+    
+    # Extended Fields (Optional for Update)
+    quality_score: Optional[int] = Field(None, ge=0, le=100)
+    complex_name: Optional[str] = None
+    district: Optional[str] = None
+    badges: Optional[List[str]] = None
+    investment_metrics: Optional[dict] = None
+    growth_forecasts: Optional[List[dict]] = None
+    development_projects: Optional[List[dict]] = None
+    eco_score: Optional[dict] = None
+    green_zones: Optional[List[dict]] = None
+    owner_quote: Optional[str] = None
+    owner_name: Optional[str] = None
+    agent_profile: Optional[dict] = None
     is_active: Optional[bool] = None
 
 

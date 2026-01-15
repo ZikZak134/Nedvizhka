@@ -10,5 +10,10 @@ else {
     Write-Host "Port $port is free."
 }
 
+Write-Host "Clearing Next.js dev lock..."
+if (Test-Path ".next/dev/lock") {
+    Remove-Item ".next/dev/lock" -Force
+}
+
 Write-Host "Starting Next.js..."
-cmd /c "next dev -p 3001 --hostname 0.0.0.0"
+cmd /c "npx next dev -p 3001 --hostname 0.0.0.0"

@@ -1,9 +1,33 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { NAV_LINKS, UTILITY_LINKS } from '../constants/routes';
+
+interface Settings {
+    footer_phone?: string;
+    footer_address?: string;
+    footer_email?: string;
+    footer_description?: string;
+}
 
 export function Footer() {
     const currentYear = new Date().getFullYear();
+    const [settings, setSettings] = useState<Settings | null>(null);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+                const res = await fetch(`${apiUrl}/api/v1/settings`);
+                if (res.ok) {
+                    setSettings(await res.json());
+                }
+            } catch {
+                // Используем fallback значения при ошибке
+            }
+        };
+        fetchSettings();
+    }, []);
 
     return (
         <footer style={{
@@ -65,15 +89,15 @@ export function Footer() {
                         <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <span style={{ color: '#d4af37' }}>📍</span>
-                                <span style={{ color: '#e5e7eb', fontSize: '14px' }}>Сочи, Курортный проспект, 59</span>
+                                <span style={{ color: '#e5e7eb', fontSize: '14px' }}>{settings?.footer_address || 'Сочи, Курортный проспект, 59'}</span>
                             </li>
                             <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <span style={{ color: '#d4af37' }}>📞</span>
-                                <a href="tel:+79990000000" style={{ color: '#e5e7eb', fontSize: '14px', textDecoration: 'none' }}>+7 (999) 000-00-00</a>
+                                <a href={`tel:${(settings?.footer_phone || '+79990000000').replace(/\D/g, '')}`} style={{ color: '#e5e7eb', fontSize: '14px', textDecoration: 'none' }}>{settings?.footer_phone || '+7 (999) 000-00-00'}</a>
                             </li>
                             <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <span style={{ color: '#d4af37' }}>✉️</span>
-                                <a href="mailto:vip@estate-analytics.ru" style={{ color: '#e5e7eb', fontSize: '14px', textDecoration: 'none' }}>vip@estate-analytics.ru</a>
+                                <a href={`mailto:${settings?.footer_email || 'vip@estate-analytics.ru'}`} style={{ color: '#e5e7eb', fontSize: '14px', textDecoration: 'none' }}>{settings?.footer_email || 'vip@estate-analytics.ru'}</a>
                             </li>
                         </ul>
                     </div>

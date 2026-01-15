@@ -15,6 +15,9 @@ const PropertyLocation = dynamic(() => import('../../components/PropertyLocation
 const PropertyPotential = dynamic(() => import('../../components/PropertyPotential').then(m => m.PropertyPotential), { ssr: false });
 const PropertySurroundings = dynamic(() => import('../../components/PropertySurroundings').then(m => m.PropertySurroundings), { ssr: false });
 const SMIFeed = dynamic(() => import('../../components/SMIFeed').then(m => m.SMIFeed), { ssr: false });
+import { FadeIn } from '../../components/animations/FadeIn';
+import { Reveal } from '../../components/animations/Reveal';
+import { motion } from 'framer-motion';
 
 interface Property {
     id: string;
@@ -33,7 +36,7 @@ interface Property {
     source_id: string | null;
     url: string | null;
     images: string[];
-    features: Record<string, unknown>;
+    features: Record<string, any>;
     created_at: string;
     updated_at: string;
     is_active: boolean;
@@ -44,6 +47,25 @@ interface Property {
     ownerComment?: string;
     ownerName?: string;
     pricePerSqm?: number;
+    // Поля из API для динамических данных
+    badges?: string[];
+    owner_quote?: string;
+    owner_name?: string;
+    investment_metrics?: {
+        roi?: number;
+        growth_10y?: number;
+        sale_time?: number;
+    };
+    agent_profile?: {
+        name?: string;
+        role?: string;
+        photo?: string;
+        phone?: string;
+    };
+    eco_score?: Record<string, number>;
+    green_zones?: any[];
+    growth_forecasts?: any[];
+    development_projects?: any[];
 }
 
 type TabType = 'info' | 'location' | 'potential' | 'surroundings' | 'smi';
@@ -102,6 +124,8 @@ export default function PropertyDetailPage() {
     const [error, setError] = useState<string | null>(null);
     const [activeImage, setActiveImage] = useState(0);
     const [activeTab, setActiveTab] = useState<TabType>('info');
+    const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
+    const [leadMode, setLeadMode] = useState<'showing' | 'report' | 'question'>('showing');
 
     // Fetch property data
     useEffect(() => {
@@ -116,100 +140,9 @@ export default function PropertyDetailPage() {
                 }
                 setProperty(data);
             } catch {
-                // Mock data fallback
-                const mockId = (Array.isArray(params.id) ? params.id[0] : params.id) || 'unknown';
-                const match = String(mockId).match(/mock-prop-(\d+)/);
-                const locationIndex = match ? parseInt(match[1], 10) : 0;
-                const location = getMockLocation(locationIndex);
-                const seed = locationIndex;
-                const basePrice = 25000000 + (seed * 3500000) % 100000000;
-                const areaSqm = 120 + (seed * 20) % 180;
-
-                const complexNames = [
-                    'ЖК «Красная Площадь»',
-                    'ЖК «Актёр Гэлакси»',
-                    'ЖК «Александрийский Маяк»',
-                    'ЖК «Горки Город»',
-                    'ЖК «Премьер»',
-                    'ЖК «Олимпийский»',
-                ];
-
-                setProperty({
-                    id: mockId,
-                    title: location.address || `Резиденция ${locationIndex + 1}`,
-                    description: `Эта исключительная резиденция расположена в самом сердце ${location.district || 'Сочи'}. Архитектурный шедевр, где каждая деталь продумана для комфортной жизни на высшем уровне.\n\nПанорамные окна от пола до потолка открывают захватывающие виды на море и горы. Изысканные интерьеры выполнены итальянскими мастерами с использованием мрамора Calacatta, дуба и натуральной кожи.\n\nКомплекс предлагает: приватный пляж, консьерж-сервис 24/7, подземный паркинг, SPA-зону и rooftop-бассейн с подогревом.`,
-                    price: basePrice,
-                    currency: "RUB",
-                    address: location.address,
-                    latitude: location.lat,
-                    longitude: location.lng,
-                    area_sqm: areaSqm,
-                    rooms: `${(seed % 4) + 2}`,
-                    floor: (seed % 15) + 8,
-                    total_floors: 25,
-                    source: "mock",
-                    source_id: `mock-source-${locationIndex}`,
-                    url: null,
-                    images: [
-                        getMockImage(locationIndex),
-                        getMockImage(locationIndex + 1),
-                        getMockImage(locationIndex + 2),
-                        getMockImage(locationIndex + 3),
-                        getMockImage(locationIndex + 4)
-                    ],
-                    features: {
-                        "Вид": seed % 3 === 0 ? "Море" : seed % 3 === 1 ? "Горы" : "Панорама",
-                        "Терраса": "45 м²",
-                        "Паркинг": "2 места",
-                        "Отделка": "Премиум",
-                        "Потолки": "3.2 м",
-                        "Бассейн": "Rooftop"
-                    },
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString(),
-                    is_active: true,
-                    district: location.district,
-                    complex: complexNames[seed % complexNames.length],
-                    growth_10y: 85 + (seed * 5) % 60,
-                    quality_score: 90 + (seed * 2) % 10,
-                    pricePerSqm: Math.round(basePrice / areaSqm),
-                    ownerComment: `Эту квартиру я приобрёл три года назад как инвестицию и летнюю резиденцию. За это время стоимость выросла на 40%. Здесь потрясающие закаты — каждый вечер как картина. Продаю из-за переезда в Европу, но если бы не обстоятельства — оставил бы себе навсегда.`,
-                    ownerName: seed % 2 === 0 ? "Александр К." : "Михаил В.",
-                });
-                setError(null);
-
-                // Generate nearby properties
-                const nearby: Property[] = [];
-                for (let i = 0; i < 4; i++) {
-                    const nearbyIndex = (locationIndex + i + 1) % 10;
-                    const nearbyLocation = getMockLocation(nearbyIndex);
-                    const nearbyPrice = 20000000 + (nearbyIndex * 4500000) % 80000000;
-                    const nearbyArea = 80 + (nearbyIndex * 25) % 150;
-                    nearby.push({
-                        id: `mock-prop-${nearbyIndex}`,
-                        title: nearbyLocation.address || `Резиденция ${nearbyIndex + 1}`,
-                        description: null,
-                        price: nearbyPrice,
-                        currency: "RUB",
-                        address: nearbyLocation.address,
-                        latitude: nearbyLocation.lat,
-                        longitude: nearbyLocation.lng,
-                        area_sqm: nearbyArea,
-                        rooms: `${(nearbyIndex % 4) + 2}`,
-                        floor: (nearbyIndex % 12) + 5,
-                        total_floors: 20,
-                        source: "mock",
-                        source_id: null,
-                        url: null,
-                        images: [getMockImage(nearbyIndex)],
-                        features: {},
-                        created_at: new Date().toISOString(),
-                        updated_at: new Date().toISOString(),
-                        is_active: true,
-                        district: nearbyLocation.district,
-                    });
-                }
-                setNearbyProperties(nearby);
+                // Показываем ошибку вместо моковых данных
+                setError('Объект не найден или был удалён');
+                setProperty(null);
             } finally {
                 setLoading(false);
             }
@@ -262,10 +195,10 @@ export default function PropertyDetailPage() {
         return (
             <div className="lux-page">
                 <Header />
-                <main style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 200px)', padding: '60px 24px' }}>
-                    <div style={{ textAlign: 'center', maxWidth: '400px' }}>
-                        <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '32px', marginBottom: '16px' }}>Объект не найден</h1>
-                        <p style={{ color: 'var(--lux-text-secondary)', marginBottom: '32px' }}>{error || 'Запрашиваемый объект не существует или был удалён'}</p>
+                <main className="flex items-center justify-center min-h-[calc(100vh-200px)] py-[60px] px-6">
+                    <div className="text-center max-w-[400px]">
+                        <h1 className="font-serif text-[32px] mb-4">Объект не найден</h1>
+                        <p className="text-[var(--lux-text-secondary)] mb-8">{error || 'Запрашиваемый объект не существует или был удалён'}</p>
                         <button onClick={() => router.push('/properties')} className="lux-btn lux-btn--primary">Вернуться к каталогу</button>
                     </div>
                 </main>
@@ -277,9 +210,6 @@ export default function PropertyDetailPage() {
     const images = property.images.length > 0 ? property.images : [getMockImage(0)];
     const currentIndex = getCurrentIndex();
 
-    // Lead Capture State
-    const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
-    const [leadMode, setLeadMode] = useState<'showing' | 'report' | 'question'>('showing');
 
     const openLeadModal = (mode: 'showing' | 'report' | 'question') => {
         setLeadMode(mode);
@@ -315,24 +245,37 @@ export default function PropertyDetailPage() {
                 </div>
 
                 <div className="lux-hero-content">
-                    <div className="lux-hero-badge">Эксклюзив</div>
+                    {/* Динамические badges из API */}
+                    {property.badges && property.badges.length > 0 ? (
+                        <div className="flex gap-2 mb-2">
+                            {property.badges.map((badge, idx) => (
+                                <div key={idx} className="lux-hero-badge">{badge}</div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="lux-hero-badge">Премиум</div>
+                    )}
                     {property.complex && (
                         <div className="lux-hero-complex">{property.complex}</div>
                     )}
-                    <h1 className="lux-hero-title">{property.title}</h1>
-                    <p className="lux-hero-location">
-                        {property.district || 'Сочи'}, Россия
-                    </p>
-                    <div className="lux-hero-price">{formatPrice(property.price)}</div>
+
+                    <h1 className="lux-hero-title">
+                        <Reveal>{property.title}</Reveal>
+                    </h1>
+                    <FadeIn delay={0.2}>
+                        <p className="lux-hero-location">
+                            {property.district || 'Сочи'}, Россия
+                        </p>
+                    </FadeIn>
+                    <FadeIn delay={0.4}>
+                        <div className="lux-hero-price">{formatPrice(property.price)}</div>
+                    </FadeIn>
                     <div className="lux-hero-price-label">Стоимость объекта</div>
+                    {/* Ask Owner Link */}
                     {/* Ask Owner Link */}
                     <button
                         onClick={() => openLeadModal('question')}
-                        style={{
-                            background: 'transparent', border: 'none', color: '#d4af37',
-                            textDecoration: 'underline', marginTop: '12px', fontSize: '13px',
-                            cursor: 'pointer', fontFamily: 'var(--font-sans)'
-                        }}
+                        className="bg-transparent border-none text-[#d4af37] underline mt-3 text-[13px] cursor-pointer font-sans"
                     >
                         💬 Задать вопрос представителю владельца
                     </button>
@@ -384,37 +327,39 @@ export default function PropertyDetailPage() {
                 </div>
             </nav>
 
-            <section className="lux-facts">
-                <div className="lux-container">
-                    <div className="lux-facts-grid">
-                        <div className="lux-fact">
-                            <div className="lux-fact-value">{property.area_sqm}</div>
-                            <div className="lux-fact-unit">м²</div>
-                            <div className="lux-fact-label">Площадь</div>
-                        </div>
-                        <div className="lux-fact">
-                            <div className="lux-fact-value">{property.rooms || '2'}</div>
-                            <div className="lux-fact-unit">комн.</div>
-                            <div className="lux-fact-label">Комнаты</div>
-                        </div>
-                        <div className="lux-fact">
-                            <div className="lux-fact-value">{property.floor}</div>
-                            <div className="lux-fact-unit">из {property.total_floors}</div>
-                            <div className="lux-fact-label">Этаж</div>
-                        </div>
-                        <div className="lux-fact">
-                            <div className="lux-fact-value">{formatPriceShort(property.pricePerSqm || Math.round(property.price / property.area_sqm))}</div>
-                            <div className="lux-fact-unit">₽/м²</div>
-                            <div className="lux-fact-label">Цена за метр</div>
-                        </div>
-                        <div className="lux-fact">
-                            <div className="lux-fact-value">{property.quality_score || 94}</div>
-                            <div className="lux-fact-unit">/ 100</div>
-                            <div className="lux-fact-label">Рейтинг</div>
+            <FadeIn>
+                <section className="lux-facts">
+                    <div className="lux-container">
+                        <div className="lux-facts-grid">
+                            <div className="lux-fact">
+                                <div className="lux-fact-value">{property.area_sqm}</div>
+                                <div className="lux-fact-unit">м²</div>
+                                <div className="lux-fact-label">Площадь</div>
+                            </div>
+                            <div className="lux-fact">
+                                <div className="lux-fact-value">{property.rooms || '2'}</div>
+                                <div className="lux-fact-unit">комн.</div>
+                                <div className="lux-fact-label">Комнаты</div>
+                            </div>
+                            <div className="lux-fact">
+                                <div className="lux-fact-value">{property.floor}</div>
+                                <div className="lux-fact-unit">из {property.total_floors}</div>
+                                <div className="lux-fact-label">Этаж</div>
+                            </div>
+                            <div className="lux-fact">
+                                <div className="lux-fact-value">{formatPriceShort(property.pricePerSqm || Math.round(property.price / property.area_sqm))}</div>
+                                <div className="lux-fact-unit">₽/м²</div>
+                                <div className="lux-fact-label">Цена за метр</div>
+                            </div>
+                            <div className="lux-fact">
+                                <div className="lux-fact-value">{property.quality_score || 94}</div>
+                                <div className="lux-fact-unit">/ 100</div>
+                                <div className="lux-fact-label">Рейтинг</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            </FadeIn>
 
             <section className="lux-gallery">
                 <div className="lux-container">
@@ -455,10 +400,15 @@ export default function PropertyDetailPage() {
             <section className="lux-features">
                 <div className="lux-container">
                     <div className="lux-section-header">
-                        <span className="lux-section-tag">Особенности</span>
-                        <h2 className="lux-section-title">Что делает её уникальной</h2>
+                        <FadeIn direction="left">
+                            <span className="lux-section-tag">Особенности</span>
+                        </FadeIn>
+                        <FadeIn direction="right">
+                            <h2 className="lux-section-title">Что делает её уникальной</h2>
+                        </FadeIn>
                     </div>
-                    <div className="lux-features-grid">
+                    <FadeIn delay={0.2}>
+                        <div className="lux-features-grid">
                         <div className="lux-feature-item">
                             <div className="lux-feature-icon">{FeatureIcons.view}</div>
                             <div className="lux-feature-content">
@@ -502,6 +452,7 @@ export default function PropertyDetailPage() {
                             </div>
                         </div>
                     </div>
+                    </FadeIn>
                 </div>
             </section>
 
@@ -510,14 +461,14 @@ export default function PropertyDetailPage() {
                     <div className="lux-owner-card">
                         <div className="lux-owner-quote-icon">"</div>
                         <blockquote className="lux-owner-quote">
-                            {property.ownerComment || 'Эту квартиру я приобрёл три года назад как инвестицию и летнюю резиденцию. За это время стоимость выросла на 40%. Здесь потрясающие закаты — каждый вечер как картина.'}
+                            {property.owner_quote || property.ownerComment || 'Отзыв владельца ещё не добавлен'}
                         </blockquote>
                         <div className="lux-owner-info">
                             <div className="lux-owner-avatar">
-                                {(property.ownerName || 'А')[0]}
+                                {(property.owner_name || property.ownerName || 'В')[0]}
                             </div>
                             <div className="lux-owner-details">
-                                <div className="lux-owner-name">{property.ownerName || 'Владелец'}</div>
+                                <div className="lux-owner-name">{property.owner_name || property.ownerName || 'Владелец'}</div>
                                 <div className="lux-owner-role">Собственник резиденции</div>
                             </div>
                             <div className="lux-owner-verified">✓ Верифицирован</div>
@@ -538,28 +489,28 @@ export default function PropertyDetailPage() {
                             <div className="lux-investment-label">Рост стоимости за 10 лет</div>
                             <div className="lux-investment-bar">
                                 <div
-                                    className="lux-investment-bar-fill"
-                                    style={{ width: `${Math.min(property.growth_10y || 0, 100)}%`, background: '#16a34a' }}
+                                    className="lux-investment-bar-fill bg-[#16a34a]"
+                                    style={{ width: `${Math.min(property.growth_10y || 0, 100)}%` }}
                                 />
                             </div>
                         </div>
                         <div className="lux-investment-item">
-                            <div className="lux-investment-value gold">14%</div>
+                            <div className="lux-investment-value gold">{property.investment_metrics?.roi || 0}%</div>
                             <div className="lux-investment-label">Годовая доходность (ROI)</div>
                             <div className="lux-investment-bar">
                                 <div
-                                    className="lux-investment-bar-fill"
-                                    style={{ width: '70%', background: '#b8860b' }}
+                                    className="lux-investment-bar-fill bg-[#b8860b]"
+                                    style={{ width: `${Math.min((property.investment_metrics?.roi || 0) * 5, 100)}%` }}
                                 />
                             </div>
                         </div>
                         <div className="lux-investment-item">
-                            <div className="lux-investment-value blue">22 дня</div>
+                            <div className="lux-investment-value blue">{property.investment_metrics?.sale_time || 0} дней</div>
                             <div className="lux-investment-label">Средний срок продажи</div>
                             <div className="lux-investment-bar">
                                 <div
-                                    className="lux-investment-bar-fill"
-                                    style={{ width: '30%', background: '#2563eb' }}
+                                    className="lux-investment-bar-fill bg-[#2563eb]"
+                                    style={{ width: `${Math.min((property.investment_metrics?.sale_time || 0), 100)}%` }}
                                 />
                             </div>
                         </div>
@@ -598,8 +549,23 @@ export default function PropertyDetailPage() {
                             </div>
                         )}
                         {activeTab === 'location' && <PropertyLocation propertyId={property.id} address={property.address} />}
-                        {activeTab === 'potential' && <PropertyPotential propertyId={property.id} currentGrowth={property.growth_10y} />}
-                        {activeTab === 'surroundings' && <PropertySurroundings propertyId={property.id} />}
+                        {activeTab === 'potential' && (
+                            <PropertyPotential 
+                                propertyId={property.id} 
+                                currentGrowth={property.investment_metrics?.growth_10y}
+                                forecasts={property.growth_forecasts}
+                                projects={property.development_projects}
+                            />
+                        )}
+                        {activeTab === 'surroundings' && (
+                            <PropertySurroundings 
+                                propertyId={property.id} 
+                                environment={property.eco_score ? Object.entries(property.eco_score).map(([key, val]) => ({
+                                    name: key, icon: '📍', score: Number(val), description: 'Оценка из админки'
+                                })) : undefined}
+                                greenZones={property.green_zones}
+                            />
+                        )}
                         {activeTab === 'smi' && <SMIFeed />}
                     </div>
                 </div>
@@ -609,19 +575,34 @@ export default function PropertyDetailPage() {
                 <div className="lux-container">
                     <div className="lux-agent-card">
                         <div className="lux-agent-photo">
-                            <span className="lux-agent-photo-placeholder">А</span>
+                            {property.agent_profile?.photo ? (
+                                <img src={property.agent_profile.photo} alt={property.agent_profile.name} className="w-full h-full rounded-full" />
+                            ) : (
+                                <span className="lux-agent-photo-placeholder">{(property.agent_profile?.name || 'А')[0]}</span>
+                            )}
                         </div>
                         <div className="lux-agent-info">
                             <div className="lux-agent-title">Ваш эксперт</div>
-                            <div className="lux-agent-name">Анна Петрова</div>
-                            <div className="lux-agent-role">Эксперт по премиальной недвижимости • 12 лет опыта</div>
+                            <div className="lux-agent-name">{property.agent_profile?.name || 'Анна Петрова'}</div>
+                            <div className="lux-agent-role">{property.agent_profile?.role || 'Эксперт по премиальной недвижимости'}</div>
                             <div className="lux-agent-actions">
-                                <button className="lux-btn lux-btn--primary" onClick={() => openLeadModal('showing')}>
+
+                                <motion.button 
+                                    className="lux-btn lux-btn--primary" 
+                                    onClick={() => openLeadModal('showing')}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
                                     🔑 Заказать показ
-                                </button>
-                                <button className="lux-btn lux-btn--secondary" onClick={() => openLeadModal('question')}>
+                                </motion.button>
+                                <motion.button 
+                                    className="lux-btn lux-btn--secondary" 
+                                    onClick={() => openLeadModal('question')}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
                                     Задать вопрос
-                                </button>
+                                </motion.button>
                             </div>
                         </div>
                     </div>
@@ -633,12 +614,22 @@ export default function PropertyDetailPage() {
                     <h2 className="lux-cta-title">Готовы увидеть вживую?</h2>
                     <p className="lux-cta-text">Запишитесь на приватный просмотр и почувствуйте атмосферу лично</p>
                     <div className="lux-cta-actions">
-                        <button className="lux-btn lux-btn--primary" onClick={() => openLeadModal('showing')}>
+                        <motion.button 
+                            className="lux-btn lux-btn--primary" 
+                            onClick={() => openLeadModal('showing')}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
                             🔑 Назначить показ
-                        </button>
-                        <button className="lux-btn lux-btn--secondary" onClick={() => openLeadModal('question')}>
+                        </motion.button>
+                        <motion.button 
+                            className="lux-btn lux-btn--secondary" 
+                            onClick={() => openLeadModal('question')}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
                             Связаться с экспертом
-                        </button>
+                        </motion.button>
                     </div>
                 </div>
             </section>
@@ -677,38 +668,27 @@ export default function PropertyDetailPage() {
             </section>
 
             {/* STICKY FOOTER (Mobile) */}
-            <div className="lux-sticky-footer" style={{
-                position: 'fixed', bottom: 0, left: 0, right: 0,
-                background: '#0f172a', borderTop: '1px solid rgba(255,255,255,0.1)',
-                padding: '12px 24px', zIndex: 100, display: 'none' // Hidden by default, shown via CSS media query
-            }}>
-                <div style={{ display: 'flex', gap: '12px' }}>
-                    <button
+            <div className="fixed bottom-0 left-0 right-0 bg-[#0f172a] border-t border-white/10 p-3 z-[100] md:hidden block">
+                <div className="flex gap-3">
+                    <motion.button
                         onClick={() => openLeadModal('showing')}
-                        style={{
-                            flex: 2, padding: '14px', borderRadius: '12px',
-                            background: '#d4af37', border: 'none',
-                            color: '#000', fontWeight: 700, fontSize: '16px'
-                        }}
+                        className="flex-[2] p-3.5 rounded-xl bg-[#d4af37] border-none text-black font-bold text-base"
+                        whileTap={{ scale: 0.95 }}
                     >
                         🔑 Заказать показ
-                    </button>
-                    <button
+                    </motion.button>
+                    <motion.button
                         onClick={() => openLeadModal('question')}
-                        style={{
-                            flex: 1, padding: '14px', borderRadius: '12px',
-                            background: 'rgba(255,255,255,0.1)', border: 'none',
-                            color: '#fff', fontWeight: 600, fontSize: '13px'
-                        }}
+                        className="flex-1 p-3.5 rounded-xl bg-white/10 border-none text-white font-semibold text-[13px]"
+                        whileTap={{ scale: 0.95 }}
                     >
                         💬 Вопрос
-                    </button>
+                    </motion.button>
                 </div>
             </div>
 
             <style jsx>{`
                 @media (max-width: 768px) {
-                    .lux-sticky-footer { display: block !important; }
                     .lux-agent, .lux-cta { padding-bottom: 80px; } /* Add padding for footer */
                 }
             `}</style>

@@ -1,3 +1,9 @@
+/* eslint-disable react/no-inline-styles */
+/**
+ * PremiumMap — интерактивная карта недвижимости.
+ * Использует inline стили для динамических элементов карты (маркеры, панели, фильтры).
+ * Это стандартный паттерн для компонентов карт с высокой динамикой UI.
+ */
 'use client';
 
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
@@ -5,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import styles from './premium-map.module.css';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 import districtData from '../data/sochi_districts.json';
 import { getMockImage } from '../utils/mockImages';
@@ -21,10 +28,48 @@ const PropertyPotential = dynamic(() => import('./PropertyPotential').then(m => 
 const PropertySurroundings = dynamic(() => import('./PropertySurroundings').then(m => m.PropertySurroundings), { ssr: false });
 
 // ============================================
-// MOCK DATA - Replace with API later
+// TYPES — для районов и ЖК из API
 // ============================================
 
-const DISTRICTS_DATA = {
+interface DistrictData {
+    name: string;
+    avg_price_sqm: number;
+    growth_5y: number;
+    growth_10y: number;
+    objects_count: number;
+    roi: number;
+    risk_level: string;
+    center_lat: number;
+    center_lng: number;
+    coordinates?: number[][];
+}
+
+interface ComplexData {
+    id: string | number;
+    name: string;
+    growth: number;
+    price_sqm: number;
+    min_price: number;
+    center_lat: number;
+    center_lng: number;
+    tags: string[];
+    image: string;
+}
+
+// ============================================
+// FALLBACK DATA (загружается из API, если доступен)
+// ============================================
+
+const FALLBACK_DISTRICTS: Record<string, {
+    avg_price_sqm: number;
+    growth_5y: number;
+    growth_10y: number;
+    objects: number;
+    roi: number;
+    risk: string;
+    center: [number, number];
+    coordinates?: number[][];
+}> = {
     "Красная Поляна": {
         avg_price_sqm: 520000,
         growth_5y: 110,
@@ -99,15 +144,23 @@ const DISTRICTS_DATA = {
     },
 };
 
-
-const JK_DATA = [
+const FALLBACK_JK: {
+    id: string;
+    name: string;
+    growth: number;
+    price_sqm: number;
+    min_price: number;
+    center: [number, number];
+    tags: string[];
+    image: string;
+}[] = [
     {
         id: 'mantera',
         name: "Mantera Seaview Residence",
         growth: 185,
         price_sqm: 2800000,
         min_price: 150000000,
-        center: [43.4055, 39.9431], // Sirius
+        center: [43.4055, 39.9431],
         tags: ['Deluxe', 'Sea View', 'Pool'],
         image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'
     },
@@ -117,7 +170,7 @@ const JK_DATA = [
         growth: 130,
         price_sqm: 1900000,
         min_price: 120000000,
-        center: [43.5786, 39.7267], // Central
+        center: [43.5786, 39.7267],
         tags: ['Hotel Service', 'Center', 'Elite'],
         image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80'
     },
@@ -137,7 +190,7 @@ const JK_DATA = [
         growth: 150,
         price_sqm: 2100000,
         min_price: 110000000,
-        center: [43.5834, 39.7289], // Near warm sea
+        center: [43.5834, 39.7289],
         tags: ['Club House', 'First Line'],
         image: 'https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&w=800&q=80'
     },
@@ -341,6 +394,62 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
     const [dgReady, setDgReady] = useState(false);
     
+    // ============================================
+    // DYNAMIC DATA FROM API (с fallback на константы)
+    // ============================================
+    const [districtsData, setDistrictsData] = useState<Record<string, typeof FALLBACK_DISTRICTS[keyof typeof FALLBACK_DISTRICTS]>>(FALLBACK_DISTRICTS);
+    const [jkData, setJkData] = useState<typeof FALLBACK_JK>(FALLBACK_JK);
+    
+    // Загрузка районов и ЖК из API
+    useEffect(() => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        
+        // Загрузка районов
+        fetch(`${apiUrl}/api/v1/districts`, { signal: AbortSignal.timeout(2000) })
+            .then(res => res.ok ? res.json() : Promise.reject())
+            .then((data: DistrictData[]) => {
+                if (data && data.length > 0) {
+                    const mapped: Record<string, typeof FALLBACK_DISTRICTS[keyof typeof FALLBACK_DISTRICTS]> = {};
+                    data.forEach(d => {
+                        mapped[d.name] = {
+                            avg_price_sqm: d.avg_price_sqm,
+                            growth_5y: d.growth_5y,
+                            growth_10y: d.growth_10y,
+                            objects: d.objects_count,
+                            roi: d.roi,
+                            risk: d.risk_level,
+                            center: [d.center_lat, d.center_lng],
+                            coordinates: d.coordinates,
+                        };
+                    });
+                    setDistrictsData(mapped);
+                    console.log(`[PremiumMap] Загружено ${data.length} районов из API`);
+                }
+            })
+            .catch(() => console.log('[PremiumMap] Используем fallback для районов'));
+        
+        // Загрузка ЖК
+        fetch(`${apiUrl}/api/v1/complexes-admin`, { signal: AbortSignal.timeout(2000) })
+            .then(res => res.ok ? res.json() : Promise.reject())
+            .then((data: ComplexData[]) => {
+                if (data && data.length > 0) {
+                    const mapped = data.map(c => ({
+                        id: String(c.id),
+                        name: c.name,
+                        growth: c.growth,
+                        price_sqm: c.price_sqm,
+                        min_price: c.min_price,
+                        center: [c.center_lat, c.center_lng] as [number, number],
+                        tags: c.tags || [],
+                        image: c.image || FALLBACK_JK[0].image,
+                    }));
+                    setJkData(mapped);
+                    console.log(`[PremiumMap] Загружено ${data.length} ЖК из API`);
+                }
+            })
+            .catch(() => console.log('[PremiumMap] Используем fallback для ЖК'));
+    }, []);
+    
     // Safe Hydration State
     const [widgetsReady, setWidgetsReady] = useState(false);
     useEffect(() => {
@@ -455,40 +564,21 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                     if (json.features) features = json.features;
                 }
             } catch (error) {
-                console.warn('API unavailable or timed out, using mock data');
+                console.warn('API недоступен или время ожидания истекло');
             }
 
             if (isCancelled) return;
 
-            if (features.length < 5) {
-                for (let i = 0; i < 20; i++) {
-                    const loc = getMockLocation(i);
-                    features.push({
-                        geometry: { coordinates: [loc.lng, loc.lat] },
-                        properties: {
-                            id: `mock-prop-${i}`,
-                            title: loc.address || `Элитный объект #${i + 1}`,
-                            price: 15000000 + Math.random() * 150000000,
-                            price_per_sqm: 300000 + Math.random() * 1000000,
-                            area_sqm: 40 + Math.floor(Math.random() * 200),
-                            rooms: String(1 + Math.floor(Math.random() * 4)),
-                            address: loc.address,
-                            growth_10y: 50 + Math.floor(Math.random() * 150),
-                            quality_score: 80,
-                            image: getMockImage(i),
-                            jk: i % 5 === 0 ? JK_DATA[i % JK_DATA.length].name : undefined
-                        }
-                    });
-                }
-            }
+            // Моковые данные УБРАНЫ — карта отображает только реальные объекты из БД
+            // Если нужна демонстрация — добавьте объекты через админку /admin/properties
 
+            // Mock data removed. Only API data is used.
             features = features.map((f, idx) => ({
                 ...f,
                 properties: {
                     ...f.properties,
-                    growth_10y: f.properties.growth_10y || (50 + Math.floor(Math.random() * 150)),
-                    price: f.properties.price || (20000000),
-                    image: f.properties.image || getMockImage(String(f.properties.id || idx)),
+                    // Preserve existing properties, only default if absolutely missing crucial UI fields
+                    growth_10y: f.properties.growth_10y || 0,
                 }
             }));
 
@@ -615,7 +705,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                 if (districtData) {
                     const enrichedFeatures = (districtData as any).features.map((f: any) => {
                          const name = f?.properties?.name;
-                         const distData = DISTRICTS_DATA[name as keyof typeof DISTRICTS_DATA];
+                         const distData = districtsData[name as keyof typeof districtsData];
                          const growth = distData?.growth_10y || 0;
                          
                          let color = '#94a3b8';
@@ -654,7 +744,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                         if (e.features && e.features[0]) {
                             const props = e.features[0].properties;
                              const name = props.name;
-                             const distAnalytics = DISTRICTS_DATA[name as keyof typeof DISTRICTS_DATA];
+                             const distAnalytics = districtsData[name as keyof typeof districtsData];
                              setSelectedDistrict({ name, ...distAnalytics });
                         }
                     });
@@ -757,7 +847,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
             twoGisMapRef.current = map;
 
             // ... 2GIS Layers ...
-             Object.entries(DISTRICTS_DATA).forEach(([name, district]) => {
+             Object.entries(districtsData).forEach(([name, district]) => {
                 const growth = district.growth_10y;
                 let color = '#ef4444';
                 if (growth > 150) color = '#22c55e';
@@ -809,63 +899,33 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
     if (loading) {
         return (
-            <div style={{ height, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #0f172a, #1e293b)' }}>
-                <div style={{ color: '#fff', textAlign: 'center' }}>
-                    <div style={{ fontSize: '64px', marginBottom: '16px' }}>🗺️</div>
-                    <div style={{ fontSize: '18px', fontWeight: 600 }}>Загружаем карту инвестиций...</div>
+            <div className={styles.loadingContainer} style={{ height }}>
+                <div className={styles.loadingContent}>
+                    <div className={styles.loadingIcon}>🗺️</div>
+                    <div className={styles.loadingText}>Загружаем карту инвестиций...</div>
                 </div>
             </div>
         );
     }
 
     return (
-        <div style={{ height, position: 'relative', background: '#0f172a', overflow: 'hidden' }}>
+        <div className={styles.mainContainer} style={{ height }}>
             {/* MapLibre Container (OSM/Satellite) */}
             <div 
                 ref={mapRef} 
-                style={{ 
-                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-                    visibility: mapProvider === '2gis' ? 'hidden' : 'visible',
-                    zIndex: mapProvider === '2gis' ? 0 : 1
-                }} 
+                className={`${styles.mapLayer} ${mapProvider === '2gis' ? styles.mapLayerHidden : styles.mapLayerVisible}`}
             />
             
             {/* 2GIS Container */}
             <div 
                 ref={twoGisContainerRef}
-                style={{
-                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-                    visibility: mapProvider === '2gis' ? 'visible' : 'hidden',
-                    zIndex: mapProvider === '2gis' ? 1 : 0,
-                    background: '#e2e8f0' // Placeholder
-                }}
+                className={`${styles.mapLayer} ${styles.twoGisPlaceholder} ${mapProvider === '2gis' ? styles.mapLayerVisible : styles.mapLayerHidden}`}
             />
             
             {/* Top Controls Container */}
-            <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                padding: '16px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '12px',
-                zIndex: 50, // Ensure above maps
-                pointerEvents: 'none' // Let clicks pass through empty areas
-            }}>
+            <div className={styles.topControlsContainer}>
                 {/* Map Provider Toggle */}
-                <div style={{
-                    background: 'rgba(15, 23, 42, 0.95)',
-                    backdropFilter: 'blur(16px)',
-                    padding: '4px',
-                    borderRadius: '12px',
-                    display: 'flex',
-                    gap: '4px',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
-                    pointerEvents: 'auto'
-                }}>
+                <div className={styles.providerToggle}>
                     {[
                         { key: 'osm', label: '🗺️ Схема', color: '#3b82f6' },
                         { key: '2gis', label: '🟢 2GIS', color: '#22c55e' },
@@ -874,17 +934,8 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                         <button
                             key={item.key}
                             onClick={() => setMapProvider(item.key as any)}
-                            style={{
-                                padding: '8px 16px',
-                                borderRadius: '8px',
-                                border: 'none',
-                                fontSize: '13px',
-                                fontWeight: 600,
-                                cursor: 'pointer',
-                                background: mapProvider === item.key ? item.color : 'transparent',
-                                color: mapProvider === item.key ? '#fff' : '#94a3b8',
-                                transition: 'all 0.2s',
-                            }}
+                            className={`${styles.providerBtn} ${mapProvider === item.key ? `text-white bg-[${item.color}]` : 'text-slate-400 bg-transparent'}`}
+                            style={{ backgroundColor: mapProvider === item.key ? item.color : 'transparent' }} // Keep inline for dynamic color from array
                         >
                             {item.label}
                         </button>
@@ -892,71 +943,118 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
                     <button
                         onClick={() => router.push('/properties')}
-                        style={{
-                            padding: '8px 16px',
-                            borderRadius: '8px',
-                            border: 'none',
-                            fontSize: '13px',
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                            background: 'rgba(255,255,255,0.1)',
-                            color: '#fff',
-                            transition: 'all 0.2s',
-                            marginLeft: '8px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px'
-                        }}
+                        className={styles.listBtn}
                     >
                         📋 <span>Список</span>
                     </button>
                 </div>
 
-                {/* Filters Bar */}
-                 <div style={{
-                    display: 'flex',
-                    gap: '8px',
-                    overflowX: 'auto',
-                    maxWidth: '100%',
-                    padding: '0 4px',
-                    scrollbarWidth: 'none',
-                    justifyContent: 'center',
-                    pointerEvents: 'auto',
-                    flexWrap: isMobile ? 'nowrap' : 'wrap'
-                }}>
-                    <div style={{ display: 'flex', gap: '8px', background: 'rgba(15,23,42,0.8)', padding: '4px', borderRadius: '12px', backdropFilter: 'blur(12px)', flexShrink: 0 }}>
-                        <button onClick={() => setShowHeatmap(!showHeatmap)} style={{ padding: '8px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: showHeatmap ? 'rgba(239, 68, 68, 0.2)' : 'transparent', color: showHeatmap ? '#f87171' : '#94a3b8', fontSize: '12px', fontWeight: 600, display: 'flex', gap: '6px', alignItems: 'center' }}>🔥 <span>Спрос</span></button>
-                        <button onClick={() => setShowInfra(!showInfra)} style={{ padding: '8px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: showInfra ? 'rgba(59, 130, 246, 0.2)' : 'transparent', color: showInfra ? '#60a5fa' : '#94a3b8', fontSize: '12px', fontWeight: 600, display: 'flex', gap: '6px', alignItems: 'center' }}>🏗️ <span>Инфра</span></button>
+
+                 {/* Filters Bar */}
+                 {/* <VIBE: FILTERS_STRIP> - DO NOT REMOVE ELEMENTS WITHOUT CONFIRMATION */}
+                 <div className={`${styles.filtersStrip} ${isMobile ? styles.filtersStripMobile : ''}`}>
+                    
+                    {/* Object Counter */}
+                    <div className={styles.objectCounter}>
+                        <span className={styles.counterIcon}>📊</span>
+                        <span className={styles.counterValue}>{filteredFeatures.length}</span>
                     </div>
-                     <div style={{ display: 'flex', gap: '4px', background: 'rgba(15,23,42,0.8)', padding: '4px', borderRadius: '12px', backdropFilter: 'blur(12px)', flexShrink: 0 }}>
+
+                    {/* Main Toggles */}
+                    <div className={styles.filterGroup}>
+                         <button 
+                            onClick={() => router.push('/details')} // Placeholder for details
+                            className={`${styles.filterBtn} bg-white/5 text-slate-400`}
+                        >
+                            🌍 <span>Обзор</span>
+                        </button>
+                        <button 
+                            onClick={() => setShowHeatmap(!showHeatmap)} 
+                            className={`${styles.filterBtn} ${showHeatmap ? 'bg-orange-500 text-white' : 'bg-transparent text-slate-400'}`}
+                        >
+                            🔥 <span>Heatmap</span>
+                        </button>
+                        <button 
+                            onClick={() => setShowInfra(!showInfra)} 
+                            className={`${styles.filterBtn} ${showInfra ? 'bg-pink-600 text-white' : 'bg-transparent text-slate-400'}`}
+                        >
+                            🏗️ <span>Инфра</span>
+                        </button>
+                        <button 
+                            onClick={() => {}} 
+                            className={`${styles.filterBtn} bg-transparent text-slate-400`}
+                        >
+                            💎 <span>ЖК</span>
+                        </button>
+                    </div>
+
+                    {/* Scenarios (Lifestyle) */}
+                     <div className={styles.separator} />
+
+                     <div className={styles.filterGroup}>
+                        <button 
+                            onClick={() => setScenario('all')} 
+                            className={`${styles.filterBtn} ${scenario === 'all' ? 'bg-violet-500 text-white' : 'bg-transparent text-slate-400'}`}
+                        >
+                            🎯 Все
+                        </button>
+                        <button 
+                            onClick={() => setScenario('investor')} 
+                            className={`${styles.filterBtn} ${scenario === 'investor' ? 'bg-white/10 text-white' : 'bg-transparent text-slate-400'}`}
+                        >
+                            💼 Инвестор
+                        </button>
+                        <button 
+                            onClick={() => setScenario('family')} 
+                            className={`${styles.filterBtn} ${scenario === 'family' ? 'bg-white/10 text-white' : 'bg-transparent text-slate-400'}`}
+                        >
+                            🧸 Семья
+                        </button>
+                         <button 
+                            onClick={() => setScenario('single')} 
+                            className={`${styles.filterBtn} ${scenario === 'single' ? 'bg-white/10 text-white' : 'bg-transparent text-slate-400'}`}
+                        >
+                            🔥 Одиночка
+                        </button>
+                    </div>
+
+                     <div className={styles.separator} />
+
+                     {/* Price Filters */}
+                     <div className={styles.filterGroup}>
                         {['all', 'low', 'mid', 'high', 'premium', 'luxury'].map(f => {
-                             const labels: Record<string, string> = { 'all': 'Все', 'low': 'Эконом', 'mid': 'Комфорт', 'high': 'Бизнес', 'premium': 'Премиум', 'luxury': 'Элит' };
+                             const labels: Record<string, string> = { 'all': 'Все цены', 'low': '<15M', 'mid': '15-30M', 'high': '30-50M', 'premium': '50M+', 'luxury': 'Элит' };
                             return (
-                                <button key={f} onClick={() => setPriceFilter(f as any)} style={{ padding: '8px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: priceFilter === f ? '#d4af37' : 'transparent', color: priceFilter === f ? '#000' : '#94a3b8', fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                                <button 
+                                    key={f} 
+                                    onClick={() => setPriceFilter(f as any)} 
+                                    className={`${styles.filterBtn} ${priceFilter === f ? 'bg-blue-500 text-white' : 'bg-transparent text-slate-400'}`}
+                                >
                                     {labels[f] || f}
                                 </button>
                             );
                         })}
                     </div>
                  </div>
+                 {/* </VIBE> */}
             </div>
 
             {/* Mobile Widgets */}
             <div className="widgets-container">
                 {isMobile ? (<MobileNewsCarousel />) : (
                     <>
-                        <div style={{ flex: 1, minWidth: '300px' }}><NewsFeed /></div>
-                        <div style={{ flex: 1, minWidth: '300px' }}><SocialFeed /></div>
-                        <div style={{ flex: 1, minWidth: '300px' }}><SMIFeed /></div>
+                        <div className="flex-1 min-w-[300px]"><NewsFeed /></div>
+                        <div className="flex-1 min-w-[300px]"><SocialFeed /></div>
+                        <div className="flex-1 min-w-[300px]"><SMIFeed /></div>
                     </>
                 )}
             </div>
 
             {/* Side Panel logic */}
             {!isMobile && (selectedPropertyId || selectedDistrict) && (
-                <div className="property-side-panel slide-right lux-dark-theme" style={{ display: 'flex', flexDirection: 'column', width: `${panelWidth}px` }}>
-                    <div ref={resizeRef} onMouseDown={() => setIsResizing(true)} style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '8px', cursor: 'ew-resize', background: isResizing ? 'rgba(212, 175, 55, 0.3)' : 'transparent', zIndex: 10 }} />
-                    <div className="side-panel-content" style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
+                <div className={`${styles.propertySidePanel} ${styles.slideRight} lux-dark-theme`} style={{ width: `${panelWidth}px` }}>
+                    <div ref={resizeRef} onMouseDown={() => setIsResizing(true)} className={`absolute left-0 top-0 bottom-0 w-2 cursor-ew-resize z-10 ${isResizing ? 'bg-[#d4af37]/30' : 'bg-transparent'}`} />
+                    <div className={styles.sidePanelContent}>
                          {(() => {
                             const p = data?.features.find(f => f.properties.id === selectedPropertyId)?.properties;
                             const d = selectedDistrict;
@@ -964,21 +1062,21 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                             const title = p ? p.title : d.name;
                             const subtitle = p ? p.address : 'Район Сочи';
                             return (
-                                <div style={{ color: '#fff' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', fontSize: '11px', color: '#94a3b8' }}>
-                                        <span onClick={() => { setSelectedPropertyId(null); setSelectedDistrict(null); }} style={{ cursor: 'pointer', borderBottom: '1px dashed #64748b' }}>Карта</span>
+                                <div className={styles.panelHeader}>
+                                    <div className={styles.breadcrumbs}>
+                                        <span onClick={() => { setSelectedPropertyId(null); setSelectedDistrict(null); }} className={styles.breadcrumbsLink}>Карта</span>
                                         <span>/</span>
-                                        <span style={{ color: '#d4af37' }}>{selectedDistrict ? selectedDistrict.name : 'Район'}</span>
-                                        {p && <><span>/</span><span style={{ color: '#fff' }}>{p.title}</span></>}
+                                        <span className={styles.breadcrumbsHighlight}>{selectedDistrict ? selectedDistrict.name : 'Район'}</span>
+                                        {p && <><span>/</span><span className={styles.breadcrumbsWhite}>{p.title}</span></>}
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '24px' }}>
+                                    <div className={styles.propertyHeader}>
                                         <div>
-                                            <h2 style={{ margin: '0 0 8px', fontSize: '24px', fontFamily: '"Playfair Display", serif', color: '#fff' }}>{title}</h2>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#94a3b8', fontSize: '13px' }}><span>📍</span> {subtitle}</div>
+                                            <h2 className={styles.propertyTitle}>{title}</h2>
+                                            <div className={styles.propertySubtitle}><span>📍</span> {subtitle}</div>
                                         </div>
-                                        <button onClick={() => { setSelectedPropertyId(null); setSelectedDistrict(null); }} className="close-btn">✕</button>
+                                        <button onClick={() => { setSelectedPropertyId(null); setSelectedDistrict(null); }} className={styles.closeBtn}>✕</button>
                                     </div>
-                                    <div className="tabs-container" style={{ display: 'flex', gap: '6px', marginBottom: '24px', overflowX: 'auto', paddingBottom: '12px', scrollbarWidth: 'none' }}>
+                                    <div className={styles.panelTabs}>
                                         {[
                                             { id: 'details', icon: '📝', label: 'Инфо' },
                                             { id: 'location', icon: '📍', label: 'Локация' },
@@ -987,20 +1085,32 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                                             { id: 'news', icon: '📰', label: 'СМИ' },
                                             { id: 'social', icon: '💬', label: 'Отзывы' }
                                         ].map(tab => (
-                                            <button key={tab.id} onClick={() => setActiveTab(tab.id as any)} className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}><span>{tab.icon}</span>{tab.label}</button>
+                                            <button 
+                                                key={tab.id} 
+                                                onClick={() => setActiveTab(tab.id as any)} 
+                                                className={`${styles.tabBtn} ${activeTab === tab.id ? styles.tabBtnActive : ''}`}
+                                            >
+                                                <span>{tab.icon}</span>{tab.label}
+                                            </button>
                                         ))}
                                     </div>
                                     <div className="tab-scroll-area">
                                         {activeTab === 'details' && p && (
-                                            <div className="fade-in">
-                                                <img src={p.image || getMockImage(p.id)} style={{ width: '100%', height: '240px', objectFit: 'cover', borderRadius: '16px', marginBottom: '24px' }} />
-                                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
-                                                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '16px', borderRadius: '16px' }}><div style={{ fontSize: '12px', color: '#94a3b8' }}>Стоимость</div><div style={{ fontSize: '24px', fontWeight: 700, color: '#d4af37' }}>{formatPrice(p.price)}</div></div>
-                                                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '16px', borderRadius: '16px' }}><div style={{ fontSize: '12px', color: '#94a3b8' }}>Цена за м²</div><div style={{ fontSize: '20px', fontWeight: 600 }}>{formatPrice(p.price_per_sqm)}</div></div>
+                                            <div className={styles.fadeIn}>
+                                                <img src={p.image || getMockImage(p.id)} alt={p.title || 'Фото объекта недвижимости'} className={styles.propertyImage} />
+                                                <div className={styles.priceGrid}>
+                                                    <div className={styles.priceCard}>
+                                                        <div className={styles.priceLabel}>Стоимость</div>
+                                                        <div className={styles.priceValueMain}>{formatPrice(p.price)}</div>
+                                                    </div>
+                                                    <div className={styles.priceCard}>
+                                                        <div className={styles.priceLabel}>Цена за м²</div>
+                                                        <div className={styles.priceValueSec}>{formatPrice(p.price_per_sqm)}</div>
+                                                    </div>
                                                 </div>
-                                                <h3 style={{ fontSize: '18px', marginBottom: '16px' }}>О проекте</h3>
-                                                <p style={{ lineHeight: 1.6, color: '#cbd5e1', marginBottom: '24px' }}>Эксклюзивный проект. Премиальная отделка, закрытая территория.</p>
-                                                <button className="book-btn">Записаться на просмотр</button>
+                                                <h3 className={styles.descTitle}>О проекте</h3>
+                                                <p className={styles.descText}>Эксклюзивный проект. Премиальная отделка, закрытая территория.</p>
+                                                <button className={styles.bookBtn}>Записаться на просмотр</button>
                                             </div>
                                         )}
                                         {activeTab === 'details' && !p && d && (<DistrictDetails district={d} onClose={() => setSelectedDistrict(null)} embedded={true} />)}
@@ -1016,38 +1126,6 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                     </div>
                 </div>
             )}
-
-            <style jsx>{`
-                .property-side-panel {
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(15, 23, 42, 0.95);
-                    backdrop-filter: blur(20px);
-                    border-left: 1px solid rgba(255, 255, 255, 0.1);
-                    z-index: 1000;
-                    overflow: hidden;
-                    display: flex;
-                    flex-direction: column;
-                    transition: box-shadow 0.2s;
-                    box-shadow: -10px 0 30px rgba(0,0,0,0.3);
-                }
-                .tabs-container::-webkit-scrollbar { display: none; }
-                .side-panel-content { padding: 24px; height: 100%; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(212, 175, 55, 0.3) transparent; }
-                .close-btn { background: rgba(255,255,255,0.05); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; transition: all 0.2s; }
-                .close-btn:hover { background: rgba(255, 215, 0, 0.2); color: var(--elite-accent-gold); }
-                .tab-btn { flex: 0 0 auto; padding: 8px 12px; border-radius: 10px; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; transition: all 0.3s; white-space: nowrap; min-width: 56px; }
-                .tab-btn.active { background: rgba(212, 175, 55, 0.15); color: var(--elite-accent-gold); }
-                .tab-btn span { font-size: 18px; }
-                .book-btn { width: 100%; padding: 18px; border-radius: 16px; background: linear-gradient(135deg, #d4af37, #b8860b); color: #0a1128; font-weight: 800; border: none; cursor: pointer; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3); transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; }
-                .book-btn:hover { transform: translateY(-4px); boxShadow: 0 15px 40px rgba(212, 175, 55, 0.5); }
-                .slide-right { animation: slideRight 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards; }
-                @keyframes slideRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-                .fade-in { animation: fadeIn 0.4s ease-out; }
-                @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-                @media (max-width: 1200px) { .property-side-panel { width: 360px; } }
-             `}</style>
         </div>
     );
 }

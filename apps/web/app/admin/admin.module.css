@@ -1,0 +1,312 @@
+/* Стили для административной панели */
+
+/* === AuthGuard === */
+.authLoading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0f172a;
+  color: #fff;
+}
+
+.authLoadingContent {
+  text-align: center;
+}
+
+.authSpinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(212, 175, 55, 0.3);
+  border-top-color: #d4af37;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+.authLoadingText {
+  color: #94a3b8;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* === Layout === */
+.adminContainer {
+  display: flex;
+  min-height: 100vh;
+  background: #0f172a;
+}
+
+.adminSidebar {
+  width: 240px;
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.adminLogo {
+  font-size: 20px;
+  font-weight: 800;
+  color: #d4af37;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adminNavGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 24px;
+}
+
+.adminNavItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.adminNavItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.adminNavItemActive {
+  background: rgba(212, 175, 55, 0.15);
+  color: #d4af37;
+}
+
+.adminUserSection {
+  margin-top: auto;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.adminUserInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.adminUserAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d4af37, #b8860b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.adminUserName {
+  font-weight: 600;
+  font-size: 14px;
+  color: #fff;
+}
+
+.adminUserRole {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.adminLogoutBtn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: #94a3b8;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.adminLogoutBtn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.adminMainContent {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+/* === Login Page === */
+.loginContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  padding: 20px;
+}
+
+.loginCard {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(30, 41, 59, 0.8);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+}
+
+.loginHeader {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.loginLogo {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.loginTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 8px;
+}
+
+.loginSubtitle {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.loginInputGroup {
+  position: relative;
+}
+
+.loginInputIcon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  z-index: 1;
+}
+
+.loginInput {
+  width: 100%;
+  padding: 16px 16px 16px 48px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.loginInput:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.loginInput::placeholder {
+  color: #475569;
+}
+
+.loginButton {
+  padding: 16px;
+  border-radius: 12px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 8px;
+}
+
+.loginButtonPrimary {
+  background: linear-gradient(135deg, #d4af37, #b8860b);
+  color: #0f172a;
+}
+
+.loginButtonPrimary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+}
+
+.loginButtonPrimary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.loginError {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.loginSuccess {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #86efac;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.loginToggle {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.loginToggleText {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.loginToggleLink {
+  color: #d4af37;
+  cursor: pointer;
+  margin-left: 8px;
+  font-weight: 500;
+}
+
+.loginToggleLink:hover {
+  text-decoration: underline;
+}

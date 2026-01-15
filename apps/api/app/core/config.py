@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     def SQLALCHEMY_DATABASE_URI(self) -> str:
         # Use SQLite for local development if POSTGRES_SERVER is 'localhost' and no Docker
         if self.ENVIRONMENT == "local":
-            return "sqlite:///./estate_analytics.db"
+            return "sqlite:///./estate_analytics_dev.db"
         return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
 

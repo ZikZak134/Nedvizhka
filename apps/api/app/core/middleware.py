@@ -13,11 +13,13 @@ class MetricMiddleware(BaseHTTPMiddleware):
         structlog.contextvars.clear_contextvars()
         structlog.contextvars.bind_contextvars(request_id=request_id)
         
+        print(f"[DEBUG] Request: {request.method} {request.url.path}")  # DEBUG
         start_time = time.perf_counter()
         
         try:
             response = await call_next(request)
             process_time = time.perf_counter() - start_time
+            print(f"[DEBUG] Response: {response.status_code}")  # DEBUG
             
             logger.info(
                 "request_completed",
@@ -29,6 +31,9 @@ class MetricMiddleware(BaseHTTPMiddleware):
             response.headers["X-Request-Id"] = request_id
             return response
         except Exception as e:
+            import traceback
+            print(f"[DEBUG] Exception: {e}")  # DEBUG
+            print(traceback.format_exc())  # DEBUG
             process_time = time.perf_counter() - start_time
             logger.error(
                 "request_failed",

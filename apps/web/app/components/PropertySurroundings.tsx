@@ -3,7 +3,6 @@
 /**
  * PropertySurroundings — Вкладка «Окружение» в боковой панели объекта
  * Показывает экологию, уровень шума, зелёные зоны и качество жизни
- * Адаптировано для светлой темы luxury-дизайна
  */
 
 interface EnvironmentScore {
@@ -13,46 +12,51 @@ interface EnvironmentScore {
     description: string;
 }
 
-interface PropertySurroundingsProps {
-    propertyId: string;
+interface GreenZone {
+    name: string;
+    distance: string;
+    type: string;
 }
 
-// Mock-данные экологии
-const MOCK_ENVIRONMENT: EnvironmentScore[] = [
+interface PropertySurroundingsProps {
+    propertyId: string;
+    environment?: EnvironmentScore[];
+    greenZones?: GreenZone[];
+    description?: string;
+}
+
+const DEFAULT_ENVIRONMENT: EnvironmentScore[] = [
     { name: 'Экология', icon: '🌿', score: 5, description: 'Отличное качество воздуха' },
     { name: 'Тишина', icon: '🔇', score: 4, description: 'Низкий уровень шума' },
     { name: 'Озеленение', icon: '🌳', score: 5, description: 'Много парков и скверов' },
-    { name: 'Безопасность', icon: '🛡️', score: 4, description: 'Охраняемая территория' },
-    { name: 'Вид', icon: '🌅', score: 5, description: 'Панорама моря и гор' },
 ];
 
-// Ближайшие зелёные зоны
-const MOCK_GREEN_ZONES = [
+const DEFAULT_GREEN_ZONES = [
     { name: 'Парк «Ривьера»', distance: '400 м', type: 'park' },
-    { name: 'Дендрарий', distance: '1.2 км', type: 'garden' },
     { name: 'Набережная', distance: '200 м', type: 'promenade' },
 ];
 
-export function PropertySurroundings({ propertyId }: PropertySurroundingsProps) {
-    // Средний балл
-    const avgScore = (MOCK_ENVIRONMENT.reduce((sum, e) => sum + e.score, 0) / MOCK_ENVIRONMENT.length).toFixed(1);
+export function PropertySurroundings({ 
+    propertyId, 
+    environment = DEFAULT_ENVIRONMENT, 
+    greenZones = DEFAULT_GREEN_ZONES,
+    description = "Объект расположен в элитном курортном районе с видом на море. Закрытая охраняемая территория."
+}: PropertySurroundingsProps) {
+    
+    const avgScore = (environment.reduce((sum, e) => sum + e.score, 0) / environment.length).toFixed(1);
 
     return (
         <div className="lux-surroundings fade-in">
             {/* Общий рейтинг */}
             <div className="lux-surroundings-score-card">
-                <div className="lux-surroundings-label">
-                    Качество окружения
-                </div>
+                <div className="lux-surroundings-label">Качество окружения</div>
                 <div className="lux-surroundings-score-val">
                     {avgScore}
                     <span className="lux-surroundings-score-max">/5</span>
                 </div>
                 <div className="lux-surroundings-stars">
                     {[1, 2, 3, 4, 5].map(star => (
-                        <span key={star} style={{
-                            opacity: star <= Math.round(parseFloat(avgScore)) ? 1 : 0.25
-                        }}>
+                        <span key={star} style={{ opacity: star <= Math.round(parseFloat(avgScore)) ? 1 : 0.25 }}>
                             ⭐
                         </span>
                     ))}
@@ -61,11 +65,9 @@ export function PropertySurroundings({ propertyId }: PropertySurroundingsProps) 
 
             {/* Показатели окружения */}
             <div className="lux-surroundings-section">
-                <h4 className="lux-surroundings-title">
-                    🎯 Показатели
-                </h4>
+                <h4 className="lux-surroundings-title">🎯 Показатели</h4>
                 <div className="lux-surroundings-list">
-                    {MOCK_ENVIRONMENT.map((env, idx) => (
+                    {environment.map((env, idx) => (
                         <EnvironmentRow key={idx} item={env} />
                     ))}
                 </div>
@@ -73,11 +75,9 @@ export function PropertySurroundings({ propertyId }: PropertySurroundingsProps) 
 
             {/* Зелёные зоны */}
             <div className="lux-surroundings-section">
-                <h4 className="lux-surroundings-title">
-                    🌲 Зелёные зоны рядом
-                </h4>
+                <h4 className="lux-surroundings-title">🌲 Зелёные зоны рядом</h4>
                 <div className="lux-green-zones-grid">
-                    {MOCK_GREEN_ZONES.map((zone, idx) => (
+                    {greenZones.map((zone, idx) => (
                         <div key={idx} className="lux-green-zone-tag">
                             <span className="lux-green-zone-icon">
                                 {zone.type === 'park' ? '🌳' : zone.type === 'garden' ? '🌺' : '🌊'}
@@ -91,13 +91,8 @@ export function PropertySurroundings({ propertyId }: PropertySurroundingsProps) 
 
             {/* Особенности локации */}
             <div className="lux-surroundings-features">
-                <div className="lux-surroundings-label lux-surroundings-label--features">
-                    ✨ Особенности
-                </div>
-                <div className="lux-surroundings-text">
-                    Объект расположен в элитном курортном районе с видом на море.
-                    Закрытая охраняемая территория, развитая инфраструктура для отдыха.
-                </div>
+                <div className="lux-surroundings-label lux-surroundings-label--features">✨ Особенности</div>
+                <div className="lux-surroundings-text">{description}</div>
             </div>
         </div>
     );
@@ -113,24 +108,21 @@ function EnvironmentRow({ item }: { item: EnvironmentScore }) {
 
     return (
         <div className="lux-env-row" style={{
-            background: 'rgba(255,255,255,0.05)',
-            padding: '12px',
-            borderRadius: '12px',
-            marginBottom: '8px',
-            border: '1px solid rgba(255,255,255,0.1)'
+            background: 'rgba(255,255,255,0.05)', padding: '12px', borderRadius: '12px',
+            marginBottom: '8px', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center'
         }}>
-            <div className="lux-env-row-left">
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                 <span className="lux-env-icon">{item.icon}</span>
                 <div>
-                    <div className="lux-env-name" style={{ color: '#fff' }}>{item.name}</div>
-                    <div className="lux-env-desc" style={{ color: 'rgba(255,255,255,0.6)' }}>{item.description}</div>
+                    <div style={{ color: '#fff', fontSize: '14px', fontWeight: 600 }}>{item.name}</div>
+                    <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>{item.description}</div>
                 </div>
             </div>
-            <div className="lux-env-dots">
+            <div className="lux-env-dots" style={{ display: 'flex', gap: '4px' }}>
                 {[1, 2, 3, 4, 5].map(n => (
-                    <div key={n}
-                        className={`lux-env-dot ${n <= item.score ? scoreClass : ''}`}
-                    />
+                    <div key={n} className={`lux-env-dot ${n <= item.score ? scoreClass : ''}`} style={{
+                        width: '8px', height: '8px', borderRadius: '50%', background: n <= item.score ? '' : '#334155'
+                    }} />
                 ))}
             </div>
         </div>

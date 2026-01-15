@@ -75,33 +75,9 @@ export default function PropertiesPage() {
         } catch (error) {
             console.error('Failed to fetch properties (using fallback):', error);
 
-            // FALLBACK TO MOCK DATA (Elite Style)
-            const mockItems = Array.from({ length: 12 }).map((_, i) => {
-                const loc = getMockLocation(i);
-                return {
-                    id: `mock-prop-${i}`,
-                    title: `Elite Residence #${i + 1} with Sea View`,
-                    description: 'Luxury apartment with panoramic views of the Black Sea. Premium finishing, smart home system.',
-                    price: 25000000 + (Math.random() * 50000000),
-                    currency: 'RUB',
-                    address: loc.address,
-                    latitude: loc.lat,
-                    longitude: loc.lng,
-                    area_sqm: 80 + Math.floor(Math.random() * 120),
-                    rooms: `${Math.floor(Math.random() * 3) + 2}`,
-                    floor: Math.floor(Math.random() * 15) + 1,
-                    total_floors: 20,
-                    source: 'mock',
-                    images: [getMockImage(`fallback-${i}`)],
-                    features: { pool: Math.random() > 0.5, parking: true },
-                    created_at: new Date().toISOString(),
-                    is_active: true
-                };
-            });
-
-            setProperties(mockItems as any);
-            setTotalPages(5); // Mock pages
-            setTotal(60);
+            setProperties([]);
+            setTotalPages(1);
+            setTotal(0);
         } finally {
             setLoading(false);
         }

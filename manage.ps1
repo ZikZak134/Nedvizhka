@@ -41,11 +41,11 @@ try {
         }
         "api-dev" {
             Set-Location "$Root\apps\api"
-            uvicorn app.main:app --reload
+            powershell -ExecutionPolicy Bypass -File ./dev.ps1
         }
         "web-dev" {
             Set-Location "$Root\apps\web"
-            npm run dev
+            powershell -ExecutionPolicy Bypass -File ./dev.ps1
         }
         "verify" {
             Write-Host "--- VERIFICATION START ---" -ForegroundColor Cyan

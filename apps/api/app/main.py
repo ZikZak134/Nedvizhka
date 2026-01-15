@@ -12,8 +12,14 @@ from app.core.middleware import MetricMiddleware
 setup_logging()
 logger = structlog.get_logger()
 
+from app.core.db import Base
+from app.core.deps import engine
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Создаём таблицы БД автоматически
+    Base.metadata.create_all(bind=engine)
+    
     # Startup: Initialize resources (DB pools, Redis)
     logger.info("startup", app_name=settings.PROJECT_NAME)
     yield
@@ -24,8 +30,8 @@ app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
-    default_response_class=ORJSONResponse,
     lifespan=lifespan,
+    # debug=settings.ENVIRONMENT == "local", # Optional, removed for cleanliness
 )
 
 app.add_middleware(MetricMiddleware)

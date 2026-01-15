@@ -1,8 +1,8 @@
-version: '3.8'
+version: "3.8"
 
 services:
   db:
-    image: timescale/timescaledb:latest-pg16
+    image: postgis/postgis:16-3.4-alpine
     ports:
       - "5432:5432"
     environment:
@@ -23,7 +23,7 @@ services:
       - "6379:6379"
 
   api:
-    build: 
+    build:
       context: apps/api
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     volumes:

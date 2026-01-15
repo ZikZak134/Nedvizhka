@@ -45,9 +45,18 @@ def get_properties(
     return items, total
 
 
+from app.services.geo_service import GeoService
+
 def create_property(db: Session, property_data: PropertyCreate) -> Property:
     """Create a new property."""
-    db_property = Property(**property_data.model_dump())
+    data = property_data.model_dump()
+    
+    # Auto-Calculate Distances
+    if data.get('latitude') and data.get('longitude'):
+        distances = GeoService.calculate_distances(db, data['latitude'], data['longitude'])
+        data['distances'] = distances
+
+    db_property = Property(**data)
     db.add(db_property)
     db.commit()
     db.refresh(db_property)
@@ -59,6 +68,22 @@ def update_property(db: Session, property_id: str, property_data: PropertyUpdate
     db_property = get_property(db, property_id)
     if not db_property:
         return None
+    
+    update_data = property_data.model_dump(exclude_unset=True)
+    
+    # If location changed, recalculate distances
+    if 'latitude' in update_data or 'longitude' in update_data:
+        lat = update_data.get('latitude', db_property.latitude)
+        lon = update_data.get('longitude', db_property.longitude)
+        
+        if lat and lon:
+            distances = GeoService.calculate_distances(db, lat, lon)
+            update_data['distances'] = distances 
+            # Also update the object field directly since setattr might miss nested dict update logic if handled poorly
+            setattr(db_property, 'distances', distances)
+
+    for field, value in update_data.items():
+        setattr(db_property, field, value)
     
     update_data = property_data.model_dump(exclude_unset=True)
     for field, value in update_data.items():

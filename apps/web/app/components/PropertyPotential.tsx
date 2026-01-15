@@ -3,7 +3,6 @@
 /**
  * PropertyPotential — Вкладка «Потенциал» в боковой панели объекта
  * Показывает прогнозы развития, планы застройки района и ценовые тренды
- * Адаптировано для светлой темы luxury-дизайна
  */
 
 interface GrowthForecast {
@@ -22,54 +21,47 @@ interface DevelopmentProject {
 interface PropertyPotentialProps {
     propertyId: string;
     currentGrowth?: number;
+    forecasts?: GrowthForecast[];
+    projects?: DevelopmentProject[];
 }
 
-// Mock-данные прогнозов
-const MOCK_FORECASTS: GrowthForecast[] = [
+const DEFAULT_FORECASTS: GrowthForecast[] = [
     { period: '1 год', growth: 12, confidence: 'high' },
-    { period: '3 года', growth: 38, confidence: 'high' },
     { period: '5 лет', growth: 65, confidence: 'medium' },
     { period: '10 лет', growth: 127, confidence: 'medium' },
 ];
 
-// Mock-данные проектов развития
-const MOCK_PROJECTS: DevelopmentProject[] = [
+const DEFAULT_PROJECTS: DevelopmentProject[] = [
     { name: 'Новая набережная', status: 'in_progress', year: '2025', impact: 'positive' },
     { name: 'Метробус до центра', status: 'planned', year: '2026', impact: 'positive' },
-    { name: 'Реновация парка', status: 'completed', year: '2024', impact: 'positive' },
 ];
 
-export function PropertyPotential({ propertyId, currentGrowth = 127 }: PropertyPotentialProps) {
+export function PropertyPotential({ 
+    propertyId, 
+    currentGrowth = 127, 
+    forecasts = DEFAULT_FORECASTS, 
+    projects = DEFAULT_PROJECTS 
+}: PropertyPotentialProps) {
     return (
         <div className="property-potential fade-in lux-potential-container">
             {/* Текущий рейтинг */}
             <div className="lux-potential-card lux-potential-card--primary">
-                <div className="lux-potential-label">
-                    Инвестиционный потенциал
-                </div>
+                <div className="lux-potential-label">Инвестиционный потенциал</div>
                 <div className="lux-potential-score">
                     <span className="lux-potential-score-icon">📈</span>
                     +{currentGrowth}%
                 </div>
-                <div className="lux-potential-subtext">
-                    Прогноз роста на 10 лет
-                </div>
+                <div className="lux-potential-subtext">Прогноз роста на 10 лет</div>
             </div>
 
             {/* Прогноз по периодам */}
             <div className="lux-potential-section">
-                <h4 className="lux-potential-title">
-                    🎯 Прогноз роста стоимости
-                </h4>
+                <h4 className="lux-potential-title">🎯 Прогноз роста стоимости</h4>
                 <div className="lux-potential-grid">
-                    {MOCK_FORECASTS.map((forecast, idx) => (
+                    {forecasts.map((forecast, idx) => (
                         <div key={idx} className="lux-potential-item">
-                            <div className="lux-potential-item-period">
-                                {forecast.period}
-                            </div>
-                            <div className={`lux-potential-item-growth ${forecast.growth >= 50 ? 'growth-high' :
-                                forecast.growth >= 20 ? 'growth-med' : 'growth-low'
-                                }`}>
+                            <div className="lux-potential-item-period">{forecast.period}</div>
+                            <div className={`lux-potential-item-growth ${forecast.growth >= 50 ? 'growth-high' : forecast.growth >= 20 ? 'growth-med' : 'growth-low'}`}>
                                 +{forecast.growth}%
                             </div>
                             <ConfidenceBadge level={forecast.confidence} />
@@ -80,11 +72,9 @@ export function PropertyPotential({ propertyId, currentGrowth = 127 }: PropertyP
 
             {/* Проекты развития */}
             <div className="lux-potential-section">
-                <h4 className="lux-potential-title">
-                    🏗️ Развитие района
-                </h4>
+                <h4 className="lux-potential-title">🏗️ Развитие района</h4>
                 <div className="lux-potential-list">
-                    {MOCK_PROJECTS.map((project, idx) => (
+                    {projects.map((project, idx) => (
                         <ProjectRow key={idx} project={project} />
                     ))}
                 </div>
@@ -92,9 +82,7 @@ export function PropertyPotential({ propertyId, currentGrowth = 127 }: PropertyP
 
             {/* Факторы роста */}
             <div className="lux-potential-card lux-potential-card--factors">
-                <div className="lux-potential-factors-title">
-                    💡 Ключевые факторы роста
-                </div>
+                <div className="lux-potential-factors-title">💡 Ключевые факторы роста</div>
                 <ul className="lux-potential-factors-list">
                     <li>Развитие курортной инфраструктуры</li>
                     <li>Ограниченное предложение на первой линии</li>
@@ -112,12 +100,7 @@ function ConfidenceBadge({ level }: { level: 'high' | 'medium' | 'low' }) {
         low: { label: '●○○', className: 'confidence-low' },
     };
     const style = colors[level];
-
-    return (
-        <span className={`lux-confidence-badge ${style.className}`}>
-            {style.label}
-        </span>
-    );
+    return <span className={`lux-confidence-badge ${style.className}`}>{style.label}</span>;
 }
 
 function ProjectRow({ project }: { project: DevelopmentProject }) {
@@ -127,7 +110,6 @@ function ProjectRow({ project }: { project: DevelopmentProject }) {
         completed: { label: 'Завершён', className: 'status-completed' },
     };
     const status = statusMap[project.status];
-
     return (
         <div className="lux-project-row">
             <div className="lux-project-info">
@@ -139,9 +121,7 @@ function ProjectRow({ project }: { project: DevelopmentProject }) {
                     <div className="lux-project-year">{project.year}</div>
                 </div>
             </div>
-            <span className={`lux-project-status ${status.className}`}>
-                {status.label}
-            </span>
+            <span className={`lux-project-status ${status.className}`}>{status.label}</span>
         </div>
     );
 }

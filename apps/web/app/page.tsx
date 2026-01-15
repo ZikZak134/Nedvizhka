@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { Header } from './components/Header';
 // Dynamic import for premium map
 const PremiumMap = dynamic(
@@ -19,10 +20,14 @@ function MapLoading() {
             justifyContent: 'center',
             background: 'linear-gradient(135deg, #0f172a, #1e293b)'
         }}>
-            <div style={{ color: '#fff', textAlign: 'center' }}>
+            <motion.div 
+                animate={{ opacity: [0.6, 1, 0.6], scale: [0.98, 1, 0.98] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                style={{ color: '#fff', textAlign: 'center' }}
+            >
                 <div style={{ fontSize: '64px', marginBottom: '16px' }}>🗺️</div>
                 <div style={{ fontSize: '18px', fontWeight: 600 }}>Загружаем карту инвестиций...</div>
-            </div>
+            </motion.div>
         </div>
     );
 }
