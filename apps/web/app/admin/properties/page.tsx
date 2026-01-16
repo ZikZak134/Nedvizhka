@@ -209,30 +209,35 @@ export default function AdminProperties() {
         ? `${API_URL}/api/v1/properties/${editingId}`
         : `${API_URL}/api/v1/properties`;
       
+      console.log('📤 Отправка данных:', { url, method: editingId ? 'PATCH' : 'POST', payload });
+      
       const response = await authFetch(url, {
         method: editingId ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
+      console.log('📥 Ответ сервера:', response.status, response.statusText);
+
       if (response.ok) {
         setStatus('success');
         showSuccess(editingId ? 'Объект успешно обновлён!' : 'Объект успешно создан!');
-        setTimeout(() => {
-          setStatus('idle');
-          setShowForm(false);
-          setEditingId(null);
-          setFormData(EMPTY_FORM);
-          fetchProperties(currentPage);
-        }, 1500);
+        // Мгновенный редирект на список объектов
+        setShowForm(false);
+        setEditingId(null);
+        setFormData(EMPTY_FORM);
+        fetchProperties(1); // Переход на первую страницу чтобы увидеть новый объект
+        setTimeout(() => setStatus('idle'), 500);
       } else {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || 'Ошибка сохранения');
+        console.error('❌ Ошибка API:', response.status, errorData);
+        const errorMessage = errorData.detail || errorData.message || `Ошибка сервера: ${response.status}`;
+        throw new Error(errorMessage);
       }
     } catch (err: any) {
-      console.error(err);
+      console.error('❌ Ошибка сохранения:', err);
       setStatus('error');
-      showError(err.message || 'Не удалось сохранить объект');
+      showError(err.message || 'Не удалось сохранить объект. Проверьте подключение к серверу.');
     }
   };
 

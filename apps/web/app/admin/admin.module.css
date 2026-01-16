@@ -375,7 +375,7 @@
 }
 
 .formInput::placeholder {
-  color: transparent;
+  color: #64748b;
 }
 
 /* Floating Label */
@@ -439,6 +439,10 @@
   border-color: #d4af37;
   background: rgba(15, 23, 42, 0.7);
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08);
+}
+
+.formTextarea::placeholder {
+  color: #64748b;
 }
 
 /* === SELECT === */

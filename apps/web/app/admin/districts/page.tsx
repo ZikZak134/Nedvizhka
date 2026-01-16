@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import LocationPicker from '../components/LocationPicker';
 
 interface District {
     id?: number;
@@ -162,15 +163,26 @@ export default function DistrictsAdminPage() {
             {/* Модальное окно редактирования */}
             {editing && (
                 <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-                    <div style={{ background: '#1e293b', borderRadius: '16px', padding: '32px', width: '500px', maxHeight: '90vh', overflow: 'auto' }}>
+                    <div style={{ background: '#1e293b', borderRadius: '16px', padding: '32px', width: '600px', maxHeight: '90vh', overflow: 'auto' }}>
                         <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '24px', color: '#fff' }}>
                             {editing.id ? 'Редактирование района' : 'Новый район'}
                         </h2>
                         <form onSubmit={(e) => { e.preventDefault(); saveDistrict(editing); }}>
                             <div style={{ marginBottom: '16px' }}>
                                 <label style={label}>Название *</label>
-                                <input style={input} value={editing.name} onChange={e => setEditing({ ...editing, name: e.target.value })} required />
+                                <input style={input} value={editing.name} onChange={e => setEditing({ ...editing, name: e.target.value })} required placeholder="Например: Центральный" />
                             </div>
+                            
+                            {/* Карта для выбора центра района */}
+                            <div style={{ marginBottom: '16px' }}>
+                                <label style={label}>📍 Центр района на карте</label>
+                                <LocationPicker
+                                    initialLat={editing.center_lat}
+                                    initialLon={editing.center_lng}
+                                    onChange={(lat, lng) => setEditing({ ...editing, center_lat: lat, center_lng: lng })}
+                                />
+                            </div>
+                            
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                                 <div>
                                     <label style={label}>Широта</label>
