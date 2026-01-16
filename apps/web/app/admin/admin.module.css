@@ -2011,3 +2011,26 @@
   cursor: not-allowed;
 }
 
+/* Sticky sidebar column */
+.sidebarColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  position: sticky;
+  top: 24px;
+}
+
+/* Button margin top */
+.btnMarginTop {
+  margin-top: 16px;
+}
+
+/* Min height for textarea dynamic */
+.textareaMinHeight140 {
+  min-height: 140px;
+}
+
+.textareaMinHeight100 {
+  min-height: 100px;
+}
+

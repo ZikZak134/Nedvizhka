@@ -1,0 +1,180 @@
+/* Public pages styles */
+
+/* Home page loading state */
+.mapLoadingContainer {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+}
+
+.mapLoadingContent {
+    color: #fff;
+    text-align: center;
+}
+
+.mapLoadingIcon {
+    font-size: 64px;
+    margin-bottom: 16px;
+}
+
+.mapLoadingText {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Full page container */
+.fullPageContainer {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #0f172a;
+}
+
+.mainContent {
+    flex: 1;
+    position: relative;
+}
+
+/* Reveal animation */
+.revealWrapper {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+}
+
+.revealInner {
+    display: inline-block;
+}
+
+/* Properties list page */
+.propertiesListContainer {
+    padding: 24px;
+}
+
+.propertiesListHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.propertiesListTitle {
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.propertiesListGrid {
+    display: grid;
+    gap: 24px;
+}
+
+.propertyCard {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.propertyCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.propertyCardImage {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.propertyCardContent {
+    padding: 16px;
+}
+
+.propertyCardTitle {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.propertyCardPrice {
+    font-size: 20px;
+    font-weight: 700;
+    color: #d4af37;
+}
+
+/* Property detail page */
+.propertyDetailContainer {
+    min-height: 100vh;
+    background: #0f172a;
+}
+
+.propertyDetailHeader {
+    position: relative;
+    height: 400px;
+}
+
+.propertyDetailImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.propertyDetailOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 32px;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.95), transparent);
+}
+
+.propertyDetailTitle {
+    font-size: 36px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.propertyDetailAddress {
+    font-size: 16px;
+    color: #94a3b8;
+}
+
+.propertyDetailContent {
+    padding: 32px;
+}
+
+.propertyDetailGrid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 32px;
+}
+
+/* PremiumMap additional */
+.popupContent {
+    text-align: center;
+    padding: 8px;
+}
+
+.popupTitle {
+    font-weight: 600;
+    font-size: 14px;
+    color: #1e293b;
+}
+
+.popupPrice {
+    color: #d4af37;
+    font-weight: 700;
+    font-size: 16px;
+    margin-top: 4px;
+}
+
+.markerLabel {
+    font-weight: 600;
+    font-size: 12px;
+}

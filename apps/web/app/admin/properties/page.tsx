@@ -533,7 +533,7 @@ export default function AdminProperties() {
           </div>
 
           {/* RIGHT COLUMN */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', position: 'sticky', top: '24px' }}>
+          <div className={styles.sidebarColumn}>
               
               {/* ЭКОЛОГИЯ */}
               <Section title="🌿 Окружение (1-5)">
@@ -680,8 +680,7 @@ export default function AdminProperties() {
           <p>Объекты не найдены</p>
           <button 
             onClick={handleNewProperty}
-            className={styles.btnPrimary}
-            style={{ marginTop: '16px' }}
+            className={`${styles.btnPrimary} ${styles.btnMarginTop}`}
           >
             Создать первый объект
           </button>

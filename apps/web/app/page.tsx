@@ -5,6 +5,8 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Header } from './components/Header';
+import styles from './styles/public.module.css';
+
 // Dynamic import for premium map
 const PremiumMap = dynamic(
     () => import('./components/PremiumMap').then(mod => mod.PremiumMap),
@@ -13,20 +15,14 @@ const PremiumMap = dynamic(
 
 function MapLoading() {
     return (
-        <div style={{
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'linear-gradient(135deg, #0f172a, #1e293b)'
-        }}>
+        <div className={styles.mapLoadingContainer}>
             <motion.div 
                 animate={{ opacity: [0.6, 1, 0.6], scale: [0.98, 1, 0.98] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                style={{ color: '#fff', textAlign: 'center' }}
+                className={styles.mapLoadingContent}
             >
-                <div style={{ fontSize: '64px', marginBottom: '16px' }}>🗺️</div>
-                <div style={{ fontSize: '18px', fontWeight: 600 }}>Загружаем карту инвестиций...</div>
+                <div className={styles.mapLoadingIcon}>🗺️</div>
+                <div className={styles.mapLoadingText}>Загружаем карту инвестиций...</div>
             </motion.div>
         </div>
     );
@@ -34,17 +30,11 @@ function MapLoading() {
 
 export default function HomePage() {
     return (
-        <div style={{
-            height: '100vh',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            background: '#0f172a'
-        }}>
+        <div className={styles.fullPageContainer}>
             <Header />
 
             {/* Full Screen Premium Map */}
-            <main style={{ flex: 1, position: 'relative' }}>
+            <main className={styles.mainContent}>
                 <PremiumMap height="100%" />
             </main>
         </div>
