@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useCallback } from 'react';
+import styles from '../admin.module.css';
 
 interface ImageGalleryEditorProps {
     images: string[];
@@ -33,7 +34,7 @@ export default function ImageGalleryEditor({ images, onChange }: ImageGalleryEdi
             }
 
             const data = await response.json();
-            return data.url; // /uploads/filename.ext
+            return data.url;
         } catch (error) {
             console.error('Upload error:', error);
             return null;
@@ -119,22 +120,19 @@ export default function ImageGalleryEditor({ images, onChange }: ImageGalleryEdi
     };
 
     return (
-        <div style={{ background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <label style={{ display: 'block', marginBottom: '12px', fontWeight: 600, color: '#fff' }}>🖼️ Галерея изображений</label>
+        <div className={styles.galleryContainer}>
+            <label className={styles.galleryLabel}>🖼️ Галерея изображений</label>
             
             {/* Превью загруженных изображений */}
             {images.length > 0 && (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '12px', marginBottom: '16px' }}>
+                <div className={styles.galleryGrid}>
                     {images.map((url, index) => (
-                        <div key={index} style={{ position: 'relative', aspectRatio: '1/1', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
-                            <img src={url} alt={`Preview ${index}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <div key={index} className={styles.galleryItem}>
+                            <img src={url} alt={`Preview ${index}`} className={styles.galleryItemImage} />
                             <button 
                                 type="button"
                                 onClick={() => removeImage(index)}
-                                style={{ 
-                                    position: 'absolute', top: '4px', right: '4px', background: 'rgba(220, 38, 38, 0.8)', 
-                                    color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', padding: '2px 6px', fontSize: '10px' 
-                                }}
+                                className={styles.galleryItemRemove}
                             >
                                 ✕
                             </button>
@@ -150,29 +148,20 @@ export default function ImageGalleryEditor({ images, onChange }: ImageGalleryEdi
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
                 onClick={handleFileSelect}
-                style={{
-                    border: `2px dashed ${isDragging ? '#d4af37' : 'rgba(255,255,255,0.2)'}`,
-                    borderRadius: '12px',
-                    padding: '32px',
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    marginBottom: '16px',
-                    background: isDragging ? 'rgba(212, 175, 55, 0.1)' : 'rgba(255,255,255,0.02)',
-                    transition: 'all 0.2s ease',
-                }}
+                className={`${styles.galleryDropzone} ${isDragging ? styles.galleryDropzoneActive : ''}`}
             >
                 {isUploading ? (
                     <div>
-                        <div style={{ fontSize: '24px', marginBottom: '8px' }}>⏳</div>
-                        <p style={{ color: '#d4af37', fontSize: '14px' }}>{uploadProgress}</p>
+                        <div className={styles.galleryUploadingIcon}>⏳</div>
+                        <p className={styles.galleryUploadingText}>{uploadProgress}</p>
                     </div>
                 ) : (
                     <>
-                        <div style={{ fontSize: '32px', marginBottom: '8px' }}>📤</div>
-                        <p style={{ color: isDragging ? '#d4af37' : '#94a3b8', fontSize: '14px', margin: 0 }}>
+                        <div className={styles.galleryDropzoneIcon}>📤</div>
+                        <p className={`${styles.galleryDropzoneText} ${isDragging ? styles.galleryDropzoneTextActive : ''}`}>
                             {isDragging ? 'Отпустите для загрузки' : 'Перетащите изображения сюда'}
                         </p>
-                        <p style={{ color: '#64748b', fontSize: '12px', margin: '8px 0 0 0' }}>
+                        <p className={styles.galleryDropzoneHint}>
                             или нажмите для выбора файлов
                         </p>
                     </>
@@ -186,37 +175,38 @@ export default function ImageGalleryEditor({ images, onChange }: ImageGalleryEdi
                 accept="image/jpeg,image/png,image/webp,image/gif"
                 multiple
                 onChange={handleInputChange}
-                style={{ display: 'none' }}
+                className={styles.hiddenInput}
                 aria-label="Выбор изображений"
             />
 
             {/* Разделитель */}
-            <div style={{ display: 'flex', alignItems: 'center', margin: '16px 0', gap: '12px' }}>
-                <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.1)' }} />
-                <span style={{ color: '#64748b', fontSize: '12px' }}>или добавьте по ссылке</span>
-                <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.1)' }} />
+            <div className={styles.galleryDivider}>
+                <div className={styles.galleryDividerLine} />
+                <span className={styles.galleryDividerText}>или добавьте по ссылке</span>
+                <div className={styles.galleryDividerLine} />
             </div>
 
             {/* Добавление по URL */}
-            <div style={{ display: 'flex', gap: '8px' }}>
+            <div className={styles.galleryUrlForm}>
                 <input 
                     type="text"
                     value={newUrl}
                     onChange={(e) => setNewUrl(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addImage())}
                     placeholder="URL изображения (https://...)"
-                    style={{ flex: 1, padding: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#fff' }}
+                    className={styles.galleryUrlInput}
+                    aria-label="URL изображения"
                 />
                 <button 
                     type="button"
                     onClick={addImage}
-                    style={{ padding: '10px 16px', background: 'rgba(212, 175, 55, 0.2)', color: '#d4af37', border: '1px solid #d4af37', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
+                    className={styles.galleryUrlBtn}
                 >
                     Добавить
                 </button>
             </div>
 
-            <p style={{ marginTop: '12px', fontSize: '11px', color: '#64748b' }}>
+            <p className={styles.galleryHint}>
                 Поддерживаемые форматы: JPG, PNG, WebP, GIF. Макс. размер: 10 MB
             </p>
         </div>

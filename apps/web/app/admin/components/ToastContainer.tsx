@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import Toast, { ToastProps } from './Toast';
+import styles from '../admin.module.css';
 
 interface ToastContextType {
   showToast: (message: string, type: ToastProps['type']) => void;
@@ -41,15 +42,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ showToast, showSuccess, showError, showWarning, showInfo }}>
       {children}
-      <div style={{ 
-        position: 'fixed', 
-        top: '24px', 
-        right: '24px', 
-        zIndex: 10000,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '12px'
-      }}>
+      <div className={styles.toastList}>
         {toasts.map(toast => (
           <Toast
             key={toast.id}

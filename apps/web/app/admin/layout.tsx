@@ -91,8 +91,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <button onClick={logout} className={styles.adminLogoutBtn}>
                 🚪 Выйти
               </button>
-              <Link href="/" className={styles.adminNavItem} style={{ marginTop: '12px' }}>
-                <span style={{ fontSize: '16px' }}>←</span>
+              <Link href="/" className={`${styles.adminNavItem} ${styles.backToSiteLink}`}>
+                <span className={styles.backToSiteIcon}>←</span>
                 <span>Вернуться на сайт</span>
               </Link>
             </div>
@@ -102,27 +102,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className={styles.adminMainContent}>
             {/* Breadcrumbs */}
             {!isLoginPage && pathname !== '/admin' && (
-              <nav style={{ marginBottom: '24px' }}>
-                <ol style={{ display: 'flex', gap: '8px', listStyle: 'none', padding: 0, margin: 0 }}>
+              <nav className={styles.breadcrumbsWrapper}>
+                <ol className={styles.breadcrumbsList}>
                   {getBreadcrumbs().map((crumb, index, arr) => (
-                    <li key={crumb.href} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      {index > 0 && <span style={{ color: '#64748b' }}>/</span>}
+                    <li key={crumb.href} className={styles.breadcrumbItem}>
+                      {index > 0 && <span className={styles.breadcrumbSeparator}>/</span>}
                       {index === arr.length - 1 ? (
-                        <span style={{ color: '#d4af37', fontWeight: 600, fontSize: '14px' }}>
+                        <span className={styles.breadcrumbCurrent}>
                           {crumb.label}
                         </span>
                       ) : (
-                        <Link 
-                          href={crumb.href} 
-                          style={{ 
-                            color: '#94a3b8', 
-                            textDecoration: 'none', 
-                            fontSize: '14px',
-                            transition: 'color 0.2s'
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.color = '#cbd5e1'}
-                          onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
-                        >
+                        <Link href={crumb.href} className={styles.breadcrumbLink}>
                           {crumb.label}
                         </Link>
                       )}

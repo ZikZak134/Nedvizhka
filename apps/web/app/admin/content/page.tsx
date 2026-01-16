@@ -4,12 +4,10 @@ import styles from '../admin.module.css';
 
 export default function ContentManagementPage() {
   return (
-    <div style={{ maxWidth: '1200px' }}>
-      <div style={{ marginBottom: '32px' }}>
-        <h1 style={{ fontSize: '32px', fontWeight: 800, color: '#fff', marginBottom: '8px' }}>
-          Контент
-        </h1>
-        <p style={{ color: '#64748b', fontSize: '14px' }}>
+    <div className={styles.adminContent}>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.pageTitle}>Контент</h1>
+        <p className={styles.pageSubtitle}>
           Управление контентом и настройками сайта
         </p>
       </div>
@@ -19,7 +17,7 @@ export default function ContentManagementPage() {
           <span className={styles.sectionIcon}>📝</span>
           <h2 className={styles.sectionTitle}>Управление контентом</h2>
         </div>
-        <p style={{ color: '#94a3b8', fontSize: '14px' }}>
+        <p className={styles.sectionDescription}>
           Эта страница находится в разработке. Здесь будут настройки текстового контента, баннеров и других элементов сайта.
         </p>
       </div>

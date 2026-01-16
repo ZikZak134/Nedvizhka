@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import styles from '../admin.module.css';
 
 interface JsonListEditorProps {
     title: string;
@@ -25,23 +26,23 @@ export default function JsonListEditor({ title, items, fields, onChange }: JsonL
     };
 
     return (
-        <div style={{ background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <label style={{ display: 'block', marginBottom: '16px', fontWeight: 600, color: '#fff' }}>{title}</label>
+        <div className={styles.jsonListContainer}>
+            <label className={styles.jsonListLabel}>{title}</label>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+            <div className={styles.jsonListItems}>
                 {items.map((item, index) => (
-                    <div key={index} style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'rgba(255,255,255,0.05)', padding: '8px 12px', borderRadius: '6px' }}>
-                        <div style={{ flex: 1, display: 'flex', gap: '12px', fontSize: '13px' }}>
+                    <div key={index} className={styles.jsonListItem}>
+                        <div className={styles.jsonListItemContent}>
                             {fields.map(f => (
-                                <span key={f.key}>
-                                    <strong style={{ opacity: 0.6 }}>{f.label}:</strong> {item[f.key]}
+                                <span key={f.key} className={styles.jsonListItemField}>
+                                    <strong className={styles.jsonListItemFieldLabel}>{f.label}:</strong> {item[f.key]}
                                 </span>
                             ))}
                         </div>
                         <button 
                             type="button"
                             onClick={() => removeItem(index)}
-                            style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '4px' }}
+                            className={styles.jsonListItemRemoveBtn}
                         >
                             ✕
                         </button>
@@ -49,7 +50,7 @@ export default function JsonListEditor({ title, items, fields, onChange }: JsonL
                 ))}
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${fields.length}, 1fr) auto`, gap: '8px' }}>
+            <div className={styles.jsonListAddRow}>
                 {fields.map(f => (
                     <input 
                         key={f.key}
@@ -57,13 +58,14 @@ export default function JsonListEditor({ title, items, fields, onChange }: JsonL
                         value={newItem[f.key] || ''}
                         onChange={(e) => setNewItem({ ...newItem, [f.key]: f.type === 'number' ? parseFloat(e.target.value) : e.target.value })}
                         placeholder={f.label}
-                        style={{ padding: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#fff' }}
+                        className={styles.jsonListItemInput}
+                        aria-label={f.label}
                     />
                 ))}
                 <button 
                     type="button"
                     onClick={addItem}
-                    style={{ padding: '10px 16px', background: '#d4af37', color: '#000', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 700 }}
+                    className={styles.jsonListAddBtn}
                 >
                     +
                 </button>

@@ -37,7 +37,7 @@ export default function TextareaWithCounter({
   };
   
   return (
-    <div style={{ width: '100%' }}>
+    <div className={styles.textareaWrapper}>
       {label && (
         <label className={`${styles.inputLabel} ${required ? styles.inputLabelRequired : ''}`}>
           {label}
@@ -50,8 +50,9 @@ export default function TextareaWithCounter({
         maxLength={maxLength}
         className={`${styles.formTextarea} ${error ? styles.formInputError : ''}`}
         style={{ minHeight }}
+        aria-label={label || placeholder}
       />
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
+      <div className={styles.textareaFooter}>
         <div>
           {helper && !error && <div className={styles.helperText}>{helper}</div>}
           {error && <div className={`${styles.helperText} ${styles.helperTextError}`}>{error}</div>}

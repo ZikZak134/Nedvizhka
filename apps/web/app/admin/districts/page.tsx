@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import LocationPicker from '../components/LocationPicker';
+import styles from '../admin.module.css';
 
 interface District {
     id?: number;
@@ -47,7 +48,6 @@ export default function DistrictsAdminPage() {
                 const data = await res.json();
                 setDistricts(data);
             } else {
-                // Если API не отвечает — используем дефолтные
                 setDistricts(DEFAULT_DISTRICTS);
             }
         } catch {
@@ -105,54 +105,60 @@ export default function DistrictsAdminPage() {
         setMessage({ type: 'success', text: 'Стандартные районы добавлены!' });
     };
 
-    if (loading) return <div style={{ color: '#fff', padding: '40px' }}>Загрузка...</div>;
+    const getRiskBadgeClass = (level: string) => {
+        if (level === 'low') return `${styles.districtBadge} ${styles.districtBadgeLow}`;
+        if (level === 'medium') return `${styles.districtBadge} ${styles.districtBadgeMedium}`;
+        return `${styles.districtBadge} ${styles.districtBadgeHigh}`;
+    };
+
+    if (loading) return <div className={styles.loadingText}>Загрузка...</div>;
 
     return (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#d4af37' }}>🏙️ Управление районами</h1>
-                <div style={{ display: 'flex', gap: '12px' }}>
-                    <button onClick={seedDefaults} style={btnSecondary}>📋 Заполнить стандартными</button>
-                    <button onClick={() => setEditing({ name: '', center_lat: 43.58, center_lng: 39.72, avg_price_sqm: null, growth_5y: null, growth_10y: null, objects_count: 0, roi: null, risk_level: 'medium', description: null })} style={btnPrimary}>+ Добавить район</button>
+            <div className={styles.districtsHeader}>
+                <h1 className={styles.districtsTitle}>🏙️ Управление районами</h1>
+                <div className={styles.districtsActions}>
+                    <button onClick={seedDefaults} className={styles.btnSecondary}>📋 Заполнить стандартными</button>
+                    <button onClick={() => setEditing({ name: '', center_lat: 43.58, center_lng: 39.72, avg_price_sqm: null, growth_5y: null, growth_10y: null, objects_count: 0, roi: null, risk_level: 'medium', description: null })} className={styles.btnPrimary}>+ Добавить район</button>
                 </div>
             </div>
 
             {message && (
-                <div style={{ padding: '12px 16px', borderRadius: '8px', marginBottom: '16px', background: message.type === 'success' ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)', color: message.type === 'success' ? '#22c55e' : '#ef4444' }}>
+                <div className={`${styles.districtsMessage} ${message.type === 'success' ? styles.districtsMessageSuccess : styles.districtsMessageError}`}>
                     {message.text}
                 </div>
             )}
 
             {/* Таблица районов */}
-            <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '12px', overflow: 'hidden' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <div className={styles.districtsTableWrapper}>
+                <table className={styles.districtsTable}>
                     <thead>
-                        <tr style={{ background: 'rgba(255,255,255,0.1)' }}>
-                            <th style={th}>Название</th>
-                            <th style={th}>Цена/м²</th>
-                            <th style={th}>Рост 5л</th>
-                            <th style={th}>Рост 10л</th>
-                            <th style={th}>ROI</th>
-                            <th style={th}>Риск</th>
-                            <th style={th}>Действия</th>
+                        <tr className={styles.districtsTableHeader}>
+                            <th className={styles.districtsTableTh}>Название</th>
+                            <th className={styles.districtsTableTh}>Цена/м²</th>
+                            <th className={styles.districtsTableTh}>Рост 5л</th>
+                            <th className={styles.districtsTableTh}>Рост 10л</th>
+                            <th className={styles.districtsTableTh}>ROI</th>
+                            <th className={styles.districtsTableTh}>Риск</th>
+                            <th className={styles.districtsTableTh}>Действия</th>
                         </tr>
                     </thead>
                     <tbody>
                         {districts.map((d, i) => (
-                            <tr key={d.id || i} style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                                <td style={td}>{d.name}</td>
-                                <td style={td}>{d.avg_price_sqm ? `${(d.avg_price_sqm / 1000).toFixed(0)}K` : '—'}</td>
-                                <td style={td}>{d.growth_5y ? `+${d.growth_5y}%` : '—'}</td>
-                                <td style={td}>{d.growth_10y ? `+${d.growth_10y}%` : '—'}</td>
-                                <td style={td}>{d.roi ? `${d.roi}%` : '—'}</td>
-                                <td style={td}>
-                                    <span style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '12px', background: d.risk_level === 'low' ? 'rgba(34,197,94,0.2)' : d.risk_level === 'medium' ? 'rgba(234,179,8,0.2)' : 'rgba(239,68,68,0.2)', color: d.risk_level === 'low' ? '#22c55e' : d.risk_level === 'medium' ? '#eab308' : '#ef4444' }}>
+                            <tr key={d.id || i} className={styles.districtsTableRow}>
+                                <td className={styles.districtsTableTd}>{d.name}</td>
+                                <td className={styles.districtsTableTd}>{d.avg_price_sqm ? `${(d.avg_price_sqm / 1000).toFixed(0)}K` : '—'}</td>
+                                <td className={styles.districtsTableTd}>{d.growth_5y ? `+${d.growth_5y}%` : '—'}</td>
+                                <td className={styles.districtsTableTd}>{d.growth_10y ? `+${d.growth_10y}%` : '—'}</td>
+                                <td className={styles.districtsTableTd}>{d.roi ? `${d.roi}%` : '—'}</td>
+                                <td className={styles.districtsTableTd}>
+                                    <span className={getRiskBadgeClass(d.risk_level)}>
                                         {d.risk_level === 'low' ? 'Низкий' : d.risk_level === 'medium' ? 'Средний' : 'Высокий'}
                                     </span>
                                 </td>
-                                <td style={td}>
-                                    <button onClick={() => setEditing(d)} style={{ ...btnSmall, marginRight: '8px' }}>✏️</button>
-                                    {d.id && <button onClick={() => deleteDistrict(d.id!)} style={{ ...btnSmall, background: 'rgba(239,68,68,0.2)' }}>🗑️</button>}
+                                <td className={styles.districtsTableTd}>
+                                    <button onClick={() => setEditing(d)} className={styles.btnSmall}>✏️</button>
+                                    {d.id && <button onClick={() => deleteDistrict(d.id!)} className={`${styles.btnSmall} ${styles.btnSmallDanger}`}>🗑️</button>}
                                 </td>
                             </tr>
                         ))}
@@ -162,20 +168,20 @@ export default function DistrictsAdminPage() {
 
             {/* Модальное окно редактирования */}
             {editing && (
-                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-                    <div style={{ background: '#1e293b', borderRadius: '16px', padding: '32px', width: '600px', maxHeight: '90vh', overflow: 'auto' }}>
-                        <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '24px', color: '#fff' }}>
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <h2 className={styles.modalTitle}>
                             {editing.id ? 'Редактирование района' : 'Новый район'}
                         </h2>
                         <form onSubmit={(e) => { e.preventDefault(); saveDistrict(editing); }}>
-                            <div style={{ marginBottom: '16px' }}>
-                                <label style={label}>Название *</label>
-                                <input style={input} value={editing.name} onChange={e => setEditing({ ...editing, name: e.target.value })} required placeholder="Например: Центральный" />
+                            <div className={styles.modalFormGroup}>
+                                <label className={styles.modalFormLabel}>Название *</label>
+                                <input className={styles.modalFormInput} value={editing.name} onChange={e => setEditing({ ...editing, name: e.target.value })} required placeholder="Например: Центральный" aria-label="Название" />
                             </div>
                             
                             {/* Карта для выбора центра района */}
-                            <div style={{ marginBottom: '16px' }}>
-                                <label style={label}>📍 Центр района на карте</label>
+                            <div className={styles.modalFormGroup}>
+                                <label className={styles.modalFormLabel}>📍 Центр района на карте</label>
                                 <LocationPicker
                                     initialLat={editing.center_lat}
                                     initialLon={editing.center_lng}
@@ -183,51 +189,51 @@ export default function DistrictsAdminPage() {
                                 />
                             </div>
                             
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                            <div className={styles.modalFormRow}>
                                 <div>
-                                    <label style={label}>Широта</label>
-                                    <input style={input} type="number" step="0.0001" value={editing.center_lat} onChange={e => setEditing({ ...editing, center_lat: parseFloat(e.target.value) })} placeholder="43.58" aria-label="Широта" />
+                                    <label className={styles.modalFormLabel}>Широта</label>
+                                    <input className={styles.modalFormInput} type="number" step="0.0001" value={editing.center_lat} onChange={e => setEditing({ ...editing, center_lat: parseFloat(e.target.value) })} placeholder="43.58" aria-label="Широта" />
                                 </div>
                                 <div>
-                                    <label style={label}>Долгота</label>
-                                    <input style={input} type="number" step="0.0001" value={editing.center_lng} onChange={e => setEditing({ ...editing, center_lng: parseFloat(e.target.value) })} placeholder="39.72" aria-label="Долгота" />
-                                </div>
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                                <div>
-                                    <label style={label}>Цена за м² (₽)</label>
-                                    <input style={input} type="number" value={editing.avg_price_sqm || ''} onChange={e => setEditing({ ...editing, avg_price_sqm: e.target.value ? parseInt(e.target.value) : null })} placeholder="500000" aria-label="Цена за м²" />
-                                </div>
-                                <div>
-                                    <label style={label}>ROI (%)</label>
-                                    <input style={input} type="number" step="0.1" value={editing.roi || ''} onChange={e => setEditing({ ...editing, roi: e.target.value ? parseFloat(e.target.value) : null })} placeholder="12" aria-label="ROI" />
+                                    <label className={styles.modalFormLabel}>Долгота</label>
+                                    <input className={styles.modalFormInput} type="number" step="0.0001" value={editing.center_lng} onChange={e => setEditing({ ...editing, center_lng: parseFloat(e.target.value) })} placeholder="39.72" aria-label="Долгота" />
                                 </div>
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                            <div className={styles.modalFormRow}>
                                 <div>
-                                    <label style={label}>Рост 5 лет (%)</label>
-                                    <input style={input} type="number" value={editing.growth_5y || ''} onChange={e => setEditing({ ...editing, growth_5y: e.target.value ? parseFloat(e.target.value) : null })} placeholder="50" aria-label="Рост 5 лет" />
+                                    <label className={styles.modalFormLabel}>Цена за м² (₽)</label>
+                                    <input className={styles.modalFormInput} type="number" value={editing.avg_price_sqm || ''} onChange={e => setEditing({ ...editing, avg_price_sqm: e.target.value ? parseInt(e.target.value) : null })} placeholder="500000" aria-label="Цена за м²" />
                                 </div>
                                 <div>
-                                    <label style={label}>Рост 10 лет (%)</label>
-                                    <input style={input} type="number" value={editing.growth_10y || ''} onChange={e => setEditing({ ...editing, growth_10y: e.target.value ? parseFloat(e.target.value) : null })} placeholder="100" aria-label="Рост 10 лет" />
+                                    <label className={styles.modalFormLabel}>ROI (%)</label>
+                                    <input className={styles.modalFormInput} type="number" step="0.1" value={editing.roi || ''} onChange={e => setEditing({ ...editing, roi: e.target.value ? parseFloat(e.target.value) : null })} placeholder="12" aria-label="ROI" />
                                 </div>
                             </div>
-                            <div style={{ marginBottom: '16px' }}>
-                                <label style={label}>Уровень риска</label>
-                                <select style={input} value={editing.risk_level} onChange={e => setEditing({ ...editing, risk_level: e.target.value })} aria-label="Уровень риска">
+                            <div className={styles.modalFormRow}>
+                                <div>
+                                    <label className={styles.modalFormLabel}>Рост 5 лет (%)</label>
+                                    <input className={styles.modalFormInput} type="number" value={editing.growth_5y || ''} onChange={e => setEditing({ ...editing, growth_5y: e.target.value ? parseFloat(e.target.value) : null })} placeholder="50" aria-label="Рост 5 лет" />
+                                </div>
+                                <div>
+                                    <label className={styles.modalFormLabel}>Рост 10 лет (%)</label>
+                                    <input className={styles.modalFormInput} type="number" value={editing.growth_10y || ''} onChange={e => setEditing({ ...editing, growth_10y: e.target.value ? parseFloat(e.target.value) : null })} placeholder="100" aria-label="Рост 10 лет" />
+                                </div>
+                            </div>
+                            <div className={styles.modalFormGroup}>
+                                <label className={styles.modalFormLabel}>Уровень риска</label>
+                                <select className={styles.modalFormInput} value={editing.risk_level} onChange={e => setEditing({ ...editing, risk_level: e.target.value })} aria-label="Уровень риска">
                                     <option value="low">Низкий</option>
                                     <option value="medium">Средний</option>
                                     <option value="high">Высокий</option>
                                 </select>
                             </div>
-                            <div style={{ marginBottom: '24px' }}>
-                                <label style={label}>Описание</label>
-                                <textarea style={{ ...input, minHeight: '80px' }} value={editing.description || ''} onChange={e => setEditing({ ...editing, description: e.target.value })} placeholder="Описание района..." aria-label="Описание" />
+                            <div className={styles.modalFormGroupLarge}>
+                                <label className={styles.modalFormLabel}>Описание</label>
+                                <textarea className={styles.modalFormTextarea} value={editing.description || ''} onChange={e => setEditing({ ...editing, description: e.target.value })} placeholder="Описание района..." aria-label="Описание" />
                             </div>
-                            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-                                <button type="button" onClick={() => setEditing(null)} style={btnSecondary}>Отмена</button>
-                                <button type="submit" style={btnPrimary}>💾 Сохранить</button>
+                            <div className={styles.modalActions}>
+                                <button type="button" onClick={() => setEditing(null)} className={styles.btnSecondary}>Отмена</button>
+                                <button type="submit" className={styles.btnPrimary}>💾 Сохранить</button>
                             </div>
                         </form>
                     </div>
@@ -236,12 +242,3 @@ export default function DistrictsAdminPage() {
         </div>
     );
 }
-
-// Стили
-const btnPrimary: React.CSSProperties = { padding: '12px 20px', borderRadius: '8px', border: 'none', background: '#d4af37', color: '#000', fontWeight: 600, cursor: 'pointer' };
-const btnSecondary: React.CSSProperties = { padding: '12px 20px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)', background: 'transparent', color: '#fff', cursor: 'pointer' };
-const btnSmall: React.CSSProperties = { padding: '6px 10px', borderRadius: '4px', border: 'none', background: 'rgba(255,255,255,0.1)', color: '#fff', cursor: 'pointer' };
-const th: React.CSSProperties = { padding: '12px 16px', textAlign: 'left', fontSize: '13px', fontWeight: 600, color: '#94a3b8' };
-const td: React.CSSProperties = { padding: '12px 16px', fontSize: '14px', color: '#fff' };
-const label: React.CSSProperties = { display: 'block', fontSize: '13px', color: '#94a3b8', marginBottom: '6px' };
-const input: React.CSSProperties = { width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.05)', color: '#fff', fontSize: '14px' };

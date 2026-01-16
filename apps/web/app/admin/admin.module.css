@@ -1177,3 +1177,602 @@
   }
 }
 
+/* === DISTRICTS PAGE === */
+.districtsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.districtsTitle {
+  font-size: 28px;
+  font-weight: 800;
+  color: #d4af37;
+}
+
+.districtsActions {
+  display: flex;
+  gap: 12px;
+}
+
+.districtsMessage {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.districtsMessageSuccess {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}
+
+.districtsMessageError {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.districtsTableWrapper {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.districtsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.districtsTableHeader {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.districtsTableTh {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.districtsTableRow {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.districtsTableTd {
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #fff;
+}
+
+.districtBadge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.districtBadgeLow {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}
+
+.districtBadgeMedium {
+  background: rgba(234, 179, 8, 0.2);
+  color: #eab308;
+}
+
+.districtBadgeHigh {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: #1e293b;
+  border-radius: 16px;
+  padding: 32px;
+  width: 600px;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #fff;
+}
+
+.modalFormGroup {
+  margin-bottom: 16px;
+}
+
+.modalFormGroupLarge {
+  margin-bottom: 24px;
+}
+
+.modalFormRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.modalFormLabel {
+  display: block;
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+
+.modalFormInput {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 14px;
+}
+
+.modalFormInput::placeholder {
+  color: #64748b;
+}
+
+.modalFormTextarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 14px;
+  min-height: 80px;
+  resize: vertical;
+}
+
+.modalFormTextarea::placeholder {
+  color: #64748b;
+}
+
+.modalActions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+/* Buttons */
+.btnPrimary {
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  background: #d4af37;
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnPrimary:hover {
+  background: #c49b2f;
+  transform: translateY(-1px);
+}
+
+.btnSecondary {
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnSecondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btnSmall {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnSmall:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.btnSmallDanger {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.btnSmallDanger:hover {
+  background: rgba(239, 68, 68, 0.3);
+}
+
+/* Loading */
+.loadingText {
+  color: #fff;
+  padding: 40px;
+}
+
+/* === IMAGE GALLERY EDITOR === */
+.galleryContainer {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.galleryLabel {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.galleryItem {
+  position: relative;
+  aspect-ratio: 1/1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.galleryItemImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.galleryItemRemove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(220, 38, 38, 0.8);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 2px 6px;
+  font-size: 10px;
+}
+
+.galleryDropzone {
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.2s ease;
+}
+
+.galleryDropzoneActive {
+  border-color: #d4af37;
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.galleryDropzoneIcon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.galleryDropzoneText {
+  color: #94a3b8;
+  font-size: 14px;
+  margin: 0;
+}
+
+.galleryDropzoneTextActive {
+  color: #d4af37;
+}
+
+.galleryDropzoneHint {
+  color: #64748b;
+  font-size: 12px;
+  margin: 8px 0 0 0;
+}
+
+.galleryUploadingIcon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.galleryUploadingText {
+  color: #d4af37;
+  font-size: 14px;
+}
+
+.galleryDivider {
+  display: flex;
+  align-items: center;
+  margin: 16px 0;
+  gap: 12px;
+}
+
+.galleryDividerLine {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.galleryDividerText {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.galleryUrlForm {
+  display: flex;
+  gap: 8px;
+}
+
+.galleryUrlInput {
+  flex: 1;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+}
+
+.galleryUrlInput::placeholder {
+  color: #64748b;
+}
+
+.galleryUrlBtn {
+  padding: 10px 16px;
+  background: rgba(212, 175, 55, 0.2);
+  color: #d4af37;
+  border: 1px solid #d4af37;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.galleryHint {
+  margin-top: 12px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+/* === JSON LIST EDITOR === */
+.jsonListContainer {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.jsonListLabel {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.jsonListItems {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.jsonListItem {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.jsonListItemInput {
+  flex: 1;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.jsonListItemInput::placeholder {
+  color: #64748b;
+}
+
+.jsonListItemRemove {
+  padding: 8px 12px;
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.jsonListAddRow {
+  display: flex;
+  gap: 8px;
+}
+
+.jsonListAddBtn {
+  padding: 8px 12px;
+  background: rgba(212, 175, 55, 0.2);
+  color: #d4af37;
+  border: 1px solid #d4af37;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* === TEXTAREA WITH COUNTER === */
+.textareaWrapper {
+  width: 100%;
+}
+
+.textareaFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+/* === TOAST CONTAINER === */
+.toastList {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 9999;
+}
+
+/* === CONTENT PAGE === */
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+.contentIcon {
+  font-size: 64px;
+  margin-bottom: 24px;
+}
+
+.contentTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.contentText {
+  color: #94a3b8;
+  font-size: 16px;
+}
+
+/* Hidden Input */
+.hiddenInput {
+  display: none;
+}
+
+/* JsonListEditor additional */
+.jsonListItemContent {
+  flex: 1;
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.jsonListItemField {
+  color: #fff;
+}
+
+.jsonListItemFieldLabel {
+  opacity: 0.6;
+}
+
+.jsonListItemRemoveBtn {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.jsonListItem {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.sectionDescription {
+  color: #94a3b8;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Breadcrumbs */
+.breadcrumbsWrapper {
+  margin-bottom: 24px;
+}
+
+.breadcrumbsList {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  margin: 0;
+  list-style: none;
+}
+
+.breadcrumbItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.breadcrumbLink {
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumbLink:hover {
+  color: #d4af37;
+}
+
+.breadcrumbCurrent {
+  color: #fff;
+}
+
+.breadcrumbSeparator {
+  color: #475569;
+}
+
+.breadcrumbCurrent {
+  color: #d4af37;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.backToSiteLink {
+  margin-top: 12px;
+}
+
+.backToSiteIcon {
+  font-size: 16px;
+}
+
