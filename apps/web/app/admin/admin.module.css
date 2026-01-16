@@ -654,6 +654,7 @@
   border: 1.5px solid;
   cursor: pointer;
   transition: all var(--transition-fast);
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -820,6 +821,7 @@
   right: 24px;
   padding: 16px 20px;
   background: rgba(30, 41, 59, 0.95);
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   border-radius: var(--radius-md);
   border: 1px solid;
@@ -1026,6 +1028,7 @@
   min-width: 300px;
   max-width: 500px;
   background: rgba(30, 41, 59, 0.95);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-radius: var(--radius-md);
   border: 1px solid rgba(255, 255, 255, 0.1);

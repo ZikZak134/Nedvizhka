@@ -186,36 +186,36 @@ export default function DistrictsAdminPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                                 <div>
                                     <label style={label}>Широта</label>
-                                    <input style={input} type="number" step="0.0001" value={editing.center_lat} onChange={e => setEditing({ ...editing, center_lat: parseFloat(e.target.value) })} />
+                                    <input style={input} type="number" step="0.0001" value={editing.center_lat} onChange={e => setEditing({ ...editing, center_lat: parseFloat(e.target.value) })} placeholder="43.58" aria-label="Широта" />
                                 </div>
                                 <div>
                                     <label style={label}>Долгота</label>
-                                    <input style={input} type="number" step="0.0001" value={editing.center_lng} onChange={e => setEditing({ ...editing, center_lng: parseFloat(e.target.value) })} />
+                                    <input style={input} type="number" step="0.0001" value={editing.center_lng} onChange={e => setEditing({ ...editing, center_lng: parseFloat(e.target.value) })} placeholder="39.72" aria-label="Долгота" />
                                 </div>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                                 <div>
                                     <label style={label}>Цена за м² (₽)</label>
-                                    <input style={input} type="number" value={editing.avg_price_sqm || ''} onChange={e => setEditing({ ...editing, avg_price_sqm: e.target.value ? parseInt(e.target.value) : null })} />
+                                    <input style={input} type="number" value={editing.avg_price_sqm || ''} onChange={e => setEditing({ ...editing, avg_price_sqm: e.target.value ? parseInt(e.target.value) : null })} placeholder="500000" aria-label="Цена за м²" />
                                 </div>
                                 <div>
                                     <label style={label}>ROI (%)</label>
-                                    <input style={input} type="number" step="0.1" value={editing.roi || ''} onChange={e => setEditing({ ...editing, roi: e.target.value ? parseFloat(e.target.value) : null })} />
+                                    <input style={input} type="number" step="0.1" value={editing.roi || ''} onChange={e => setEditing({ ...editing, roi: e.target.value ? parseFloat(e.target.value) : null })} placeholder="12" aria-label="ROI" />
                                 </div>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                                 <div>
                                     <label style={label}>Рост 5 лет (%)</label>
-                                    <input style={input} type="number" value={editing.growth_5y || ''} onChange={e => setEditing({ ...editing, growth_5y: e.target.value ? parseFloat(e.target.value) : null })} />
+                                    <input style={input} type="number" value={editing.growth_5y || ''} onChange={e => setEditing({ ...editing, growth_5y: e.target.value ? parseFloat(e.target.value) : null })} placeholder="50" aria-label="Рост 5 лет" />
                                 </div>
                                 <div>
                                     <label style={label}>Рост 10 лет (%)</label>
-                                    <input style={input} type="number" value={editing.growth_10y || ''} onChange={e => setEditing({ ...editing, growth_10y: e.target.value ? parseFloat(e.target.value) : null })} />
+                                    <input style={input} type="number" value={editing.growth_10y || ''} onChange={e => setEditing({ ...editing, growth_10y: e.target.value ? parseFloat(e.target.value) : null })} placeholder="100" aria-label="Рост 10 лет" />
                                 </div>
                             </div>
                             <div style={{ marginBottom: '16px' }}>
                                 <label style={label}>Уровень риска</label>
-                                <select style={input} value={editing.risk_level} onChange={e => setEditing({ ...editing, risk_level: e.target.value })}>
+                                <select style={input} value={editing.risk_level} onChange={e => setEditing({ ...editing, risk_level: e.target.value })} aria-label="Уровень риска">
                                     <option value="low">Низкий</option>
                                     <option value="medium">Средний</option>
                                     <option value="high">Высокий</option>
@@ -223,7 +223,7 @@ export default function DistrictsAdminPage() {
                             </div>
                             <div style={{ marginBottom: '24px' }}>
                                 <label style={label}>Описание</label>
-                                <textarea style={{ ...input, minHeight: '80px' }} value={editing.description || ''} onChange={e => setEditing({ ...editing, description: e.target.value })} />
+                                <textarea style={{ ...input, minHeight: '80px' }} value={editing.description || ''} onChange={e => setEditing({ ...editing, description: e.target.value })} placeholder="Описание района..." aria-label="Описание" />
                             </div>
                             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
                                 <button type="button" onClick={() => setEditing(null)} style={btnSecondary}>Отмена</button>

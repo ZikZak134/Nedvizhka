@@ -187,6 +187,7 @@ export default function ImageGalleryEditor({ images, onChange }: ImageGalleryEdi
                 multiple
                 onChange={handleInputChange}
                 style={{ display: 'none' }}
+                aria-label="Выбор изображений"
             />
 
             {/* Разделитель */}
