@@ -284,7 +284,7 @@ export default function AdminProperties() {
                           <textarea 
                               value={formData.description}
                               onChange={e => setFormData({...formData, description: e.target.value})}
-                              className="w-full h-[120px] p-3 bg-white/5 border border-white/10 rounded-lg text-white resize-y"
+                              className={styles.formTextarea}
                               placeholder="Эксклюзивная резиденция с панорамным видом на море. Премиальная отделка, закрытая территория, консьерж-сервис 24/7..."
                           />
                       </div>
@@ -345,7 +345,7 @@ export default function AdminProperties() {
                                   aria-label="Вид"
                                   value={formData.features?.['Вид'] || ''}
                                   onChange={e => setFormData({...formData, features: {...formData.features, 'Вид': e.target.value}})}
-                                  className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white"
+                                  className={styles.formSelect}
                               >
                                   <option value="">Не указан</option>
                                   <option value="Море">Море</option>
@@ -369,7 +369,7 @@ export default function AdminProperties() {
                                   aria-label="Отделка"
                                   value={formData.features?.['Отделка'] || ''}
                                   onChange={e => setFormData({...formData, features: {...formData.features, 'Отделка': e.target.value}})}
-                                  className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white"
+                                  className={styles.formSelect}
                               >
                                   <option value="">Не указана</option>
                                   <option value="Премиум">Премиум</option>
@@ -388,7 +388,7 @@ export default function AdminProperties() {
                                   aria-label="Бассейн"
                                   value={formData.features?.['Бассейн'] || ''}
                                   onChange={e => setFormData({...formData, features: {...formData.features, 'Бассейн': e.target.value}})}
-                                  className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white"
+                                  className={styles.formSelect}
                               >
                                   <option value="">Нет</option>
                                   <option value="Rooftop">Rooftop</option>
@@ -509,7 +509,7 @@ export default function AdminProperties() {
                            <textarea 
                                value={formData.owner_quote}
                                onChange={e => setFormData({...formData, owner_quote: e.target.value})}
-                               className="w-full h-20 p-3 bg-white/5 border border-white/10 rounded-lg text-white"
+                               className={styles.formTextarea}
                                placeholder="Продаю в связи с переездом..."
                           />
                       </div>
@@ -568,9 +568,8 @@ export default function AdminProperties() {
               <button 
                   type="submit" 
                   disabled={status === 'loading'}
-                  className={`w-full p-5 bg-[#d4af37] text-black rounded-xl border-none font-extrabold cursor-pointer text-lg shadow-[0_8px_24px_rgba(212,175,55,0.3)] transition-all ${
-                    status === 'loading' ? 'opacity-70' : 'hover:bg-[#e5bd3d]'
-                  }`}
+                  className={`${styles.btnPrimary} ${status === 'loading' ? 'opacity-70' : ''}`}
+                  style={{ width: '100%', padding: '20px', fontSize: '16px' }}
               >
                   {status === 'loading' ? '⏳ Сохраняю...' : editingId ? '💾 Сохранить изменения' : '🚀 Опубликовать объект'}
               </button>
@@ -601,7 +600,7 @@ export default function AdminProperties() {
         </div>
         <button 
           onClick={handleNewProperty}
-          className="px-6 py-3 bg-[#d4af37] text-black rounded-xl border-none font-bold cursor-pointer text-base flex items-center gap-2 hover:bg-[#e5bd3d] transition-colors"
+          className={styles.btnPrimary}
         >
           ➕ Добавить объект
         </button>
@@ -614,7 +613,7 @@ export default function AdminProperties() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="🔍 Поиск по названию, адресу или ЖК..."
-          className="w-full max-w-[400px] p-3 px-4 bg-white/5 border border-white/10 rounded-lg text-white text-sm"
+          className={`${styles.formInput} max-w-[400px]`}
         />
       </div>
 
@@ -629,7 +628,8 @@ export default function AdminProperties() {
           <p>Объекты не найдены</p>
           <button 
             onClick={handleNewProperty}
-            className="mt-4 px-5 py-2.5 bg-[#d4af37] text-black rounded-lg border-none cursor-pointer font-semibold hover:bg-[#e5bd3d]"
+            className={styles.btnPrimary}
+            style={{ marginTop: '16px' }}
           >
             Создать первый объект
           </button>
@@ -753,8 +753,6 @@ export default function AdminProperties() {
 }
 
 // UI HELPER COMPONENTS
-import styles from '../admin.module.css';
-
 function Section({ title, children }: { title: string, children: React.ReactNode }) {
     const icon = title.includes('📑') ? '📑' : 
                  title.includes('📏') ? '📏' :

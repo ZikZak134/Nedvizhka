@@ -120,7 +120,7 @@ export default function ImageGalleryEditor({ images, onChange }: ImageGalleryEdi
 
     return (
         <div style={{ background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <label style={{ display: 'block', marginBottom: '12px', fontWeight: 600 }}>🖼️ Галерея изображений</label>
+            <label style={{ display: 'block', marginBottom: '12px', fontWeight: 600, color: '#fff' }}>🖼️ Галерея изображений</label>
             
             {/* Превью загруженных изображений */}
             {images.length > 0 && (

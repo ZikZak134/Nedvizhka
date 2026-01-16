@@ -26,7 +26,7 @@ export default function JsonListEditor({ title, items, fields, onChange }: JsonL
 
     return (
         <div style={{ background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <label style={{ display: 'block', marginBottom: '16px', fontWeight: 600 }}>{title}</label>
+            <label style={{ display: 'block', marginBottom: '16px', fontWeight: 600, color: '#fff' }}>{title}</label>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
                 {items.map((item, index) => (

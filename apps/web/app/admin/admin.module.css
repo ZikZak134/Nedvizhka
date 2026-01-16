@@ -470,6 +470,19 @@
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08);
 }
 
+/* Option элементы */
+.formSelect option {
+  background: #1e293b;
+  color: #fff;
+  padding: 12px;
+  font-size: 14px;
+}
+
+.formSelect option:hover {
+  background: #334155;
+}
+
+
 /* === FIELD GROUP === */
 .fieldGroup {
   display: flex;
