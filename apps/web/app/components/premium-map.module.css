@@ -2,6 +2,7 @@
 
 /* Loading State */
 .loadingContainer {
+    height: var(--map-height, 100vh);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -25,6 +26,7 @@
 
 /* Map Containers */
 .mainContainer {
+    height: var(--map-height, 100vh);
     position: relative;
     background: #0f172a;
     overflow: hidden;
@@ -87,6 +89,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
+    background-color: var(--btn-bg, transparent);
 }
 
 .listBtn {
@@ -298,6 +301,7 @@
 
 /* Side Panel Container & Animations */
 .propertySidePanel {
+    width: var(--panel-width, 420px);
     position: absolute;
     top: 0;
     right: 0;

@@ -899,7 +899,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
     if (loading) {
         return (
-            <div className={styles.loadingContainer} style={{ height }}>
+            <div className={styles.loadingContainer} style={{ '--map-height': height } as React.CSSProperties}>
                 <div className={styles.loadingContent}>
                     <div className={styles.loadingIcon}>🗺️</div>
                     <div className={styles.loadingText}>Загружаем карту инвестиций...</div>
@@ -909,7 +909,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
     }
 
     return (
-        <div className={styles.mainContainer} style={{ height }}>
+        <div className={styles.mainContainer} style={{ '--map-height': height } as React.CSSProperties}>
             {/* MapLibre Container (OSM/Satellite) */}
             <div 
                 ref={mapRef} 
@@ -935,7 +935,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                             key={item.key}
                             onClick={() => setMapProvider(item.key as any)}
                             className={`${styles.providerBtn} ${mapProvider === item.key ? `text-white bg-[${item.color}]` : 'text-slate-400 bg-transparent'}`}
-                            style={{ backgroundColor: mapProvider === item.key ? item.color : 'transparent' }} // Keep inline for dynamic color from array
+                            style={{ '--btn-bg': mapProvider === item.key ? item.color : 'transparent' } as React.CSSProperties} // Keep inline for dynamic color from array
                         >
                             {item.label}
                         </button>
@@ -1052,7 +1052,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
             {/* Side Panel logic */}
             {!isMobile && (selectedPropertyId || selectedDistrict) && (
-                <div className={`${styles.propertySidePanel} ${styles.slideRight} lux-dark-theme`} style={{ width: `${panelWidth}px` }}>
+                <div className={`${styles.propertySidePanel} ${styles.slideRight} lux-dark-theme`} style={{ '--panel-width': `${panelWidth}px` } as React.CSSProperties}>
                     <div ref={resizeRef} onMouseDown={() => setIsResizing(true)} className={`absolute left-0 top-0 bottom-0 w-2 cursor-ew-resize z-10 ${isResizing ? 'bg-[#d4af37]/30' : 'bg-transparent'}`} />
                     <div className={styles.sidePanelContent}>
                          {(() => {

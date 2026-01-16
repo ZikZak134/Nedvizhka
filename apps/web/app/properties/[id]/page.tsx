@@ -486,7 +486,7 @@ export default function PropertyDetailPage() {
                             <div className="lux-investment-bar">
                                 <div
                                     className="lux-investment-bar-fill bg-[#16a34a]"
-                                    style={{ width: `${Math.min(property.growth_10y || 0, 100)}%` }}
+                                    style={{ '--progress-width': `${Math.min(property.growth_10y || 0, 100)}%` } as React.CSSProperties}
                                 />
                             </div>
                         </div>
@@ -496,7 +496,7 @@ export default function PropertyDetailPage() {
                             <div className="lux-investment-bar">
                                 <div
                                     className="lux-investment-bar-fill bg-[#b8860b]"
-                                    style={{ width: `${Math.min((property.investment_metrics?.roi || 0) * 5, 100)}%` }}
+                                    style={{ '--progress-width': `${Math.min((property.investment_metrics?.roi || 0) * 5, 100)}%` } as React.CSSProperties}
                                 />
                             </div>
                         </div>
@@ -506,7 +506,7 @@ export default function PropertyDetailPage() {
                             <div className="lux-investment-bar">
                                 <div
                                     className="lux-investment-bar-fill bg-[#2563eb]"
-                                    style={{ width: `${Math.min((property.investment_metrics?.sale_time || 0), 100)}%` }}
+                                    style={{ '--progress-width': `${Math.min((property.investment_metrics?.sale_time || 0), 100)}%` } as React.CSSProperties}
                                 />
                             </div>
                         </div>

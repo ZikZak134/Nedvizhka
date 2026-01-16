@@ -49,7 +49,7 @@ export default function TextareaWithCounter({
         placeholder={placeholder}
         maxLength={maxLength}
         className={`${styles.formTextarea} ${error ? styles.formInputError : ''}`}
-        style={{ minHeight }}
+        style={{ '--textarea-min-height': minHeight } as React.CSSProperties}
         aria-label={label || placeholder}
       />
       <div className={styles.textareaFooter}>

@@ -7,6 +7,7 @@ import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { PropertyCard } from '../components/PropertyCard';
 import { PropertyFilters } from '../components/PropertyFilters';
+import styles from '../styles/public.module.css';
 
 interface Property {
     id: string;
@@ -154,7 +155,7 @@ export default function PropertiesPage() {
                             </aside>
 
                             {/* Properties Grid or Map */}
-                            <div style={{ minHeight: '600px' }}>
+                            <div className={styles.propertiesContainer}>
                                 {loading && viewMode === 'grid' ? (
                                     <div className="grid grid-auto-fill-md">
                                         {[...Array(6)].map((_, i) => (
@@ -163,21 +164,21 @@ export default function PropertiesPage() {
                                                 <div className="card-body">
                                                     <div className="skeleton skeleton-title mb-2" />
                                                     <div className="skeleton skeleton-text mb-4" />
-                                                    <div className="skeleton skeleton-text" style={{ width: '40%' }} />
+                                                    <div className={`skeleton skeleton-text ${styles.skeletonWidth40}`} />
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 ) : properties.length === 0 ? (
-                                    <div className="text-center" style={{ padding: 'var(--space-16)' }}>
-                                        <div style={{ fontSize: '48px', marginBottom: 'var(--space-4)' }}>🏠</div>
+                                    <div className={`text-center ${styles.emptyStateContainer}`}>
+                                        <div className={styles.emptyStateIcon}>🏠</div>
                                         <h3 className="heading-5 mb-2">Объекты не найдены</h3>
                                         <p className="body-small">
                                             Попробуйте изменить параметры фильтрации или добавьте новые объекты через API
                                         </p>
                                     </div>
                                 ) : viewMode === 'map' ? (
-                                    <div style={{ height: '600px', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+                                    <div className={styles.mapContainer}>
                                         {PropertyMapComp ? (
                                             <PropertyMapComp
                                                 height="100%"

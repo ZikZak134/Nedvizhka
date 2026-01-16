@@ -732,6 +732,7 @@
 
 .lux-investment-bar-fill {
     height: 100%;
+    width: var(--progress-width, 0%);
     transition: width 1s ease;
 }
 

@@ -416,7 +416,7 @@
 /* === TEXTAREA === */
 .formTextarea {
   width: 100%;
-  min-height: 120px;
+  min-height: var(--textarea-min-height, 140px);
   padding: 14px;
   background: rgba(15, 23, 42, 0.4);
   border: 1.5px solid rgba(255, 255, 255, 0.12);
