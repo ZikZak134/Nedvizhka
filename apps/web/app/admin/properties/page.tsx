@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '../components/AuthGuard';
+import { useToast } from '../components/ToastContainer';
 import LocationPicker from '../components/LocationPicker';
 import ImageGalleryEditor from '../components/ImageGalleryEditor';
 import JsonListEditor from '../components/JsonListEditor';
+import TextareaWithCounter from '../components/TextareaWithCounter';
 import styles from '../admin.module.css';
 
 interface Property {
@@ -59,6 +61,7 @@ const EMPTY_FORM = {
 
 export default function AdminProperties() {
   const { authFetch } = useAuth();
+  const { showSuccess, showError, showWarning } = useToast();
   const [properties, setProperties] = useState<Property[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -69,6 +72,7 @@ export default function AdminProperties() {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -144,17 +148,53 @@ export default function AdminProperties() {
         method: 'DELETE',
       });
       if (response.ok) {
+        showSuccess('Объект успешно удалён');
         fetchProperties(currentPage);
+      } else {
+        showError('Ошибка при удалении объекта');
       }
     } catch (error) {
       console.error('Ошибка удаления:', error);
+      showError('Не удалось удалить объект');
     }
+  };
+
+  // Валидация формы
+  const validateForm = (): boolean => {
+    const errors: Record<string, string> = {};
+    
+    if (!formData.title.trim()) {
+      errors.title = 'Название обязательно для заполнения';
+    }
+    
+    if (!formData.price || Number(formData.price) <= 0) {
+      errors.price = 'Укажите корректную цену';
+    }
+    
+    if (!formData.address.trim()) {
+      errors.address = 'Адрес обязателен для заполнения';
+    }
+    
+    if (!formData.area_sqm || Number(formData.area_sqm) <= 0) {
+      errors.area_sqm = 'Укажите корректную площадь';
+    }
+    
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   // Сохранение (создание или обновление)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Валидация
+    if (!validateForm()) {
+      showWarning('Пожалуйста, заполните все обязательные поля');
+      return;
+    }
+    
     setStatus('loading');
+    setValidationErrors({});
 
     try {
       const payload = {
@@ -177,6 +217,7 @@ export default function AdminProperties() {
 
       if (response.ok) {
         setStatus('success');
+        showSuccess(editingId ? 'Объект успешно обновлён!' : 'Объект успешно создан!');
         setTimeout(() => {
           setStatus('idle');
           setShowForm(false);
@@ -185,11 +226,13 @@ export default function AdminProperties() {
           fetchProperties(currentPage);
         }, 1500);
       } else {
-        throw new Error('Ошибка сохранения');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || 'Ошибка сохранения');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       setStatus('error');
+      showError(err.message || 'Не удалось сохранить объект');
     }
   };
 
@@ -245,6 +288,13 @@ export default function AdminProperties() {
           </button>
         </header>
 
+        {/* Progress Bar */}
+        {status === 'loading' && (
+          <div className={styles.progressBar}>
+            <div className={styles.progressBarFill} />
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="grid grid-cols-[1fr_400px] gap-10 items-start">
           
           {/* LEFT COLUMN */}
@@ -259,6 +309,7 @@ export default function AdminProperties() {
                               value={formData.title} 
                               onChange={v => setFormData({...formData, title: v})} 
                               placeholder="Видовые апартаменты в Сириусе" 
+                              error={validationErrors.title}
                           />
                       </div>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
@@ -268,6 +319,7 @@ export default function AdminProperties() {
                                   type="number" 
                                   value={formData.price} 
                                   onChange={v => setFormData({...formData, price: v})} 
+                                  error={validationErrors.price}
                               />
                           </div>
                           <div>
@@ -280,12 +332,14 @@ export default function AdminProperties() {
                           </div>
                       </div>
                       <div>
-                          <Label>Описание объекта</Label>
-                          <textarea 
+                          <TextareaWithCounter 
                               value={formData.description}
-                              onChange={e => setFormData({...formData, description: e.target.value})}
-                              className={styles.formTextarea}
+                              onChange={v => setFormData({...formData, description: v})}
                               placeholder="Эксклюзивная резиденция с панорамным видом на море. Премиальная отделка, закрытая территория, консьерж-сервис 24/7..."
+                              label="Описание объекта"
+                              maxLength={2000}
+                              helper="Подробное описание для лендинга объекта"
+                              minHeight="140px"
                           />
                       </div>
                   </div>
@@ -296,7 +350,12 @@ export default function AdminProperties() {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
                       <div>
                           <Label>Площадь (м²)</Label>
-                          <Input type="number" value={formData.area_sqm} onChange={v => setFormData({...formData, area_sqm: v})} />
+                          <Input 
+                              type="number" 
+                              value={formData.area_sqm} 
+                              onChange={v => setFormData({...formData, area_sqm: v})} 
+                              error={validationErrors.area_sqm}
+                          />
                       </div>
                       <div>
                           <Label>Комнат</Label>
@@ -315,17 +374,18 @@ export default function AdminProperties() {
 
               {/* 3. КАРТА */}
               <Section title="📍 Локация на карте">
-                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      <Input 
-                          value={formData.address} 
-                          onChange={v => setFormData({...formData, address: v})} 
-                          placeholder="Введите адрес для отображения"
-                      />
-                      <LocationPicker 
-                          initialLat={formData.latitude} 
-                          initialLon={formData.longitude}
-                          onChange={(lat, lon) => setFormData(prev => ({ ...prev, latitude: lat, longitude: lon }))} 
-                      />
+                      <div>
+                          <Input 
+                              value={formData.address} 
+                              onChange={v => setFormData({...formData, address: v})} 
+                              placeholder="Введите адрес для отображения"
+                              error={validationErrors.address}
+                          />
+                          <LocationPicker 
+                              initialLat={formData.latitude} 
+                              initialLon={formData.longitude}
+                              onChange={(lat, lon) => setFormData(prev => ({ ...prev, latitude: lat, longitude: lon }))} 
+                          />
                    </div>
               </Section>
 
@@ -505,12 +565,14 @@ export default function AdminProperties() {
                           <Input value={formData.agent_profile.name} onChange={v => updateNested('agent_profile', 'name', v)} />
                       </div>
                       <div>
-                          <Label>Цитата собственника</Label>
-                           <textarea 
-                               value={formData.owner_quote}
-                               onChange={e => setFormData({...formData, owner_quote: e.target.value})}
-                               className={styles.formTextarea}
-                               placeholder="Продаю в связи с переездом..."
+                          <TextareaWithCounter 
+                              value={formData.owner_quote}
+                              onChange={v => setFormData({...formData, owner_quote: v})}
+                              placeholder="Продаю в связи с переездом..."
+                              label="Цитата собственника"
+                              maxLength={500}
+                              helper="Личный комментарий от собственника"
+                              minHeight="100px"
                           />
                       </div>
                   </div>
