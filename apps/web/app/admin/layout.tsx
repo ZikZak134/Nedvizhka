@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AuthGuard, useAuth } from './components/AuthGuard';
+import { ToastProvider } from './components/ToastContainer';
 import styles from './admin.module.css';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -48,90 +49,92 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // Для страницы логина — простой layout без sidebar
   if (isLoginPage) {
-    return <>{children}</>;
+    return <ToastProvider>{children}</ToastProvider>;
   }
 
   return (
     <AuthGuard>
-      <div className={styles.adminContainer}>
-        {/* Sidebar */}
-        <div className={styles.adminSidebar}>
-          <div className={styles.adminLogo}>
-            🛡️ Центр Управления
-          </div>
-          
-          <nav className={styles.adminNavGroup}>
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link 
-                  key={item.href} 
-                  href={item.href} 
-                  className={`${styles.adminNavItem} ${isActive ? styles.adminNavItemActive : ''}`}
-                >
-                  <span className={styles.adminNavIcon}>{item.icon}</span>
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
-
-          <div className={styles.adminUserSection}>
-            <div className={styles.adminUserInfo}>
-              <div className={styles.adminUserAvatar}>
-                {(user?.display_name || 'A')[0].toUpperCase()}
-              </div>
-              <div>
-                <div className={styles.adminUserName}>{user?.display_name || 'Администратор'}</div>
-                <div className={styles.adminUserRole}>{user?.role || ''}</div>
-              </div>
+      <ToastProvider>
+        <div className={styles.adminContainer}>
+          {/* Sidebar */}
+          <div className={styles.adminSidebar}>
+            <div className={styles.adminLogo}>
+              🛡️ Центр Управления
             </div>
-            <button onClick={logout} className={styles.adminLogoutBtn}>
-              🚪 Выйти
-            </button>
-            <Link href="/" className={styles.adminNavItem} style={{ marginTop: '12px' }}>
-              <span style={{ fontSize: '16px' }}>←</span>
-              <span>Вернуться на сайт</span>
-            </Link>
+          
+            <nav className={styles.adminNavGroup}>
+              {navItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link 
+                    key={item.href} 
+                    href={item.href} 
+                    className={`${styles.adminNavItem} ${isActive ? styles.adminNavItemActive : ''}`}
+                  >
+                    <span className={styles.adminNavIcon}>{item.icon}</span>
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+
+            <div className={styles.adminUserSection}>
+              <div className={styles.adminUserInfo}>
+                <div className={styles.adminUserAvatar}>
+                  {(user?.display_name || 'A')[0].toUpperCase()}
+                </div>
+                <div>
+                  <div className={styles.adminUserName}>{user?.display_name || 'Администратор'}</div>
+                  <div className={styles.adminUserRole}>{user?.role || ''}</div>
+                </div>
+              </div>
+              <button onClick={logout} className={styles.adminLogoutBtn}>
+                🚪 Выйти
+              </button>
+              <Link href="/" className={styles.adminNavItem} style={{ marginTop: '12px' }}>
+                <span style={{ fontSize: '16px' }}>←</span>
+                <span>Вернуться на сайт</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className={styles.adminMainContent}>
+            {/* Breadcrumbs */}
+            {!isLoginPage && pathname !== '/admin' && (
+              <nav style={{ marginBottom: '24px' }}>
+                <ol style={{ display: 'flex', gap: '8px', listStyle: 'none', padding: 0, margin: 0 }}>
+                  {getBreadcrumbs().map((crumb, index, arr) => (
+                    <li key={crumb.href} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      {index > 0 && <span style={{ color: '#64748b' }}>/</span>}
+                      {index === arr.length - 1 ? (
+                        <span style={{ color: '#d4af37', fontWeight: 600, fontSize: '14px' }}>
+                          {crumb.label}
+                        </span>
+                      ) : (
+                        <Link 
+                          href={crumb.href} 
+                          style={{ 
+                            color: '#94a3b8', 
+                            textDecoration: 'none', 
+                            fontSize: '14px',
+                            transition: 'color 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.color = '#cbd5e1'}
+                          onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
+                        >
+                          {crumb.label}
+                        </Link>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            )}
+            {children}
           </div>
         </div>
-
-        {/* Main Content */}
-        <div className={styles.adminMainContent}>
-          {/* Breadcrumbs */}
-          {!isLoginPage && pathname !== '/admin' && (
-            <nav style={{ marginBottom: '24px' }}>
-              <ol style={{ display: 'flex', gap: '8px', listStyle: 'none', padding: 0, margin: 0 }}>
-                {getBreadcrumbs().map((crumb, index, arr) => (
-                  <li key={crumb.href} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    {index > 0 && <span style={{ color: '#64748b' }}>/</span>}
-                    {index === arr.length - 1 ? (
-                      <span style={{ color: '#d4af37', fontWeight: 600, fontSize: '14px' }}>
-                        {crumb.label}
-                      </span>
-                    ) : (
-                      <Link 
-                        href={crumb.href} 
-                        style={{ 
-                          color: '#94a3b8', 
-                          textDecoration: 'none', 
-                          fontSize: '14px',
-                          transition: 'color 0.2s'
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = '#cbd5e1'}
-                        onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
-                      >
-                        {crumb.label}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ol>
-            </nav>
-          )}
-          {children}
-        </div>
-      </div>
+      </ToastProvider>
     </AuthGuard>
   );
 }
