@@ -48,3 +48,16 @@
 ## 6. MCP Recommendations
 - **FileSystem**: For accessing code.
 - **PostgreSQL**: For direct database inspection.
+
+## 7. Deployment URLs
+
+| Environment | URL |
+| ----------- | --- |
+| **Production** | `https://web-zeta-blush-32.vercel.app` |
+| **Admin Panel** | `https://web-zeta-blush-32.vercel.app/admin` |
+| **Admin Credentials** | Login: `nedvizhka` / Password: `gramota99` |
+| **GitHub Repo** | `https://github.com/gramazeka1342-code/Nedvizhka` |
+| **Local Frontend** | `http://localhost:3001` |
+| **Local Backend API** | `http://localhost:8000` |
+| **Swagger Docs** | `http://localhost:8000/docs` |
+

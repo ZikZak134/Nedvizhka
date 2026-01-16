@@ -89,6 +89,19 @@ description: MEMORY
 
 ---
 
+## 🌐 URL Деплоя
+
+| Среда | URL | Примечания |
+| ----- | --- | ---------- |
+| **Production (Vercel)** | `https://web-zeta-blush-32.vercel.app` | Основной деплой |
+| **Админ-панель** | `https://web-zeta-blush-32.vercel.app/admin` | Логин: nedvizhka / gramota99 |
+| **GitHub Repo** | `https://github.com/gramazeka1342-code/Nedvizhka` | Основной репозиторий |
+| **Local Frontend** | `http://localhost:3001` | Локальная разработка |
+| **Local Backend** | `http://localhost:8000` | FastAPI + Swagger UI |
+| **Swagger Docs** | `http://localhost:8000/docs` | API документация |
+
+---
+
 ## 📋 История изменений (Changelog)
 
 ### 2026-01-16 (Admin Panel Redesign)
