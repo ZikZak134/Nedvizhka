@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import styles from './admin.module.css';
 
 interface Stats {
   totalProperties: number;
@@ -51,49 +52,109 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      <h1 style={{ fontSize: '32px', fontWeight: 700, marginBottom: '8px' }}>Панель управления</h1>
-      <p style={{ color: '#94a3b8', marginBottom: '32px' }}>Добро пожаловать в командный центр.</p>
+      <header style={{ marginBottom: '40px' }}>
+        <h1 style={{ fontSize: '32px', fontWeight: 700, marginBottom: '8px', color: '#fff' }}>
+          Панель управления
+        </h1>
+        <p style={{ color: '#94a3b8', fontSize: '15px' }}>
+          Добро пожаловать в командный центр EstateAnalytics
+        </p>
+      </header>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
+      {/* Stat Cards Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', marginBottom: '48px' }}>
+        
         {/* Stat Card 1 */}
-        <div style={{ background: 'rgba(255,255,255,0.05)', padding: '24px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)' }}>
-          <div style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '8px' }}>Всего объектов</div>
-          <div style={{ fontSize: '36px', fontWeight: 700, color: '#fff' }}>
-            {loading ? '...' : stats.totalProperties}
+        <div className={styles.statCard}>
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <div className={styles.statLabel}>Всего объектов</div>
+              <div style={{ fontSize: '32px' }}>🏠</div>
+            </div>
+            <div className={styles.statValue}>
+              {loading ? (
+                <div className={styles.skeleton} style={{ width: '80px', height: '42px' }} />
+              ) : (
+                stats.totalProperties
+              )}
+            </div>
+            <div className={`${styles.statChange} ${styles.statChangePositive}`}>
+             ↗ Активных на сайте
+            </div>
           </div>
-          <div style={{ color: '#10b981', fontSize: '13px', marginTop: '4px' }}>Активных на сайте</div>
         </div>
 
         {/* Stat Card 2 */}
-        <div style={{ background: 'rgba(255,255,255,0.05)', padding: '24px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)' }}>
-          <div style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '8px' }}>Активные заявки</div>
-          <div style={{ fontSize: '36px', fontWeight: 700, color: '#fff' }}>
-            {loading ? '...' : stats.activeLeads}
+        <div className={styles.statCard}>
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <div className={styles.statLabel}>Активные заявки</div>
+              <div style={{ fontSize: '32px' }}>📋</div>
+            </div>
+            <div className={styles.statValue}>
+              {loading ? (
+                <div className={styles.skeleton} style={{ width: '60px', height: '42px' }} />
+              ) : (
+                stats.activeLeads
+              )}
+            </div>
+            <div className={styles.statChange} style={{ color: '#f59e0b' }}>
+              ⏳ Ожидают обработки
+            </div>
           </div>
-          <div style={{ color: '#f59e0b', fontSize: '13px', marginTop: '4px' }}>Ожидают обработки</div>
         </div>
 
         {/* Stat Card 3 */}
-        <div style={{ background: 'rgba(255,255,255,0.05)', padding: '24px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)' }}>
-          <div style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '8px' }}>Общая стоимость</div>
-          <div style={{ fontSize: '36px', fontWeight: 700, color: '#fff' }}>
-            {loading ? '...' : formatValue(stats.totalValue)}
+        <div className={styles.statCard}>
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <div className={styles.statLabel}>Общая стоимость</div>
+              <div style={{ fontSize: '32px' }}>💰</div>
+            </div>
+            <div className={styles.statValue} style={{ fontSize: '28px' }}>
+              {loading ? (
+                <div className={styles.skeleton} style={{ width: '140px', height: '38px' }} />
+              ) : (
+                formatValue(stats.totalValue)
+              )}
+            </div>
+            <div className={styles.statChange} style={{ color: '#94a3b8' }}>
+              📊 Сумма всех объектов
+            </div>
           </div>
-          <div style={{ color: '#94a3b8', fontSize: '13px', marginTop: '4px' }}>Сумма всех объектов</div>
         </div>
       </div>
 
-      <div style={{ marginTop: '48px' }}>
-        <h2 style={{ fontSize: '24px', marginBottom: '24px' }}>Быстрые действия</h2>
+      {/* Quick Actions */}
+      <div>
+        <h2 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '24px', color: '#fff' }}>
+          Быстрые действия
+        </h2>
         <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-          <Link href="/admin/properties" style={{ padding: '12px 24px', background: '#d4af37', color: '#000', borderRadius: '12px', border: 'none', fontWeight: 700, cursor: 'pointer', textDecoration: 'none' }}>
-            + Добавить объект
+          <Link href="/admin/properties" className={styles.btnPrimary}>
+            ➕ Добавить объект
           </Link>
-          <Link href="/admin/settings" style={{ padding: '12px 24px', background: 'rgba(255,255,255,0.1)', color: '#fff', borderRadius: '12px', border: 'none', fontWeight: 600, cursor: 'pointer', textDecoration: 'none' }}>
+          <Link href="/admin/settings" className={styles.btnSecondary}>
             ⚙️ Настройки сайта
           </Link>
+          <Link href="/admin/complexes" className={styles.btnSecondary}>
+            🏢 Управление ЖК
+          </Link>
+        </div>
+      </div>
+
+      {/* Recent Activity (Optional) */}
+      <div style={{ marginTop: '48px' }}>
+        <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '16px', color: '#fff' }}>
+          Последние обновления
+        </h3>
+        <div className={styles.sectionCard}>
+          <p style={{ color: '#94a3b8', textAlign: 'center', padding: '20px 0' }}>
+            История действий появится здесь
+          </p>
         </div>
       </div>
     </div>
   );
 }
+

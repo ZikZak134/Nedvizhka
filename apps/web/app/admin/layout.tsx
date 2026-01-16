@@ -21,13 +21,30 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [isLoginPage]);
 
   const navItems = [
-    { label: '📊 Дашборд', href: '/admin' },
-    { label: '🏠 Объекты', href: '/admin/properties' },
-    { label: '🏙️ Районы', href: '/admin/districts' },
-    { label: '🏢 ЖК', href: '/admin/complexes' },
-    { label: '📝 Контент', href: '/admin/content' },
-    { label: '⚙️ Настройки', href: '/admin/settings' },
+    { label: 'Дашборд', icon: '📊', href: '/admin' },
+    { label: 'Объекты', icon: '🏠', href: '/admin/properties' },
+    { label: 'Районы', icon: '🏙️', href: '/admin/districts' },
+    { label: 'ЖК', icon: '🏢', href: '/admin/complexes' },
+    { label: 'Контент', icon: '📝', href: '/admin/content' },
+    { label: 'Настройки', icon: '⚙️', href: '/admin/settings' },
   ];
+
+  // Breadcrumbs generation
+  const getBreadcrumbs = () => {
+    const segments = pathname.split('/').filter(Boolean);
+    const breadcrumbs = [{ label: 'Админка', href: '/admin' }];
+    
+    if (segments.length > 1) {
+      const current = navItems.find(item => item.href === pathname);
+      if (current) {
+        breadcrumbs.push({ label: current.label, href: pathname });
+      } else {
+        breadcrumbs.push({ label: segments[segments.length - 1], href: pathname });
+      }
+    }
+    
+    return breadcrumbs;
+  };
 
   // Для страницы логина — простой layout без sidebar
   if (isLoginPage) {
@@ -52,7 +69,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   href={item.href} 
                   className={`${styles.adminNavItem} ${isActive ? styles.adminNavItemActive : ''}`}
                 >
-                  {item.label}
+                  <span className={styles.adminNavIcon}>{item.icon}</span>
+                  <span>{item.label}</span>
                 </Link>
               );
             })}
@@ -71,14 +89,46 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <button onClick={logout} className={styles.adminLogoutBtn}>
               🚪 Выйти
             </button>
-            <Link href="/" className={styles.adminNavItem}>
-              ← Вернуться на сайт
+            <Link href="/" className={styles.adminNavItem} style={{ marginTop: '12px' }}>
+              <span style={{ fontSize: '16px' }}>←</span>
+              <span>Вернуться на сайт</span>
             </Link>
           </div>
         </div>
 
         {/* Main Content */}
         <div className={styles.adminMainContent}>
+          {/* Breadcrumbs */}
+          {!isLoginPage && pathname !== '/admin' && (
+            <nav style={{ marginBottom: '24px' }}>
+              <ol style={{ display: 'flex', gap: '8px', listStyle: 'none', padding: 0, margin: 0 }}>
+                {getBreadcrumbs().map((crumb, index, arr) => (
+                  <li key={crumb.href} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {index > 0 && <span style={{ color: '#64748b' }}>/</span>}
+                    {index === arr.length - 1 ? (
+                      <span style={{ color: '#d4af37', fontWeight: 600, fontSize: '14px' }}>
+                        {crumb.label}
+                      </span>
+                    ) : (
+                      <Link 
+                        href={crumb.href} 
+                        style={{ 
+                          color: '#94a3b8', 
+                          textDecoration: 'none', 
+                          fontSize: '14px',
+                          transition: 'color 0.2s'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.color = '#cbd5e1'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
+                      >
+                        {crumb.label}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )}
           {children}
         </div>
       </div>

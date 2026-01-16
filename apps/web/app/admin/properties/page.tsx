@@ -5,6 +5,7 @@ import { useAuth } from '../components/AuthGuard';
 import LocationPicker from '../components/LocationPicker';
 import ImageGalleryEditor from '../components/ImageGalleryEditor';
 import JsonListEditor from '../components/JsonListEditor';
+import styles from '../admin.module.css';
 
 interface Property {
   id: string;
@@ -416,10 +417,8 @@ export default function AdminProperties() {
                                   }
                               }}
 
-                              className={`px-4 py-2 rounded-[20px] text-[13px] border transition-all ${
-                                formData.badges?.includes(badge)
-                                  ? 'border-[#d4af37] bg-[#d4af37]/20 text-[#d4af37]'
-                                  : 'border-white/20 bg-transparent text-slate-400'
+                              className={`${styles.badge} ${
+                                formData.badges?.includes(badge) ? styles.badgeActive : styles.badgeDefault
                               }`}
                           >
                               {formData.badges?.includes(badge) ? '✓ ' : ''}{badge}
@@ -754,23 +753,66 @@ export default function AdminProperties() {
 }
 
 // UI HELPER COMPONENTS
+import styles from '../admin.module.css';
+
 function Section({ title, children }: { title: string, children: React.ReactNode }) {
+    const icon = title.includes('📑') ? '📑' : 
+                 title.includes('📏') ? '📏' :
+                 title.includes('📍') ? '📍' :
+                 title.includes('🖼️') ? '🖼️' :
+                 title.includes('✨') ? '✨' :
+                 title.includes('🏷️') ? '🏷️' :
+                 title.includes('💎') ? '💎' :
+                 title.includes('🌿') ? '🌿' :
+                 title.includes('👤') ? '👤' :
+                 title.includes('🚀') ? '🚀' : '';
+    
+    const cleanTitle = title.replace(/📑|📏|📍|🖼️|✨|🏷️|💎|🌿|👤|🚀/g, '').trim();
+    
     return (
-        <div className="bg-[#1e293b] border border-white/10 rounded-2xl p-6">
-            <h3 className="text-lg mb-5 text-[#d4af37] border-b border-white/5 pb-3">{title}</h3>
+        <div className={styles.sectionCard}>
+            <div className={styles.sectionHeader}>
+                {icon && <span className={styles.sectionIcon}>{icon}</span>}
+                <h3 className={styles.sectionTitle}>{cleanTitle}</h3>
+            </div>
             {children}
         </div>
     );
 }
 
-function Label({ children }: { children: React.ReactNode }) {
-    return <label className="block mb-1.5 text-[13px] text-slate-400">{children}</label>;
+function Label({ children, required }: { children: React.ReactNode, required?: boolean }) {
+    return (
+        <label className={`${styles.inputLabel} ${required ? styles.inputLabelRequired : ''}`}>
+            {children}
+        </label>
+    );
 }
 
-function Input({ onChange, ...props }: { onChange: (val: string) => void } & Record<string, any>) {
-    return <input 
-        {...props} 
-        onChange={e => onChange(e.target.value)}
-        className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white" 
-    />;
+function Input({ onChange, label, required, helper, error, ...props }: { 
+    onChange: (val: string) => void;
+    label?: string;
+    required?: boolean;
+    helper?: string;
+    error?: string;
+} & Record<string, any>) {
+    const inputId = `input-${Math.random().toString(36).substr(2, 9)}`;
+    const hasValue = props.value && props.value.toString().length > 0;
+    
+    return (
+        <div style={{ width: '100%' }}>
+            {label && <Label required={required}>{label}</Label>}
+            <div className={styles.formInputWrapper}>
+                <input 
+                    id={inputId}
+                    {...props} 
+                    onChange={e => onChange(e.target.value)}
+                    className={styles.formInput}
+                    placeholder=" "
+                />
+            </div>
+            {helper && !error && <div className={styles.helperText}>{helper}</div>}
+            {error && <div className={`${styles.helperText} ${styles.helperTextError}`}>{error}</div>}
+        </div>
+    );
 }
+

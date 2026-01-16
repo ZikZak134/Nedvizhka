@@ -91,6 +91,28 @@ description: MEMORY
 
 ## 📋 История изменений (Changelog)
 
+### 2026-01-16 (Admin Panel Redesign)
+
+- ✅ **Полный редизайн админ-панели** с современной дизайн-системой:
+  - **CSS Дизайн-Система** (`admin.module.css`): добавлено 519 строк нового кода
+    - Spacing система с CSS variables (--space-xs до --space-2xl)
+    - Улучшенные input fields с floating labels
+    - Gradient section cards с hover эффектами
+    - Badge system с active glow эффектом
+    - Stat cards с hover lift анимацией
+    - Micro-animations (shimmer, slide-in, transitions)
+  - **Dashboard** (`admin/page.tsx`): обновлён с premium дизайном
+    - Gradient stat cards с иконками (🏠, 📋, 💰)
+    - Skeleton loading states
+    - Улучшенные кнопки (btnPrimary, btnSecondary)
+  - **UI Компоненты** (`admin/properties/page.tsx`):
+    - Section — автоматическое извлечение иконок, gradient backgrounds
+    - Label — required indicator, uppercase styling
+    - Input — поддержка labels, helper text, error states
+    - Badge — active/inactive states с плавными transitions
+- ✅ **Fiксы Vercel**: Установлен Root Directory `apps/web`, все страницы админки работают
+- ✅ **Удалены fallback данные**: Чистые данные только из API
+
 ### 2026-01-14 (UX/UI Polish)
 
 - ✅ **Анимации** (`Framer Motion`):
@@ -180,4 +202,4 @@ description: MEMORY
 
 ---
 
-**Последнее обновление**: 2026-01-07 15:05
+**Последнее обновление**: 2026-01-16 09:47 (Редизайн админ-панели)

@@ -91,7 +91,19 @@
 .adminNavItemActive {
   background: rgba(212, 175, 55, 0.15);
   color: #d4af37;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.15);
 }
+
+.adminNavIcon {
+  font-size: 18px;
+  transition: transform var(--transition-base);
+  display: inline-block;
+}
+
+.adminNavItem:hover .adminNavIcon {
+  transform: scale(1.1);
+}
+
 
 .adminUserSection {
   margin-top: auto;
@@ -310,3 +322,682 @@
 .loginToggleLink:hover {
   text-decoration: underline;
 }
+
+/* ========================================
+   УЛУЧШЕННАЯ ДИЗАЙН-СИСТЕМА ДЛЯ ФОРМ
+   ======================================== */
+
+/* === SPACING СИСТЕМА === */
+:root {
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 350ms ease;
+}
+
+/* === УЛУЧШЕННЫЕ INPUT ПОЛЯ === */
+.formInput {
+  position: relative;
+  width: 100%;
+  padding: 16px 14px 8px 14px;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 400;
+  outline: none;
+  transition: all var(--transition-base);
+  min-height: 52px;
+}
+
+.formInput:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.formInput:focus {
+  border-color: #d4af37;
+  background: rgba(15, 23, 42, 0.7);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08),
+              0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.formInput::placeholder {
+  color: transparent;
+}
+
+/* Floating Label */
+.formInputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.formLabel {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 400;
+  pointer-events: none;
+  transition: all var(--transition-base);
+  background: transparent;
+  padding: 0 4px;
+  z-index: 1;
+}
+
+.formInput:focus + .formLabel,
+.formInput:not(:placeholder-shown) + .formLabel {
+  top: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #d4af37;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.formInput:hover + .formLabel {
+  color: #94a3b8;
+}
+
+/* === TEXTAREA === */
+.formTextarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 14px;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+  transition: all var(--transition-base);
+  font-family: inherit;
+}
+
+.formTextarea:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.formTextarea:focus {
+  border-color: #d4af37;
+  background: rgba(15, 23, 42, 0.7);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08);
+}
+
+/* === SELECT === */
+.formSelect {
+  width: 100%;
+  padding: 14px 40px 14px 14px;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  transition: all var(--transition-base);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+
+.formSelect:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(15, 23, 42, 0.6);
+}
+
+.formSelect:focus {
+  border-color: #d4af37;
+  background-color: rgba(15, 23, 42, 0.7);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08);
+}
+
+/* === FIELD GROUP === */
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.fieldRow {
+  display: grid;
+  gap: var(--space-md);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+/* === SECTION CARD === */
+.sectionCard {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(30, 41, 59, 0.4) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-xl);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  transition: all var(--transition-base);
+}
+
+.sectionCard:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #d4af37;
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+
+.sectionIcon {
+  font-size: 24px;
+  filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.3));
+}
+
+/* === LABEL === */
+.inputLabel {
+  display: block;
+  margin-bottom: var(--space-xs);
+  font-size: 13px;
+  font-weight: 600;
+  color: #cbd5e1;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+}
+
+.inputLabelRequired::after {
+  content: ' *';
+  color: #ef4444;
+  font-weight: 700;
+}
+
+/* === HELPER TEXT === */
+.helperText {
+  margin-top: var(--space-xs);
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.helperTextError {
+  color: #fca5a5;
+}
+
+.helperTextSuccess {
+  color: #86efac;
+}
+
+/* === КНОПКИ === */
+.btnPrimary {
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+  color: #0f172a;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.btnPrimary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.btnPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.35);
+}
+
+.btnPrimary:hover::before {
+  opacity: 1;
+}
+
+.btnPrimary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+
+.btnPrimary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btnSecondary {
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.btnSecondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.btnSecondary:active {
+  transform: translateY(0);
+}
+
+/* === BADGE / TAG === */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px solid;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.badgeDefault {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: #94a3b8;
+}
+
+.badgeDefault:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  color: #cbd5e1;
+}
+
+.badgeActive {
+  border-color: #d4af37;
+  background: rgba(212, 175, 55, 0.15);
+  color: #d4af37;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.2);
+}
+
+.badgeActive:hover {
+  background: rgba(212, 175, 55, 0.25);
+}
+
+/* === STAT CARD === */
+.statCard {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.statCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.statCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+.statCard:hover::before {
+  opacity: 1;
+}
+
+.statLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-sm);
+}
+
+.statValue {
+  font-size: 36px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: var(--space-xs);
+}
+
+.statChange {
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.statChangePositive {
+  color: #22c55e;
+}
+
+.statChangeNegative {
+  color: #ef4444;
+}
+
+/* === LOADING STATES === */
+.skeleton {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-md);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* === TOGGLE SWITCH === */
+.toggleSwitch {
+  position: relative;
+  width: 60px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.toggleSwitch.active {
+  background: #22c55e;
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.3);
+}
+
+.toggleHandle {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border-radius: 50%;
+  transition: all var(--transition-base);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.toggleSwitch.active .toggleHandle {
+  left: 32px;
+}
+
+/* === CHARACTER COUNTER === */
+.charCounter {
+  font-size: 11px;
+  color: #64748b;
+  text-align: right;
+  margin-top: var(--space-xs);
+  font-weight: 500;
+}
+
+.charCounter.warning {
+  color: #f59e0b;
+}
+
+.charCounter.error {
+  color: #ef4444;
+}
+
+/* === TOAST NOTIFICATION === */
+.toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  padding: 16px 20px;
+  background: rgba(30, 41, 59, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-md);
+  border: 1px solid;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.toastSuccess {
+  border-color: rgba(34, 197, 94, 0.5);
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.toastError {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.toastInfo {
+  border-color: rgba(59, 130, 246, 0.5);
+  background: rgba(59, 130, 246, 0.1);
+}
+
+/* === TABLE STYLES === */
+.adminTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.adminTableWrapper {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
+
+.adminTableHeader {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.adminTableHeaderCell {
+  padding: 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.adminTableRow {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all var(--transition-fast);
+}
+
+.adminTableRow:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.adminTableCell {
+  padding: 12px 16px;
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+.adminTableImage {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.adminTableImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.adminTableTitle {
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.adminTableSubtitle {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.adminTablePrice {
+  color: #d4af37;
+  font-weight: 600;
+}
+
+.adminTableStatus {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.adminTableStatusActive {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+.adminTableStatusInactive {
+  background: rgba(100, 116, 139, 0.15);
+  color: #64748b;
+}
+
+.adminTableActions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.adminTableActionBtn {
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.adminTableActionEdit {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+
+.adminTableActionEdit:hover {
+  background: rgba(59, 130, 246, 0.25);
+  transform: translateY(-1px);
+}
+
+.adminTableActionDelete {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.adminTableActionDelete:hover {
+  background: rgba(239, 68, 68, 0.25);
+  transform: translateY(-1px);
+}
+
+/* === SEARCH INPUT === */
+.adminSearchInput {
+  width: 100%;
+  max-width: 400px;
+  padding: 12px 16px;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  color: #fff;
+  font-size: 14px;
+  transition: all var(--transition-base);
+}
+
+.adminSearchInput:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.adminSearchInput:focus {
+  outline: none;
+  border-color: #d4af37;
+  background: rgba(15, 23, 42, 0.7);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08);
+}
+
+.adminSearchInput::placeholder {
+  color: #64748b;
+}
+
+
