@@ -303,11 +303,11 @@ export default function AdminProperties() {
         <form onSubmit={handleSubmit} className="grid grid-cols-[1fr_400px] gap-10 items-start">
           
           {/* LEFT COLUMN */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          <div className={styles.formColumn}>
               
               {/* 1. БАЗОВАЯ ИНФОРМАЦИЯ */}
               <Section title="📑 Базовая информация">
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                  <div className={styles.formStack}>
                       <div>
                           <Label>Название объекта / Заголовок</Label>
                           <Input 
@@ -317,7 +317,7 @@ export default function AdminProperties() {
                               error={validationErrors.title}
                           />
                       </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                      <div className={styles.formGrid2}>
                           <div>
                               <Label>Цена (₽)</Label>
                               <Input 
@@ -352,7 +352,7 @@ export default function AdminProperties() {
 
               {/* 2. ХАРАКТЕРИСТИКИ */}
               <Section title="📏 Характеристики">
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+                  <div className={styles.formGrid4}>
                       <div>
                           <Label>Площадь (м²)</Label>
                           <Input 
@@ -400,10 +400,9 @@ export default function AdminProperties() {
                   onChange={imgs => setFormData({...formData, images: imgs})} 
               />
 
-              {/* 5. ХАРАКТЕРИСТИКИ ОБЪЕКТА */}
               <Section title="✨ Особенности объекта">
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div className={styles.formStackSmall}>
+                      <div className={styles.formGrid2}>
                           <div>
                               <Label>Вид</Label>
                               <select 
@@ -468,7 +467,7 @@ export default function AdminProperties() {
 
               {/* 6. БЕЙДЖИ */}
               <Section title="🏷️ Бейджи и теги">
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  <div className={styles.badgesGrid}>
                       {['Эксклюзив', 'Sea View', 'Люкс', 'Новостройка', 'Первая линия', 'Rooftop', 'SPA', 'Консьерж 24/7', 'Закрытая территория', 'Смарт-дом'].map(badge => (
                           <button
                               key={badge}
@@ -492,10 +491,9 @@ export default function AdminProperties() {
                   </div>
               </Section>
 
-              {/* 7. ИНВЕСТИЦИИ */}
               <Section title="💎 Инвестиционный Потенциал">
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
+                  <div className={styles.formColumn}>
+                      <div className={styles.formGrid3}>
                            <div>
                               <Label>ROI Годовой (%)</Label>
                               <Input type="number" value={formData.investment_metrics.roi} onChange={v => updateNested('investment_metrics', 'roi', v)} />
@@ -539,7 +537,7 @@ export default function AdminProperties() {
               
               {/* ЭКОЛОГИЯ */}
               <Section title="🌿 Окружение (1-5)">
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div className={styles.formGrid2}>
                       <div>
                           <Label>Воздух</Label>
                           <Input type="number" value={formData.eco_score.air} onChange={v => updateNested('eco_score', 'air', v)} />
@@ -549,7 +547,7 @@ export default function AdminProperties() {
                           <Input type="number" value={formData.eco_score.noise} onChange={v => updateNested('eco_score', 'noise', v)} />
                       </div>
                   </div>
-                  <div style={{ marginTop: '16px' }}>
+                  <div className={styles.formDivider}>
                       <JsonListEditor 
                           title="🌳 Зеленые зоны / Парки"
                           items={formData.green_zones}
@@ -564,7 +562,7 @@ export default function AdminProperties() {
 
               {/* АГЕНТ */}
               <Section title="👤 Персонализация">
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div className={styles.formStackSmall}>
                       <div>
                           <Label>Имя агента</Label>
                           <Input value={formData.agent_profile.name} onChange={v => updateNested('agent_profile', 'name', v)} />
@@ -585,11 +583,11 @@ export default function AdminProperties() {
 
               {/* ПУБЛИКАЦИЯ */}
               <Section title="🚀 Публикация">
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div className={styles.formStackSmall}>
+                      <div className={styles.formRow}>
                           <div>
-                              <div style={{ fontWeight: 600, color: '#fff', marginBottom: '4px' }}>Статус публикации</div>
-                              <div style={{ fontSize: '13px', color: '#64748b' }}>
+                              <div className={styles.formLabelBold}>Статус публикации</div>
+                              <div className={styles.formLabelSub}>
                                   {formData.is_active ? 'Объект виден на сайте' : 'Объект скрыт от посетителей'}
                               </div>
                           </div>
@@ -612,19 +610,7 @@ export default function AdminProperties() {
                               href={`/properties/${editingId}`} 
                               target="_blank"
                               rel="noopener noreferrer"
-                              style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  gap: '8px',
-                                  padding: '12px',
-                                  background: 'rgba(59, 130, 246, 0.2)',
-                                  color: '#3b82f6',
-                                  borderRadius: '8px',
-                                  textDecoration: 'none',
-                                  fontWeight: 600,
-                                  fontSize: '14px'
-                              }}
+                              className={styles.previewLink}
                           >
                               👁️ Предпросмотр на сайте
                           </a>
@@ -635,8 +621,7 @@ export default function AdminProperties() {
               <button 
                   type="submit" 
                   disabled={status === 'loading'}
-                  className={`${styles.btnPrimary} ${status === 'loading' ? 'opacity-70' : ''}`}
-                  style={{ width: '100%', padding: '20px', fontSize: '16px' }}
+                  className={`${styles.btnPrimary} ${styles.btnFull} ${status === 'loading' ? styles.btnDisabled : ''}`}
               >
                   {status === 'loading' ? '⏳ Сохраняю...' : editingId ? '💾 Сохранить изменения' : '🚀 Опубликовать объект'}
               </button>
@@ -776,15 +761,11 @@ export default function AdminProperties() {
 
       {/* Пагинация */}
       {totalPages > 1 && (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '24px' }}>
+        <div className={styles.pagination}>
           <button
             onClick={() => fetchProperties(currentPage - 1)}
             disabled={currentPage === 1}
-            style={{ 
-              padding: '8px 16px', background: 'rgba(255,255,255,0.1)', color: '#fff', 
-              borderRadius: '6px', border: 'none', cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-              opacity: currentPage === 1 ? 0.5 : 1
-            }}
+            className={styles.paginationBtn}
           >
             ◀
           </button>
@@ -792,12 +773,7 @@ export default function AdminProperties() {
             <button
               key={page}
               onClick={() => fetchProperties(page)}
-              style={{ 
-                padding: '8px 16px', 
-                background: page === currentPage ? '#d4af37' : 'rgba(255,255,255,0.1)', 
-                color: page === currentPage ? '#000' : '#fff', 
-                borderRadius: '6px', border: 'none', cursor: 'pointer', fontWeight: 600
-              }}
+              className={`${styles.paginationBtn} ${page === currentPage ? styles.paginationBtnActive : ''}`}
             >
               {page}
             </button>
@@ -805,11 +781,7 @@ export default function AdminProperties() {
           <button
             onClick={() => fetchProperties(currentPage + 1)}
             disabled={currentPage === totalPages}
-            style={{ 
-              padding: '8px 16px', background: 'rgba(255,255,255,0.1)', color: '#fff', 
-              borderRadius: '6px', border: 'none', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-              opacity: currentPage === totalPages ? 0.5 : 1
-            }}
+            className={styles.paginationBtn}
           >
             ▶
           </button>
@@ -864,7 +836,7 @@ function Input({ onChange, label, required, helper, error, ...props }: {
     const hasValue = props.value && props.value.toString().length > 0;
     
     return (
-        <div style={{ width: '100%' }}>
+        <div className={styles.textareaWrapper}>
             {label && <Label required={required}>{label}</Label>}
             <div className={styles.formInputWrapper}>
                 <input 

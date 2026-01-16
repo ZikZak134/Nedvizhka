@@ -18,7 +18,6 @@ export default function AdminDashboard() {
     const fetchStats = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-        // Загружаем объекты для подсчёта статистики
         const res = await fetch(`${apiUrl}/api/v1/properties`);
         if (res.ok) {
           const properties = await res.json();
@@ -26,7 +25,7 @@ export default function AdminDashboard() {
           const totalValue = properties.reduce((sum: number, p: { price?: number }) => sum + (p.price || 0), 0);
           setStats({
             totalProperties: total,
-            activeLeads: 0, // TODO: Добавить API для лидов
+            activeLeads: 0,
             totalValue
           });
         }
@@ -39,7 +38,6 @@ export default function AdminDashboard() {
     fetchStats();
   }, []);
 
-  // Форматирование цены
   const formatValue = (value: number) => {
     if (value >= 1_000_000_000) {
       return `${(value / 1_000_000_000).toFixed(1)} млрд ₽`;
@@ -52,28 +50,26 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      <header style={{ marginBottom: '40px' }}>
-        <h1 style={{ fontSize: '32px', fontWeight: 700, marginBottom: '8px', color: '#fff' }}>
-          Панель управления
-        </h1>
-        <p style={{ color: '#94a3b8', fontSize: '15px' }}>
+      <header className={styles.dashboardHeader}>
+        <h1 className={styles.dashboardTitle}>Панель управления</h1>
+        <p className={styles.dashboardSubtitle}>
           Добро пожаловать в командный центр EstateAnalytics
         </p>
       </header>
 
       {/* Stat Cards Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', marginBottom: '48px' }}>
+      <div className={styles.statsGrid}>
         
         {/* Stat Card 1 */}
         <div className={styles.statCard}>
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+          <div className={styles.statCardInner}>
+            <div className={styles.statCardHeader}>
               <div className={styles.statLabel}>Всего объектов</div>
-              <div style={{ fontSize: '32px' }}>🏠</div>
+              <div className={styles.statCardIcon}>🏠</div>
             </div>
             <div className={styles.statValue}>
               {loading ? (
-                <div className={styles.skeleton} style={{ width: '80px', height: '42px' }} />
+                <div className={`${styles.skeleton} ${styles.skeletonLarge}`} />
               ) : (
                 stats.totalProperties
               )}
@@ -86,19 +82,19 @@ export default function AdminDashboard() {
 
         {/* Stat Card 2 */}
         <div className={styles.statCard}>
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+          <div className={styles.statCardInner}>
+            <div className={styles.statCardHeader}>
               <div className={styles.statLabel}>Активные заявки</div>
-              <div style={{ fontSize: '32px' }}>📋</div>
+              <div className={styles.statCardIcon}>📋</div>
             </div>
             <div className={styles.statValue}>
               {loading ? (
-                <div className={styles.skeleton} style={{ width: '60px', height: '42px' }} />
+                <div className={`${styles.skeleton} ${styles.skeletonMedium}`} />
               ) : (
                 stats.activeLeads
               )}
             </div>
-            <div className={styles.statChange} style={{ color: '#f59e0b' }}>
+            <div className={`${styles.statChange} ${styles.statChangeWarning}`}>
               ⏳ Ожидают обработки
             </div>
           </div>
@@ -106,19 +102,19 @@ export default function AdminDashboard() {
 
         {/* Stat Card 3 */}
         <div className={styles.statCard}>
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+          <div className={styles.statCardInner}>
+            <div className={styles.statCardHeader}>
               <div className={styles.statLabel}>Общая стоимость</div>
-              <div style={{ fontSize: '32px' }}>💰</div>
+              <div className={styles.statCardIcon}>💰</div>
             </div>
-            <div className={styles.statValue} style={{ fontSize: '28px' }}>
+            <div className={`${styles.statValue} ${styles.statValueSmall}`}>
               {loading ? (
-                <div className={styles.skeleton} style={{ width: '140px', height: '38px' }} />
+                <div className={`${styles.skeleton} ${styles.skeletonWide}`} />
               ) : (
                 formatValue(stats.totalValue)
               )}
             </div>
-            <div className={styles.statChange} style={{ color: '#94a3b8' }}>
+            <div className={`${styles.statChange} ${styles.statChangeNeutral}`}>
               📊 Сумма всех объектов
             </div>
           </div>
@@ -127,10 +123,8 @@ export default function AdminDashboard() {
 
       {/* Quick Actions */}
       <div>
-        <h2 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '24px', color: '#fff' }}>
-          Быстрые действия
-        </h2>
-        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+        <h2 className={styles.quickActionsTitle}>Быстрые действия</h2>
+        <div className={styles.quickActionsGrid}>
           <Link href="/admin/properties" className={styles.btnPrimary}>
             ➕ Добавить объект
           </Link>
@@ -143,13 +137,11 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Recent Activity (Optional) */}
-      <div style={{ marginTop: '48px' }}>
-        <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '16px', color: '#fff' }}>
-          Последние обновления
-        </h3>
+      {/* Recent Activity */}
+      <div className={styles.recentSection}>
+        <h3 className={styles.recentTitle}>Последние обновления</h3>
         <div className={styles.sectionCard}>
-          <p style={{ color: '#94a3b8', textAlign: 'center', padding: '20px 0' }}>
+          <p className={styles.recentEmpty}>
             История действий появится здесь
           </p>
         </div>
@@ -157,4 +149,3 @@ export default function AdminDashboard() {
     </div>
   );
 }
-

@@ -1776,3 +1776,238 @@
   font-size: 16px;
 }
 
+/* === DASHBOARD PAGE === */
+.dashboardHeader {
+  margin-bottom: 40px;
+}
+
+.dashboardTitle {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #fff;
+}
+
+.dashboardSubtitle {
+  color: #94a3b8;
+  font-size: 15px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.statCardInner {
+  position: relative;
+  z-index: 1;
+}
+
+.statCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.statCardIcon {
+  font-size: 32px;
+}
+
+.statValueSmall {
+  font-size: 28px;
+}
+
+.statChangeWarning {
+  color: #f59e0b;
+}
+
+.statChangeNeutral {
+  color: #94a3b8;
+}
+
+.quickActionsTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #fff;
+}
+
+.quickActionsGrid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.recentSection {
+  margin-top: 48px;
+}
+
+.recentTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #fff;
+}
+
+.recentEmpty {
+  color: #94a3b8;
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* Skeleton styles for specific sizes */
+.skeletonLarge {
+  width: 80px;
+  height: 42px;
+}
+
+.skeletonMedium {
+  width: 60px;
+  height: 42px;
+}
+
+.skeletonWide {
+  width: 140px;
+  height: 38px;
+}
+
+/* === PROPERTIES FORM === */
+.formColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.formStack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGrid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.formGrid4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.formGrid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.formDivider {
+  margin-top: 16px;
+}
+
+.formStackSmall {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.formLabelBold {
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.formLabelSub {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.previewLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+  color: #60a5fa;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.previewLink:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.paginationBtn {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.paginationBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.paginationBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.paginationBtnActive {
+  background: #d4af37;
+  color: #000;
+  font-weight: 600;
+}
+
+/* Empty state */
+.emptyState {
+  text-align: center;
+  padding: 48px 24px;
+  color: #94a3b8;
+}
+
+/* Badges grid */
+.badgesGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Button modifiers */
+.btnFull {
+  width: 100%;
+  padding: 20px;
+  font-size: 16px;
+}
+
+.btnDisabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
