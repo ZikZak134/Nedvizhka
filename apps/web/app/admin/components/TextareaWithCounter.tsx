@@ -49,6 +49,7 @@ export default function TextareaWithCounter({
         placeholder={placeholder}
         maxLength={maxLength}
         className={`${styles.formTextarea} ${error ? styles.formInputError : ''}`}
+        // eslint-disable-next-line react/forbid-dom-props -- CSS variable for dynamic minHeight
         style={{ '--textarea-min-height': minHeight } as React.CSSProperties}
         aria-label={label || placeholder}
       />
