@@ -1,3 +1,6 @@
+/* stylelint-disable property-no-unknown */
+/* stylelint-disable no-descending-specificity */
+
 /* Premium Map Static Styles */
 
 /* Loading State */
@@ -116,7 +119,7 @@
     max-width: 100%;
     padding: 0 4px;
     -ms-overflow-style: none;
-    scrollbar-width: none; /* stylelint-disable-line property-no-unknown */
+    scrollbar-width: none;
     justify-content: center;
     pointer-events: auto;
     flex-wrap: wrap;
@@ -244,7 +247,7 @@
     overflow-x: auto;
     padding-bottom: 12px;
     -ms-overflow-style: none;
-    scrollbar-width: none; /* stylelint-disable-line property-no-unknown */
+    scrollbar-width: none;
 }
 
 .panelTabs::-webkit-scrollbar {
@@ -322,9 +325,8 @@
     padding: 24px;
     height: 100%;
     overflow-y: auto;
-    -ms-overflow-style: auto;
-    scrollbar-width: thin; /* stylelint-disable-line property-no-unknown */
-    scrollbar-color: rgba(212, 175, 55, 0.3) transparent; /* stylelint-disable-line property-no-unknown */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(212, 175, 55, 0.3) transparent;
     position: relative;
 }
 

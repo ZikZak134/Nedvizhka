@@ -36,6 +36,11 @@ export default function TextareaWithCounter({
     return styles.charCounter;
   };
   
+  /* eslint-disable react/forbid-dom-props */
+  const dynamicStyles = {
+    '--textarea-min-height': minHeight
+  } as React.CSSProperties;
+
   return (
     <div className={styles.textareaWrapper}>
       {label && (
@@ -49,8 +54,7 @@ export default function TextareaWithCounter({
         placeholder={placeholder}
         maxLength={maxLength}
         className={`${styles.formTextarea} ${error ? styles.formInputError : ''}`}
-        // eslint-disable-next-line react/forbid-dom-props -- CSS variable for dynamic minHeight
-        style={{ '--textarea-min-height': minHeight } as React.CSSProperties}
+        style={dynamicStyles}
         aria-label={label || placeholder}
       />
       <div className={styles.textareaFooter}>

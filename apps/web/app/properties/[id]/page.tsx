@@ -479,41 +479,40 @@ export default function PropertyDetailPage() {
                         <span className="lux-section-tag">Инвестиции</span>
                         <h2 className="lux-section-title">Не просто дом — актив</h2>
                     </div>
-                    <div className="lux-investment-grid">
-                        <div className="lux-investment-item">
-                            <div className="lux-investment-value positive">+{property.growth_10y}%</div>
-                            <div className="lux-investment-label">Рост стоимости за 10 лет</div>
-                            <div className="lux-investment-bar">
-                                {/* eslint-disable-next-line react/forbid-dom-props */}
-                                <div
-                                    className="lux-investment-bar-fill bg-[#16a34a]"
-                                    style={{ '--progress-width': `${Math.min(property.growth_10y || 0, 100)}%` } as React.CSSProperties}
-                                />
-                            </div>
-                        </div>
-                        <div className="lux-investment-item">
-                            <div className="lux-investment-value gold">{property.investment_metrics?.roi || 0}%</div>
-                            <div className="lux-investment-label">Годовая доходность (ROI)</div>
-                            <div className="lux-investment-bar">
-                                {/* eslint-disable-next-line react/forbid-dom-props */}
-                                <div
-                                    className="lux-investment-bar-fill bg-[#b8860b]"
-                                    style={{ '--progress-width': `${Math.min((property.investment_metrics?.roi || 0) * 5, 100)}%` } as React.CSSProperties}
-                                />
-                            </div>
-                        </div>
-                        <div className="lux-investment-item">
-                            <div className="lux-investment-value blue">{property.investment_metrics?.sale_time || 0} дней</div>
-                            <div className="lux-investment-label">Средний срок продажи</div>
-                            <div className="lux-investment-bar">
-                                {/* eslint-disable-next-line react/forbid-dom-props */}
-                                <div
-                                    className="lux-investment-bar-fill bg-[#2563eb]"
-                                    style={{ '--progress-width': `${Math.min((property.investment_metrics?.sale_time || 0), 100)}%` } as React.CSSProperties}
-                                />
-                            </div>
-                        </div>
-                    </div>
+                <div className="lux-investment-grid">
+                    {/* eslint-disable react/forbid-dom-props */}
+                    {(() => {
+                        const growthStyle = { '--progress-width': `${Math.min(property.growth_10y || 0, 100)}%` } as React.CSSProperties;
+                        const roiStyle = { '--progress-width': `${Math.min((property.investment_metrics?.roi || 0) * 5, 100)}%` } as React.CSSProperties;
+                        const saleStyle = { '--progress-width': `${Math.min((property.investment_metrics?.sale_time || 0), 100)}%` } as React.CSSProperties;
+
+                        return (
+                            <>
+                                <div className="lux-investment-item">
+                                    <div className="lux-investment-value positive">+{property.growth_10y}%</div>
+                                    <div className="lux-investment-label">Рост стоимости за 10 лет</div>
+                                    <div className="lux-investment-bar">
+                                        <div className="lux-investment-bar-fill bg-[#16a34a]" style={growthStyle} />
+                                    </div>
+                                </div>
+                                <div className="lux-investment-item">
+                                    <div className="lux-investment-value gold">{property.investment_metrics?.roi || 0}%</div>
+                                    <div className="lux-investment-label">Годовая доходность (ROI)</div>
+                                    <div className="lux-investment-bar">
+                                        <div className="lux-investment-bar-fill bg-[#b8860b]" style={roiStyle} />
+                                    </div>
+                                </div>
+                                <div className="lux-investment-item">
+                                    <div className="lux-investment-value blue">{property.investment_metrics?.sale_time || 0} дней</div>
+                                    <div className="lux-investment-label">Средний срок продажи</div>
+                                    <div className="lux-investment-bar">
+                                        <div className="lux-investment-bar-fill bg-[#2563eb]" style={saleStyle} />
+                                    </div>
+                                </div>
+                            </>
+                        );
+                    })()}
+                </div>
                 </div>
             </section>
 

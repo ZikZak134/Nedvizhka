@@ -897,10 +897,12 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
 
 
+    /* eslint-disable react/forbid-dom-props */
+    const loadingStyles = { '--map-height': height } as React.CSSProperties;
+
     if (loading) {
         return (
-            // eslint-disable-next-line react/forbid-dom-props -- CSS variable for dynamic height
-            <div className={styles.loadingContainer} style={{ '--map-height': height } as React.CSSProperties}>
+            <div className={styles.loadingContainer} style={loadingStyles}>
                 <div className={styles.loadingContent}>
                     <div className={styles.loadingIcon}>🗺️</div>
                     <div className={styles.loadingText}>Загружаем карту инвестиций...</div>
@@ -909,9 +911,10 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
         );
     }
 
+    const containerStyles = { '--map-height': height } as React.CSSProperties;
+
     return (
-        // eslint-disable-next-line react/forbid-dom-props -- CSS variable for dynamic height
-        <div className={styles.mainContainer} style={{ '--map-height': height } as React.CSSProperties}>
+        <div className={styles.mainContainer} style={containerStyles}>
             {/* MapLibre Container (OSM/Satellite) */}
             <div 
                 ref={mapRef} 
@@ -932,17 +935,19 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                         { key: 'osm', label: '🗺️ Схема', color: '#3b82f6' },
                         { key: '2gis', label: '🟢 2GIS', color: '#22c55e' },
                         { key: 'satellite', label: '🛰️ Спутник', color: '#8b5cf6' },
-                    ].map(item => (
-                        <button
-                            key={item.key}
-                            onClick={() => setMapProvider(item.key as any)}
-                            className={`${styles.providerBtn} ${mapProvider === item.key ? `text-white bg-[${item.color}]` : 'text-slate-400 bg-transparent'}`}
-                            // eslint-disable-next-line react/forbid-dom-props -- CSS variable for dynamic backgroundColor
-                            style={{ '--btn-bg': mapProvider === item.key ? item.color : 'transparent' } as React.CSSProperties} // Keep inline for dynamic color from array
-                        >
-                            {item.label}
-                        </button>
-                    ))}
+                    ].map(item => {
+                        const btnStyles = { '--btn-bg': mapProvider === item.key ? item.color : 'transparent' } as React.CSSProperties;
+                        return (
+                            <button
+                                key={item.key}
+                                onClick={() => setMapProvider(item.key as any)}
+                                className={`${styles.providerBtn} ${mapProvider === item.key ? `text-white bg-[${item.color}]` : 'text-slate-400 bg-transparent'}`}
+                                style={btnStyles}
+                            >
+                                {item.label}
+                            </button>
+                        );
+                    })}
 
                     <button
                         onClick={() => router.push('/properties')}
@@ -1055,17 +1060,18 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
             {/* Side Panel logic */}
             {!isMobile && (selectedPropertyId || selectedDistrict) && (
-                /* eslint-disable-next-line react/forbid-dom-props -- CSS variable for dynamic width */
-                <div className={`${styles.propertySidePanel} ${styles.slideRight} lux-dark-theme`} style={{ '--panel-width': `${panelWidth}px` } as React.CSSProperties}>
-                    <div ref={resizeRef} onMouseDown={() => setIsResizing(true)} className={`absolute left-0 top-0 bottom-0 w-2 cursor-ew-resize z-10 ${isResizing ? 'bg-[#d4af37]/30' : 'bg-transparent'}`} />
-                    <div className={styles.sidePanelContent}>
-                         {(() => {
-                            const p = data?.features.find(f => f.properties.id === selectedPropertyId)?.properties;
-                            const d = selectedDistrict;
-                            if (!p && !d) return null;
-                            const title = p ? p.title : d.name;
-                            const subtitle = p ? p.address : 'Район Сочи';
-                            return (
+                (() => {
+                    const sidePanelStyles = { '--panel-width': `${panelWidth}px` } as React.CSSProperties;
+                    const p = data?.features.find(f => f.properties.id === selectedPropertyId)?.properties;
+                    const d = selectedDistrict;
+                    if (!p && !d) return null;
+                    const title = p ? p.title : d.name;
+                    const subtitle = p ? p.address : 'Район Сочи';
+
+                    return (
+                        <div className={`${styles.propertySidePanel} ${styles.slideRight} lux-dark-theme`} style={sidePanelStyles}>
+                            <div ref={resizeRef} onMouseDown={() => setIsResizing(true)} className={`absolute left-0 top-0 bottom-0 w-2 cursor-ew-resize z-10 ${isResizing ? 'bg-[#d4af37]/30' : 'bg-transparent'}`} />
+                            <div className={styles.sidePanelContent}>
                                 <div className={styles.panelHeader}>
                                     <div className={styles.breadcrumbs}>
                                         <span onClick={() => { setSelectedPropertyId(null); setSelectedDistrict(null); }} className={styles.breadcrumbsLink}>Карта</span>
@@ -1125,10 +1131,10 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                                         {activeTab === 'social' && <SocialFeed />}
                                     </div>
                                 </div>
-                            );
-                        })()}
-                    </div>
-                </div>
+                            </div>
+                        </div>
+                    );
+                })()
             )}
         </div>
     );

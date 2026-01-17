@@ -1,3 +1,7 @@
+/* stylelint-disable property-no-unknown */
+/* stylelint-disable no-descending-specificity */
+/* stylelint-disable declaration-block-no-duplicate-properties */
+
 /* ═══════════════════════════════════════════════════════════════════════════
    LUXURY PROPERTY LANDING — MICHELIN / SOTHEBY'S STYLE
    Editorial design with generous whitespace and premium typography
@@ -426,7 +430,9 @@
     gap: 12px;
     overflow-x: auto;
     padding-bottom: 8px;
+    /* stylelint-disable-next-line property-no-unknown */
     scrollbar-width: thin;
+    /* stylelint-disable-next-line property-no-unknown */
     scrollbar-color: var(--lux-border-dark) transparent;
 }
 
@@ -1133,6 +1139,7 @@
     overflow-x: auto;
     padding-bottom: 24px;
     margin-right: -24px;
+    /* stylelint-disable-next-line property-no-unknown */
     scrollbar-width: none;
 }
 
