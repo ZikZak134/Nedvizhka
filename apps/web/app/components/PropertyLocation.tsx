@@ -22,6 +22,8 @@ interface LocationPoint {
 interface PropertyLocationProps {
     propertyId: string;
     address?: string;
+    latitude?: number | null;
+    longitude?: number | null;
 }
 
 // Mock-данные для различных объектов
@@ -36,14 +38,17 @@ const MOCK_LOCATIONS: Record<string, LocationPoint[]> = {
     ]
 };
 
-export function PropertyLocation({ propertyId, address }: PropertyLocationProps) {
+export function PropertyLocation({ propertyId, address, latitude, longitude }: PropertyLocationProps) {
     const locations = MOCK_LOCATIONS.default;
 
-    // Resolve location (mock or prop)
+    // Resolve location (real or mock fallback)
     const location = useMemo(() => {
+        if (latitude && longitude) {
+            return { lat: latitude, lng: longitude, district: 'Координаты объекта' };
+        }
         const idNum = parseInt(propertyId.replace(/\D/g, '') || '0', 10);
         return getMockLocation(idNum);
-    }, [propertyId]);
+    }, [propertyId, latitude, longitude]);
 
     const transportPoints = locations.filter(l => l.type === 'transport');
     const attractionPoints = locations.filter(l => l.type === 'attraction');

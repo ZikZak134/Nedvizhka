@@ -8,6 +8,7 @@ import ImageGalleryEditor from '../components/ImageGalleryEditor';
 import JsonListEditor from '../components/JsonListEditor';
 import TextareaWithCounter from '../components/TextareaWithCounter';
 import styles from '../admin.module.css';
+import { geocodeAddress, reverseGeocode } from '../../utils/geocoder';
 
 interface Property {
   id: string;
@@ -73,6 +74,9 @@ export default function AdminProperties() {
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  
+  // Флаг, чтобы не триггерить геокодинг при ручном изменении координат
+  const isManualUpdate = useRef(false);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -183,6 +187,50 @@ export default function AdminProperties() {
     return Object.keys(errors).length === 0;
   };
 
+  // Авто-геокодинг адреса
+  useEffect(() => {
+    // Не запускаем если форма скрыта или адрес пустой
+    if (!showForm || !formData.address || formData.address.length < 5) return;
+    
+    // Если это ручное обновление (из карты), пропускаем прямой геокодинг
+    if (isManualUpdate.current) {
+        isManualUpdate.current = false;
+        return;
+    }
+
+    // Не запускаем если координаты уже были установлены вручную (нужна логика, но пока просто при изменении адреса)
+    // Дебаунс 1500мс
+    const timer = setTimeout(async () => {
+       const result = await geocodeAddress(formData.address);
+       if (result) {
+         setFormData(prev => ({
+            ...prev,
+            latitude: result.lat,
+            longitude: result.lng
+         }));
+         showSuccess(`Координаты обновлены: ${result.lat.toFixed(4)}, ${result.lng.toFixed(4)}`);
+       }
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [formData.address, showForm]);
+
+    // Обработчик изменения координат на карте (Обратный геокодинг)
+    const handleMapLocationChange = async (lat: number, lon: number) => {
+        // Устанавливаем флаг, что это ручное обновление, чтобы useEffect не сработал
+        isManualUpdate.current = true;
+        
+        // Сразу обновляем координаты
+        setFormData(prev => ({ ...prev, latitude: lat, longitude: lon }));
+        
+        // Запускаем обратный геокодинг
+        const address = await reverseGeocode(lat, lon);
+        if (address) {
+            setFormData(prev => ({ ...prev, address: address }));
+            showSuccess(`Адрес обновлен: ${address}`);
+        }
+    };
+
   // Сохранение (создание или обновление)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -277,7 +325,7 @@ export default function AdminProperties() {
   // === ФОРМА РЕДАКТИРОВАНИЯ ===
   if (showForm) {
     return (
-      <div className="max-w-[1200px] mx-auto">
+      <div className={styles.adminMainContent}>
         <header className="mb-10 flex justify-between items-center">
           <div>
             <h1 className="text-[32px] font-bold text-white">
@@ -287,7 +335,7 @@ export default function AdminProperties() {
           </div>
           <button 
             onClick={handleCancel}
-            className="px-5 py-2.5 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors"
+            className={styles.btnSecondary}
           >
             ← Назад к списку
           </button>
@@ -389,7 +437,7 @@ export default function AdminProperties() {
                           <LocationPicker 
                               initialLat={formData.latitude} 
                               initialLon={formData.longitude}
-                              onChange={(lat, lon) => setFormData(prev => ({ ...prev, latitude: lat, longitude: lon }))} 
+                              onChange={handleMapLocationChange} 
                           />
                    </div>
               </Section>
@@ -644,7 +692,7 @@ export default function AdminProperties() {
 
   // === СПИСОК ОБЪЕКТОВ ===
   return (
-    <div className="max-w-[1400px] mx-auto">
+    <div className={styles.adminMainContent}>
       <header className="mb-8 flex justify-between items-center">
         <div>
           <h1 className="text-[32px] font-bold text-white">Объекты недвижимости</h1>
@@ -665,7 +713,7 @@ export default function AdminProperties() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="🔍 Поиск по названию, адресу или ЖК..."
-          className={`${styles.formInput} max-w-[400px]`}
+          className={styles.adminSearchInput}
         />
       </div>
 
@@ -686,66 +734,67 @@ export default function AdminProperties() {
           </button>
         </div>
       ) : (
-        <div className="bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
-          <table className="w-full border-collapse">
+        <div className={styles.adminTableWrapper}>
+          <table className={styles.adminTable}>
             <thead>
-              <tr className="bg-white/5">
-                <th className="p-4 text-left text-slate-400 font-semibold text-[13px]">Фото</th>
-                <th className="p-4 text-left text-slate-400 font-semibold text-[13px]">Название</th>
-                <th className="p-4 text-left text-slate-400 font-semibold text-[13px]">Адрес</th>
-                <th className="p-4 text-left text-slate-400 font-semibold text-[13px]">Цена</th>
-                <th className="p-4 text-left text-slate-400 font-semibold text-[13px]">Площадь</th>
-                <th className="p-4 text-center text-slate-400 font-semibold text-[13px]">Статус</th>
-                <th className="p-4 text-center text-slate-400 font-semibold text-[13px]">Действия</th>
+              <tr className={styles.adminTableHeader}>
+                <th className={styles.adminTableHeaderCell}>Фото</th>
+                <th className={styles.adminTableHeaderCell}>Название</th>
+                <th className={styles.adminTableHeaderCell}>Адрес</th>
+                <th className={styles.adminTableHeaderCell}>Цена</th>
+                <th className={styles.adminTableHeaderCell}>Площадь</th>
+                <th className={`${styles.adminTableHeaderCell} text-center`}>Статус</th>
+                <th className={`${styles.adminTableHeaderCell} text-center`}>Действия</th>
               </tr>
             </thead>
             <tbody>
               {filteredProperties.map((property) => (
                 <tr 
                   key={property.id} 
-                  className="border-t border-white/5 transition-colors hover:bg-white/5"
+                  className={styles.adminTableRow}
                 >
-                  <td className="p-3 px-4">
-                    <div className="w-[60px] h-[60px] rounded-lg overflow-hidden bg-white/10 flex items-center justify-center">
+                  <td className={styles.adminTableCell}>
+                    <div className={styles.adminTableImage}>
                       {property.images && property.images.length > 0 ? (
                         <img 
                           src={property.images[0]} 
                           alt="" 
-                          className="w-full h-full object-cover"
                         />
                       ) : (
                         <span className="text-2xl">🏠</span>
                       )}
                     </div>
                   </td>
-                  <td className="p-3 px-4">
-                    <div className="text-white font-semibold mb-1">{property.title}</div>
+                  <td className={styles.adminTableCell}>
+                    <div className={styles.adminTableTitle}>{property.title}</div>
                     {property.complex_name && (
-                      <div className="text-slate-500 text-xs">{property.complex_name}</div>
+                      <div className={styles.adminTableSubtitle}>{property.complex_name}</div>
                     )}
                   </td>
-                  <td className="p-3 px-4 text-slate-400">{property.address}</td>
-                  <td className="p-3 px-4 text-[#d4af37] font-semibold">{formatPrice(property.price)}</td>
-                  <td className="p-3 px-4 text-slate-400">{property.area_sqm} м²</td>
-                  <td className="p-3 px-4 text-center">
-                    <span className={`padding-1 px-3 py-1 rounded-xl text-xs font-semibold ${
-                      property.is_active ? 'bg-green-500/20 text-green-500' : 'bg-slate-500/20 text-slate-400'
+                  <td className={styles.adminTableCell}>{property.address}</td>
+                  <td className={styles.adminTableCell}>
+                    <span className={styles.adminTablePrice}>{formatPrice(property.price)}</span>
+                  </td>
+                  <td className={styles.adminTableCell}>{property.area_sqm} м²</td>
+                  <td className={`${styles.adminTableCell} text-center`}>
+                    <span className={`${styles.adminTableStatus} ${
+                      property.is_active ? styles.adminTableStatusActive : styles.adminTableStatusInactive
                     }`}>
                       {property.is_active ? '● Активен' : '○ Скрыт'}
                     </span>
                   </td>
-                  <td className="p-3 px-4 text-center">
-                    <div className="flex gap-2 justify-center">
+                  <td className={styles.adminTableCell}>
+                    <div className={styles.adminTableActions}>
                       <button
                         onClick={() => loadPropertyForEdit(property.id)}
-                        className="px-3 py-2 bg-blue-500/20 text-blue-500 rounded-md border-none cursor-pointer text-[13px] hover:bg-blue-500/30 transition-colors"
+                        className={`${styles.adminTableActionBtn} ${styles.adminTableActionEdit}`}
                       >
-                        ✏️ Редактировать
+                        ✏️ Ред.
                       </button>
                       <button
                         onClick={() => deleteProperty(property.id)}
                         aria-label="Удалить"
-                        className="px-3 py-2 bg-red-600/20 text-red-600 rounded-md border-none cursor-pointer text-[13px] hover:bg-red-600/30 transition-colors"
+                        className={`${styles.adminTableActionBtn} ${styles.adminTableActionDelete}`}
                       >
                         🗑️
                       </button>

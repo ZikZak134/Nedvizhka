@@ -51,6 +51,12 @@ def create_property(db: Session, property_data: PropertyCreate) -> Property:
     """Create a new property."""
     data = property_data.model_dump()
     
+    # Auto-Geocode if address provided but coords missing
+    if (not data.get('latitude') or not data.get('longitude')) and data.get('address'):
+        coords = GeoService.geocode(data['address'])
+        if coords:
+            data['latitude'], data['longitude'] = coords
+    
     # Auto-Calculate Distances
     if data.get('latitude') and data.get('longitude'):
         distances = GeoService.calculate_distances(db, data['latitude'], data['longitude'])
@@ -70,6 +76,12 @@ def update_property(db: Session, property_id: str, property_data: PropertyUpdate
         return None
     
     update_data = property_data.model_dump(exclude_unset=True)
+    
+    # Auto-Geocode if address changed but coords missing
+    if 'address' in update_data and 'latitude' not in update_data:
+        coords = GeoService.geocode(update_data['address'])
+        if coords:
+            update_data['latitude'], update_data['longitude'] = coords
     
     # If location changed, recalculate distances
     if 'latitude' in update_data or 'longitude' in update_data:

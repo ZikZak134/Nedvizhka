@@ -546,7 +546,7 @@ export default function PropertyDetailPage() {
                                 ))}
                             </div>
                         )}
-                        {activeTab === 'location' && <PropertyLocation propertyId={property.id} address={property.address} />}
+                        {activeTab === 'location' && <PropertyLocation propertyId={property.id} address={property.address} latitude={property.latitude} longitude={property.longitude} />}
                         {activeTab === 'potential' && (
                             <PropertyPotential 
                                 propertyId={property.id} 

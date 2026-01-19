@@ -13,7 +13,7 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import styles from './premium-map.module.css';
 import { useBreakpoint } from '../hooks/useBreakpoint';
-import districtData from '../data/sochi_districts.json';
+
 import { getMockImage } from '../utils/mockImages';
 import { getMockLocation } from '../utils/mockLocations';
 
@@ -316,6 +316,63 @@ const createMarkerHtml = (priceColor: string, growthColor: string, growth: numbe
         </div>
       </div>
     `;
+};
+
+// HTML Marker for District Flags (Flagpole style)
+const createDistrictFlagHtml = (name: string, color: string) => {
+    return `
+      <div class="district-flag-group" style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform: translate(0, -100%); /* Anchor bottom so pole is on point */
+        cursor: pointer;
+        filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
+        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      ">
+        <div style="
+          background: ${color};
+          background: linear-gradient(135deg, ${color}, ${adjustColorBrightness(color, -20)});
+          color: white;
+          padding: 8px 16px;
+          border-radius: 8px;
+          font-weight: 800;
+          font-size: 14px;
+          border: 2px solid #ffffff;
+          white-space: nowrap;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          position: relative;
+          z-index: 2;
+        ">${name}</div>
+        <div style="
+          width: 3px;
+          height: 32px;
+          background: #475569;
+          background: linear-gradient(to right, #94a3b8, #475569, #1e293b);
+          z-index: 1;
+          margin-top: -2px;
+        "></div>
+        <div style="
+          width: 12px;
+          height: 6px;
+          background: rgba(0,0,0,0.5);
+          border-radius: 50%;
+          filter: blur(2px);
+          margin-top: -2px;
+        "></div>
+      </div>
+    `;
+};
+
+const adjustColorBrightness = (hex: string, percent: number) => {
+    // Basic helper to darken/lighten hex
+    const num = parseInt(hex.replace('#', ''), 16);
+    const amt = Math.round(2.55 * percent);
+    const R = (num >> 16) + amt;
+    const G = (num >> 8 & 0x00FF) + amt;
+    const B = (num & 0x0000FF) + amt;
+    return '#' + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1);
 };
 
 // ============================================
@@ -701,52 +758,46 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
             map.on('load', () => {
                 if (isCancelled) return;
                 
-                // --- Add Districts (Flat) ---
-                if (districtData) {
-                    const enrichedFeatures = (districtData as any).features.map((f: any) => {
-                         const name = f?.properties?.name;
-                         const distData = districtsData[name as keyof typeof districtsData];
-                         const growth = distData?.growth_10y || 0;
-                         
-                         let color = '#94a3b8';
-                         if (growth > 150) color = '#10b981'; 
-                         else if (growth > 100) color = '#d97706'; 
-                         else if (growth > 50) color = '#f59e0b';
-                         else if (growth > 0) color = '#ef4444';
+                // --- Add Districts (Flagpoles) ---
+                // REPLACED: Boundaries removed. Using Flags as requested.
+                // We iterate over the districtsData to place markers at the center.
+                if (districtsData) {
+                    Object.entries(districtsData).forEach(([name, data]) => {
+                        const d = data as any;
+                        if (!d.center) return;
 
-                         return {
-                             ...f,
-                             properties: {
-                                 ...f.properties,
-                                 color: color
-                             }
-                         };
-                    });
+                        const growth = d.growth_10y || 0;
+                        let color = '#94a3b8';
+                        if (growth > 150) color = '#10b981';
+                        else if (growth > 100) color = '#fbbf24'; // amber-400
+                        else if (growth > 50) color = '#f59e0b';
+                        else if (growth > 0) color = '#ef4444';
 
-                    map.addSource('districts', {
-                        type: 'geojson',
-                        data: { type: 'FeatureCollection', features: enrichedFeatures }
-                    });
+                        const el = document.createElement('div');
+                        el.innerHTML = createDistrictFlagHtml(name, color);
+                        
+                        // Add hover effect via JS since inline styles are tricky for hover
+                        el.onmouseenter = () => {
+                             const content = el.querySelector('.district-flag-group') as HTMLElement;
+                             if(content) content.style.transform = 'translate(0, -110%) scale(1.05)';
+                        };
+                        el.onmouseleave = () => {
+                             const content = el.querySelector('.district-flag-group') as HTMLElement;
+                             if(content) content.style.transform = 'translate(0, -100%)';
+                        };
 
-                    map.addLayer({
-                        id: 'districts-fill',
-                        type: 'fill',
-                        source: 'districts',
-                        paint: {
-                            'fill-color': ['get', 'color'],
-                            'fill-opacity': showHeatmap ? 0.4 : 0.05,
-                            'fill-outline-color': '#ffffff'
-                        }
-                    });
-                    
-                    // Click on district
-                    map.on('click', 'districts-fill', (e) => {
-                        if (e.features && e.features[0]) {
-                            const props = e.features[0].properties;
-                             const name = props.name;
-                             const distAnalytics = districtsData[name as keyof typeof districtsData];
-                             setSelectedDistrict({ name, ...distAnalytics });
-                        }
+                        el.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                             // Show card logic
+                             setSelectedDistrict({ name, ...d });
+                             
+                             // Optional: Fly to district
+                             map.flyTo({ center: [d.center[1], d.center[0]], zoom: 13.5 });
+                        });
+
+                        new maplibregl.Marker({ element: el })
+                            .setLngLat([d.center[1], d.center[0]])
+                            .addTo(map);
                     });
                 }
 
@@ -847,26 +898,32 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
             twoGisMapRef.current = map;
 
             // ... 2GIS Layers ...
+            // ... 2GIS Layers ...
              Object.entries(districtsData).forEach(([name, district]) => {
                 const growth = district.growth_10y;
-                let color = '#ef4444';
-                if (growth > 150) color = '#22c55e';
-                else if (growth > 100) color = '#84cc16';
-                else if (growth > 50) color = '#eab308';
-                else color = '#f97316';
+                let color = '#94a3b8'; // Default Slate
+                if (growth > 150) color = '#10b981'; // Emerald
+                else if (growth > 100) color = '#fbbf24'; // Amber
+                else if (growth > 50) color = '#f59e0b'; // Amber-600
+                else if (growth > 0) color = '#ef4444'; // Red
 
-                let layer;
-                if (district.coordinates) {
-                    layer = window.DG.polygon(district.coordinates, {
-                            color: color, fillColor: color, fillOpacity: 0.15, weight: 2
-                    });
-                } else {
-                     layer = window.DG.circle(district.center, {
-                        radius: 5000, color: color, fillColor: color, fillOpacity: 0.15, weight: 2
-                    });
-                }
-                layer.addTo(map);
-                layer.on('click', () => { setSelectedDistrict({ name, ...district }); });
+                // Use Flagpoles for consistency with MapLibre
+                const icon = window.DG.divIcon({
+                    className: 'district-flag-icon',
+                    html: createDistrictFlagHtml(name, color),
+                    iconSize: [200, 50], // Approximate size for the flag
+                    iconAnchor: [100, 50], // Anchor at bottom center (lines up with the "pole")
+                    popupAnchor: [0, -50]
+                });
+
+                const marker = window.DG.marker([district.center[0], district.center[1]], { 
+                    icon: icon,
+                    clickable: true 
+                }).addTo(map);
+
+                marker.on('click', () => { setSelectedDistrict({ name, ...district }); });
+                
+                // Note: Hover effects in 2GIS are harder with divIcons, relying on CSS pointer-events
             });
             
             // Markers for 2GIS
@@ -932,17 +989,21 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                 {/* Map Provider Toggle */}
                 <div className={styles.providerToggle}>
                     {[
-                        { key: 'osm', label: '🗺️ Схема', color: '#3b82f6' },
+                        { key: 'osm', label: '🗺️ Схема', color: '#d4af37' }, // GOLD for luxury
                         { key: '2gis', label: '🟢 2GIS', color: '#22c55e' },
                         { key: 'satellite', label: '🛰️ Спутник', color: '#8b5cf6' },
                     ].map(item => {
-                        const btnStyles = { '--btn-bg': mapProvider === item.key ? item.color : 'transparent' } as React.CSSProperties;
+                        const isActive = mapProvider === item.key;
                         return (
                             <button
                                 key={item.key}
                                 onClick={() => setMapProvider(item.key as any)}
-                                className={`${styles.providerBtn} ${mapProvider === item.key ? `text-white bg-[${item.color}]` : 'text-slate-400 bg-transparent'}`}
-                                style={btnStyles}
+                                className={styles.providerBtn}
+                                style={{
+                                    backgroundColor: isActive ? item.color : 'transparent',
+                                    color: isActive ? (item.key === 'osm' ? '#0f172a' : '#ffffff') : '#94a3b8', // Dark text on Gold, White on others
+                                    fontWeight: isActive ? 700 : 500
+                                }}
                             >
                                 {item.label}
                             </button>

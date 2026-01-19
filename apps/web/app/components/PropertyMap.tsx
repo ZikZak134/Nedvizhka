@@ -157,7 +157,13 @@ export function PropertyMap({ height = '500px', showHeatmap = true, onPropertyCl
                         type: 'raster',
                         source: 'osm',
                         minzoom: 0,
-                        maxzoom: 22
+                        maxzoom: 22,
+                        paint: {
+                            // Darken the map slightly to match "Quiet Luxury"
+                            'raster-saturation': -0.8,
+                            'raster-brightness-min': 0.2,
+                            'raster-brightness-max': 0.8
+                        }
                     }]
                 },
                 center: [39.720, 43.585],
@@ -265,35 +271,40 @@ export function PropertyMap({ height = '500px', showHeatmap = true, onPropertyCl
             {/* Map Container */}
             <div ref={mapRef} style={{ height: '100%', width: '100%' }} />
 
-            {/* Legend */}
+            {/* Legend - Dark Luxury Theme */}
             <div style={{
                 position: 'absolute',
                 bottom: '20px',
                 right: '20px',
-                background: 'rgba(255, 255, 255, 0.9)',
-                padding: '12px',
-                borderRadius: '8px',
-                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                background: 'rgba(15, 23, 42, 0.9)', // Dark background
+                backdropFilter: 'blur(8px)',
+                padding: '16px',
+                borderRadius: '12px',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
                 zIndex: 10,
                 fontSize: '12px',
-                color: '#333'
+                color: '#e2e8f0', // Light text
+                border: '1px solid rgba(255, 255, 255, 0.1)'
             }}>
-                <div style={{ fontWeight: 600, marginBottom: '8px' }}>Цена объекта</div>
+                <div style={{ fontWeight: 600, marginBottom: '12px', color: '#f8fafc', textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '11px' }}>
+                    Стоимость объекта
+                </div>
                 {[
-                    { color: '#3b82f6', label: '< 15M' },
-                    { color: '#22c55e', label: '15-30M' },
-                    { color: '#eab308', label: '30-50M' },
-                    { color: '#f97316', label: '50-100M' },
-                    { color: '#ef4444', label: '> 100M' },
+                    { color: '#3b82f6', label: '< 15 млн' },
+                    { color: '#22c55e', label: '15-30 млн' },
+                    { color: '#eab308', label: '30-50 млн' },
+                    { color: '#f97316', label: '50-100 млн' },
+                    { color: '#ef4444', label: '> 100 млн' },
                 ].map(item => (
-                    <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                    <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
                         <span style={{
-                            width: '12px',
-                            height: '12px',
+                            width: '10px',
+                            height: '10px',
                             borderRadius: '50%',
                             background: item.color,
+                            boxShadow: `0 0 10px ${item.color}80`
                         }} />
-                        <span>{item.label} ₽</span>
+                        <span style={{ color: '#cbd5e1' }}>{item.label}</span>
                     </div>
                 ))}
             </div>
