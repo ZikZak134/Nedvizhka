@@ -86,20 +86,32 @@ export default function PropertiesPage() {
 
     useEffect(() => {
         fetchProperties();
-    }, [page, filters]);
+    }, [page, debouncedFilters]);
 
     const handleFilterChange = (newFilters: Filters) => {
         setFilters(newFilters);
         setPage(1);
     };
 
-    // Dynamic Map Import
-    const PropertyMap = useState(() => import('../components/PropertyMap').then(mod => mod.PropertyMap))[0];
+    // Debounced filter change to reduce API calls
+    const [debouncedFilters, setDebouncedFilters] = useState<Filters>({});
+    
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedFilters(filters);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [filters]);
+
+    // Dynamic Map Import - Fixed
     const [PropertyMapComp, setPropertyMapComp] = useState<any>(null);
 
     useEffect(() => {
-        PropertyMap.then(comp => setPropertyMapComp(() => comp));
-    }, [PropertyMap]);
+        import('../components/PropertyMap')
+            .then(mod => setPropertyMapComp(() => mod.PropertyMap))
+            .catch(err => console.error('Failed to load PropertyMap:', err));
+    }, []);
+
 
     const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
 
