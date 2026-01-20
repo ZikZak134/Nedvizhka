@@ -19,7 +19,9 @@ This document details the production infrastructure and operational procedures f
 ### Frontend (Vercel)
 - **URL**: [https://web-zeta-blush-32.vercel.app](https://web-zeta-blush-32.vercel.app)
 - **Critical Env Vars**:
-  - `NEXT_PUBLIC_API_URL`: Should point to the Render Backend URL.
+  - `NEXT_PUBLIC_API_URL`: `https://nedvizhkaestate-analytics-api.onrender.com`
+  - ✅ **Verified**: Configured for all environments (Production, Preview, Development)
+  - Last updated: 2026-01-20 ~09:00 (Tomsk time)
 
 ## Operational Procedures
 

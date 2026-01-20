@@ -102,6 +102,11 @@ description: MEMORY
   - Реализован debounce (500ms) для фильтров
   - Главная страница теперь редиректит на `/properties`
 - ✅ **Deployment**: Frontend на Vercel, Backend на Render.com
+- ✅ **Documentation**: Обновлена вся `.agent` документация с production URLs
+- ✅ **Vercel Configuration Verified**: 
+  - `NEXT_PUBLIC_API_URL` = `https://nedvizhkaestate-analytics-api.onrender.com`
+  - Настроено для всех окружений (Production, Preview, Development)
+  - Последнее обновление: ~7 часов назад
 
 ### 2024-12-25
 
@@ -130,9 +135,10 @@ description: MEMORY
 
 | Проблема | Приоритет | Решение |
 |----------|-----------|--------|
-| Admin panel не работает удаленно | 🔴 Высокий | Настроить NEXT_PUBLIC_API_URL в Vercel |
 | Точки в море | 🟡 Средний | Интеграция 2GIS Geocoder |
 | Моковые данные | 🟡 Средний | Подключить реальный парсинг |
+
+> **Note**: Admin panel remote access issue resolved - `NEXT_PUBLIC_API_URL` correctly configured in Vercel.
 
 ---
 
