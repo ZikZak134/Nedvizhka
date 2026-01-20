@@ -174,16 +174,24 @@ apps/web/
 
 ### Backend (`apps/api/.env`)
 
-```
-DATABASE_URL=sqlite:///./estate_analytics.db
+```env
+DATABASE_URL=postgresql://estate_analytics_db_user:[password]@dpg-d5n2lp0gjchc73935fdg-a.virginia-postgres.render.com/estate_analytics_db
 DGIS_API_KEY=your_2gis_key
 ```
 
 ### Frontend (`apps/web/.env.local`)
 
-```
+```env
+# Локально
 NEXT_PUBLIC_API_URL=http://localhost:8000
+
+# Production (настроить в Vercel Dashboard)
+NEXT_PUBLIC_API_URL=https://nedvizhkaestate-analytics-api.onrender.com
 ```
+
+> [!IMPORTANT]
+> Для production необходимо настроить `NEXT_PUBLIC_API_URL` в Vercel Dashboard:
+> Settings → Environment Variables → Add `NEXT_PUBLIC_API_URL`
 
 ---
 
@@ -201,3 +209,10 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 # Docker
 docker-compose up -d
 ```
+
+## Production URLs
+
+- **Frontend**: https://web-zeta-blush-32.vercel.app
+- **Backend API**: https://nedvizhkaestate-analytics-api.onrender.com
+- **API Health**: https://nedvizhkaestate-analytics-api.onrender.com/healthz
+- **Admin Panel**: https://web-zeta-blush-32.vercel.app/admin
