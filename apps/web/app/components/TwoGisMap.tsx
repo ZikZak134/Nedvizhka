@@ -105,6 +105,7 @@ export function TwoGisMap({ height = '100%', onPropertyClick, showFilters = true
                 fullscreenControl: true,
                 zoomControl: true,
             });
+            mapInstanceRef.current.setMaxBounds([[43.0, 36.0], [47.5, 42.0]]); // Krasnodar Krai bounds [[LatMin, LngMin], [LatMax, LngMax]]
         });
 
         return () => {

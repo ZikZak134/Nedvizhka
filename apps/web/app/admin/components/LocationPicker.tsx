@@ -24,7 +24,8 @@ export default function LocationPicker({ initialLat, initialLon, onChange }: Loc
             container: mapContainer.current!,
             style: 'https://tiles.openfreemap.org/styles/liberty', // Free styling
             center: [initialLon, initialLat],
-            zoom: 13
+            zoom: 13,
+            maxBounds: [36.0, 43.0, 42.0, 47.5] // Krasnodar Krai bounds [LngMin, LatMin, LngMax, LatMax]
         });
 
         // Initialize Marker

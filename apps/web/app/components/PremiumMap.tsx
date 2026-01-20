@@ -749,7 +749,8 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                 center: [39.720, 43.585],
                 zoom: 13,
                 pitch: 0, 
-                bearing: 0
+                bearing: 0,
+                maxBounds: [36.0, 43.0, 42.0, 47.5] // Krasnodar Krai bounds [LngMin, LatMin, LngMax, LatMax]
             });
 
             // Add navigation controls

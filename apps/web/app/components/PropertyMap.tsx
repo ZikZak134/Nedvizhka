@@ -167,7 +167,8 @@ export function PropertyMap({ height = '500px', showHeatmap = true, onPropertyCl
                     }]
                 },
                 center: [39.720, 43.585],
-                zoom: 13
+                zoom: 13,
+                maxBounds: [36.0, 43.0, 42.0, 47.5] // Krasnodar Krai bounds [LngMin, LatMin, LngMax, LatMax]
             });
             mapInstanceRef.current = map;
 
