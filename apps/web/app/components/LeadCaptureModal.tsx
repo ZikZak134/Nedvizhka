@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { reachGoal } from './YandexMetrika';
 
 /**
  * LeadCaptureModal
@@ -38,6 +39,12 @@ export function LeadCaptureModal({ isOpen, onClose, mode, propertyTitle }: LeadC
         e.preventDefault();
         // Here we would send data to API
         console.log('Lead Captured:', { mode, name, phone, propertyTitle });
+        
+        // Track Yandex Metrika Goal
+        if (mode === 'showing') reachGoal('lead_showing');
+        else if (mode === 'report') reachGoal('lead_report');
+        else if (mode === 'question') reachGoal('lead_question');
+
         setStep('success');
     };
 

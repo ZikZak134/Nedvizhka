@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { NAV_LINKS, UTILITY_LINKS } from '../constants/routes';
+import { reachGoal } from './YandexMetrika';
 
 interface Settings {
     footer_phone?: string;
@@ -93,11 +94,23 @@ export function Footer() {
                             </li>
                             <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <span style={{ color: '#d4af37' }}>📞</span>
-                                <a href={`tel:${(settings?.footer_phone || '+79990000000').replace(/\D/g, '')}`} style={{ color: '#e5e7eb', fontSize: '14px', textDecoration: 'none' }}>{settings?.footer_phone || '+7 (999) 000-00-00'}</a>
+                                <a 
+                                    href={`tel:${(settings?.footer_phone || '+79990000000').replace(/\D/g, '')}`} 
+                                    onClick={() => reachGoal('click_phone')}
+                                    style={{ color: '#e5e7eb', fontSize: '14px', textDecoration: 'none' }}
+                                >
+                                    {settings?.footer_phone || '+7 (999) 000-00-00'}
+                                </a>
                             </li>
                             <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <span style={{ color: '#d4af37' }}>✉️</span>
-                                <a href={`mailto:${settings?.footer_email || 'vip@estate-analytics.ru'}`} style={{ color: '#e5e7eb', fontSize: '14px', textDecoration: 'none' }}>{settings?.footer_email || 'vip@estate-analytics.ru'}</a>
+                                <a 
+                                    href={`mailto:${settings?.footer_email || 'vip@estate-analytics.ru'}`} 
+                                    onClick={() => reachGoal('click_email')}
+                                    style={{ color: '#e5e7eb', fontSize: '14px', textDecoration: 'none' }}
+                                >
+                                    {settings?.footer_email || 'vip@estate-analytics.ru'}
+                                </a>
                             </li>
                         </ul>
                     </div>
