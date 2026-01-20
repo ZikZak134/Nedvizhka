@@ -16,12 +16,12 @@ interface Property {
   price: number;
   address: string;
   area_sqm: number;
-  rooms: string;
+  rooms: string | null;
   images: string[];
-  complex_name: string;
-  district: string;
+  complex_name: string | null;
+  district: string | null;
   is_active: boolean;
-  created_at: string;
+  created_at?: string;
 }
 
 interface PropertyListResponse {
