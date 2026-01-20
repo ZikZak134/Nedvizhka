@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../components/AuthGuard';
 import { useToast } from '../components/ToastContainer';
 import LocationPicker from '../components/LocationPicker';
