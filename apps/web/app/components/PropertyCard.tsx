@@ -6,11 +6,18 @@ interface Property {
     title: string;
     description: string | null;
     price: number;
+    price_per_sqm?: number | null;
     currency: string;
     address: string;
     area_sqm: number;
+    area_min?: number | null;
+    area_max?: number | null;
     rooms: string | null;
+    rooms_min?: number | null;
+    rooms_max?: number | null;
     floor: number | null;
+    floor_min?: number | null;
+    floor_max?: number | null;
     total_floors: number | null;
     images: string[];
     source: string;
@@ -53,7 +60,18 @@ export function PropertyCard({ property }: PropertyCardProps) {
             {/* Content */}
             <div className="card-body">
                 <div className="property-price mb-2">
-                    {formatPrice(property.price)} <span style={{ fontSize: '14px', fontWeight: 'normal' }}>₽</span>
+                    {property.price_per_sqm ? (
+                        <>
+                            {formatPrice(property.price_per_sqm)} <span style={{ fontSize: '14px', fontWeight: 'normal' }}>₽/м²</span>
+                            <div style={{ fontSize: '12px', color: 'var(--color-text-muted)', fontWeight: 'normal' }}>
+                                от {formatPrice(property.price)} ₽
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            {formatPrice(property.price)} <span style={{ fontSize: '14px', fontWeight: 'normal' }}>₽</span>
+                        </>
+                    )}
                 </div>
 
                 <h3 className="card-title" style={{
@@ -80,18 +98,26 @@ export function PropertyCard({ property }: PropertyCardProps) {
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <rect x="3" y="3" width="18" height="18" rx="2" />
                         </svg>
-                        {property.area_sqm} м²
+                        {property.area_min && property.area_max ? (
+                            <>{property.area_min}–{property.area_max} м²</>
+                        ) : (
+                            <>{property.area_sqm} м²</>
+                        )}
                     </span>
-                    {property.rooms && (
+                    {(property.rooms || (property.rooms_min && property.rooms_max)) && (
                         <span className="property-spec">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                                 <polyline points="9,22 9,12 15,12 15,22" />
                             </svg>
-                            {property.rooms} комн.
+                            {property.rooms_min && property.rooms_max ? (
+                                <>{property.rooms_min}–{property.rooms_max} комн.</>
+                            ) : (
+                                <>{property.rooms} комн.</>
+                            )}
                         </span>
                     )}
-                    {property.floor && property.total_floors && (
+                    {(property.floor && property.total_floors) || (property.floor_min && property.floor_max) ? (
                         <span className="property-spec">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <rect x="4" y="2" width="16" height="20" rx="2" />
@@ -100,9 +126,13 @@ export function PropertyCard({ property }: PropertyCardProps) {
                                 <line x1="8" y1="14" x2="16" y2="14" />
                                 <line x1="8" y1="18" x2="16" y2="18" />
                             </svg>
-                            {property.floor}/{property.total_floors} эт.
+                            {property.floor_min && property.floor_max ? (
+                                <>{property.floor_min}–{property.floor_max}/{property.total_floors} эт.</>
+                            ) : (
+                                <>{property.floor}/{property.total_floors} эт.</>
+                            )}
                         </span>
-                    )}
+                    ) : null}
                 </div>
             </div>
         </Link>

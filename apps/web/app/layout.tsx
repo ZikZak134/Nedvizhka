@@ -22,6 +22,10 @@ export const metadata: Metadata = {
   description: 'Интерактивная карта и аналитика премиум-недвижимости с прогнозами роста цен', // Modified description
   keywords: ['real estate', 'sochi', 'analytics', 'luxury'], // Kept existing keywords
   manifest: '/manifest.json', // Kept existing manifest
+  icons: {
+    icon: '/icon.png',
+    apple: '/icon.png',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',

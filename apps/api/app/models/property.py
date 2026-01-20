@@ -14,6 +14,7 @@ class Property(Base):
     title: Mapped[str] = mapped_column(String, index=True)
     description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     price: Mapped[float] = mapped_column(Float, index=True)
+    price_per_sqm: Mapped[Optional[float]] = mapped_column(Float, nullable=True) # Recommended for Complexes
     currency: Mapped[str] = mapped_column(String(3), default="RUB")
     
     # Location (Sochi)
@@ -21,11 +22,19 @@ class Property(Base):
     latitude: Mapped[Optional[float]] = mapped_column(Float)
     longitude: Mapped[Optional[float]] = mapped_column(Float)
     
-    # Specs
+    # Specs (Single unit fields kept for compatibility)
     area_sqm: Mapped[float] = mapped_column(Float)
     rooms: Mapped[Optional[str]] = mapped_column(String) # "2", "3", "Studio"
     floor: Mapped[Optional[int]] = mapped_column(Integer)
     total_floors: Mapped[Optional[int]] = mapped_column(Integer)
+
+    # Specs (Range fields for Complexes)
+    area_min: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    area_max: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    rooms_min: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    rooms_max: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    floor_min: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    floor_max: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     
     # Metadata
     source: Mapped[str] = mapped_column(String) # "cian", "avito", "manual"

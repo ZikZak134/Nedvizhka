@@ -9,6 +9,7 @@ class PropertyBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=500)
     description: Optional[str] = None
     price: float = Field(..., gt=0)
+    price_per_sqm: Optional[float] = Field(None, gt=0)
     currency: str = Field(default="RUB", max_length=3)
     address: str
     latitude: Optional[float] = Field(None, ge=-90, le=90)
@@ -17,6 +18,14 @@ class PropertyBase(BaseModel):
     rooms: Optional[str] = None
     floor: Optional[int] = None
     total_floors: Optional[int] = None
+    
+    # Range Fields
+    area_min: Optional[float] = Field(None, gt=0)
+    area_max: Optional[float] = Field(None, gt=0)
+    rooms_min: Optional[int] = Field(None, ge=0)
+    rooms_max: Optional[int] = Field(None, ge=0)
+    floor_min: Optional[int] = Field(None)
+    floor_max: Optional[int] = Field(None)
     source: str = Field(default="manual")
     source_id: Optional[str] = None
     url: Optional[str] = None
@@ -48,6 +57,7 @@ class PropertyUpdate(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=500)
     description: Optional[str] = None
     price: Optional[float] = Field(None, gt=0)
+    price_per_sqm: Optional[float] = Field(None, gt=0)
     currency: Optional[str] = Field(None, max_length=3)
     address: Optional[str] = None
     latitude: Optional[float] = Field(None, ge=-90, le=90)
@@ -56,7 +66,14 @@ class PropertyUpdate(BaseModel):
     rooms: Optional[str] = None
     floor: Optional[int] = None
     total_floors: Optional[int] = None
-    source: Optional[str] = None
+    
+    # Range Fields
+    area_min: Optional[float] = Field(None, gt=0)
+    area_max: Optional[float] = Field(None, gt=0)
+    rooms_min: Optional[int] = Field(None, ge=0)
+    rooms_max: Optional[int] = Field(None, ge=0)
+    floor_min: Optional[int] = Field(None)
+    floor_max: Optional[int] = Field(None)
     source_id: Optional[str] = None
     url: Optional[str] = None
     features: Optional[dict] = None

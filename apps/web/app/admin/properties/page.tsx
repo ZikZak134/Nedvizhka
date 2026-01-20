@@ -35,6 +35,7 @@ interface PropertyListResponse {
 const EMPTY_FORM = {
   title: '',
   price: '',
+  price_per_sqm: '', // New field
   address: 'Сочи, Центр',
   latitude: 43.5855,
   longitude: 39.7231,
@@ -43,6 +44,13 @@ const EMPTY_FORM = {
   rooms: '2',
   floor: '',
   total_floors: '',
+  // Range fields (Complexes)
+  area_min: '',
+  area_max: '',
+  rooms_min: '',
+  rooms_max: '',
+  floor_min: '',
+  floor_max: '',
   complex_name: '',
   district: 'Центральный',
   quality_score: 95,
@@ -111,6 +119,7 @@ export default function AdminProperties() {
         setFormData({
           title: data.title || '',
           price: String(data.price) || '',
+          price_per_sqm: String(data.price_per_sqm || ''),
           address: data.address || '',
           latitude: data.latitude || 43.5855,
           longitude: data.longitude || 39.7231,
@@ -119,6 +128,12 @@ export default function AdminProperties() {
           rooms: data.rooms || '',
           floor: String(data.floor || ''),
           total_floors: String(data.total_floors || ''),
+          area_min: String(data.area_min || ''),
+          area_max: String(data.area_max || ''),
+          rooms_min: String(data.rooms_min || ''),
+          rooms_max: String(data.rooms_max || ''),
+          floor_min: String(data.floor_min || ''),
+          floor_max: String(data.floor_max || ''),
           complex_name: data.complex_name || '',
           district: data.district || '',
           quality_score: data.quality_score || 95,
@@ -248,9 +263,16 @@ export default function AdminProperties() {
       const payload = {
         ...formData,
         price: Number(formData.price) || 0,
+        price_per_sqm: formData.price_per_sqm ? Number(formData.price_per_sqm) : null,
         area_sqm: Number(formData.area_sqm) || 0,
         floor: formData.floor ? Number(formData.floor) : null,
         total_floors: formData.total_floors ? Number(formData.total_floors) : null,
+        area_min: formData.area_min ? Number(formData.area_min) : null,
+        area_max: formData.area_max ? Number(formData.area_max) : null,
+        rooms_min: formData.rooms_min ? Number(formData.rooms_min) : null,
+        rooms_max: formData.rooms_max ? Number(formData.rooms_max) : null,
+        floor_min: formData.floor_min ? Number(formData.floor_min) : null,
+        floor_max: formData.floor_max ? Number(formData.floor_max) : null,
       };
 
       const url = editingId 
@@ -365,15 +387,41 @@ export default function AdminProperties() {
                               error={validationErrors.title}
                           />
                       </div>
-                      <div className={styles.formGrid2}>
+                      <div className={styles.formGrid3}>
                           <div>
-                              <Label>Цена (₽)</Label>
+                              <Label>Минимальная цена (₽)</Label>
                               <Input 
                                   type="number" 
                                   value={formData.price} 
                                   onChange={v => setFormData({...formData, price: v})} 
                                   error={validationErrors.price}
+                                  placeholder="Напр. 15000000"
                               />
+                          </div>
+                          <div>
+                              <Label>Цена за м² (₽)</Label>
+                              <div className="flex gap-2">
+                                <Input 
+                                    type="number" 
+                                    value={formData.price_per_sqm} 
+                                    onChange={v => setFormData({...formData, price_per_sqm: v})} 
+                                    placeholder="Напр. 350000"
+                                />
+                                <button 
+                                  type="button"
+                                  onClick={() => {
+                                    const p = Number(formData.price);
+                                    const a = Number(formData.area_sqm) || Number(formData.area_min);
+                                    if (p && a) {
+                                      setFormData(prev => ({ ...prev, price_per_sqm: String(Math.round(p / a)) }));
+                                    }
+                                  }}
+                                  className="px-3 bg-slate-800 text-white rounded hover:bg-slate-700 text-xs"
+                                  title="Рассчитать из общей цены"
+                                >
+                                  🧮
+                                </button>
+                              </div>
                           </div>
                           <div>
                               <Label>Жилой Комплекс</Label>
@@ -399,7 +447,7 @@ export default function AdminProperties() {
               </Section>
 
               {/* 2. ХАРАКТЕРИСТИКИ */}
-              <Section title="📏 Характеристики">
+              <Section title="📏 Характеристики и Диапазоны (для ЖК)">
                   <div className={styles.formGrid4}>
                       <div>
                           <Label>Площадь (м²)</Label>
@@ -411,11 +459,41 @@ export default function AdminProperties() {
                           />
                       </div>
                       <div>
+                          <Label>Площадь от (м²)</Label>
+                          <Input type="number" value={formData.area_min} onChange={v => setFormData({...formData, area_min: v})} />
+                      </div>
+                      <div>
+                          <Label>Площадь до (м²)</Label>
+                          <Input type="number" value={formData.area_max} onChange={v => setFormData({...formData, area_max: v})} />
+                      </div>
+                      <div>
                           <Label>Комнат</Label>
                           <Input value={formData.rooms} onChange={v => setFormData({...formData, rooms: v})} />
                       </div>
+                  </div>
+
+                  <div className={styles.formGrid4 + " mt-4"}>
                       <div>
-                          <Label>Этаж</Label>
+                          <Label>Комнат от</Label>
+                          <Input type="number" value={formData.rooms_min} onChange={v => setFormData({...formData, rooms_min: v})} />
+                      </div>
+                      <div>
+                          <Label>Комнат до</Label>
+                          <Input type="number" value={formData.rooms_max} onChange={v => setFormData({...formData, rooms_max: v})} />
+                      </div>
+                      <div>
+                          <Label>Этаж от</Label>
+                          <Input type="number" value={formData.floor_min} onChange={v => setFormData({...formData, floor_min: v})} />
+                      </div>
+                      <div>
+                          <Label>Этаж до</Label>
+                          <Input type="number" value={formData.floor_max} onChange={v => setFormData({...formData, floor_max: v})} />
+                      </div>
+                  </div>
+                  
+                  <div className={styles.formGrid2 + " mt-4"}>
+                      <div>
+                          <Label>Базовый этаж</Label>
                           <Input type="number" value={formData.floor} onChange={v => setFormData({...formData, floor: v})} />
                       </div>
                       <div>
