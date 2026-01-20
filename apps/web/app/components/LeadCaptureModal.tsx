@@ -74,40 +74,53 @@ export function LeadCaptureModal({ isOpen, onClose, mode, propertyTitle }: LeadC
 
     return (
         <div style={{
-            position: 'fixed', inset: 0, zIndex: 9999,
+            position: 'fixed', inset: 0, zIndex: 'var(--z-modal)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: '20px'
+            padding: 'var(--space-4)'
         }}>
             {/* Backdrop */}
             <div
                 onClick={onClose}
                 style={{
                     position: 'absolute', inset: 0,
-                    background: 'rgba(15, 23, 42, 0.8)',
-                    backdropFilter: 'blur(8px)',
-                    animation: 'fadeIn 0.3s ease'
+                    background: 'rgba(10, 17, 40, 0.85)',
+                    backdropFilter: 'blur(12px)',
+                    animation: 'fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
                 }}
             />
 
             {/* Modal Card */}
             <div style={{
                 position: 'relative',
-                background: '#1a1a1a',
-                border: '1px solid rgba(212, 175, 55, 0.3)',
-                boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
-                borderRadius: '24px',
-                padding: '32px',
+                background: 'var(--color-bg-secondary)',
+                border: '1px solid var(--color-accent-600)',
+                boxShadow: 'var(--shadow-2xl), 0 0 40px rgba(212, 175, 55, 0.15)',
+                borderRadius: 'var(--radius-2xl)',
+                padding: 'var(--space-8)',
                 width: '100%',
-                maxWidth: '400px',
-                color: 'white',
-                animation: 'slideUp 0.3s ease'
+                maxWidth: '420px',
+                color: 'var(--color-text-primary)',
+                animation: 'slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                fontFamily: 'var(--font-sans)'
             }}>
                 <button
                     onClick={onClose}
+                    aria-label="Закрыть"
                     style={{
-                        position: 'absolute', top: '16px', right: '16px',
-                        background: 'transparent', border: 'none', color: '#64748b',
-                        fontSize: '24px', cursor: 'pointer'
+                        position: 'absolute', top: 'var(--space-4)', right: 'var(--space-4)',
+                        background: 'transparent', border: 'none', color: 'var(--color-text-tertiary)',
+                        fontSize: '28px', cursor: 'pointer', width: '32px', height: '32px',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        borderRadius: 'var(--radius-md)',
+                        transition: 'all var(--transition-fast)'
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                        e.currentTarget.style.color = 'var(--color-text-primary)';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'transparent';
+                        e.currentTarget.style.color = 'var(--color-text-tertiary)';
                     }}
                 >
                     ×
@@ -122,20 +135,21 @@ export function LeadCaptureModal({ isOpen, onClose, mode, propertyTitle }: LeadC
                         </div>
 
                         <h3 style={{
-                            textAlign: 'center', fontSize: '20px', fontWeight: 700,
-                            marginBottom: '8px', color: 'white'
+                            textAlign: 'center', fontSize: 'var(--text-2xl)', fontWeight: 'var(--font-bold)',
+                            marginBottom: 'var(--space-2)', color: 'var(--color-text-primary)',
+                            fontFamily: 'var(--font-display)', letterSpacing: '-0.02em'
                         }}>
                             {getTitle()}
                         </h3>
 
                         <p style={{
-                            textAlign: 'center', fontSize: '14px', color: '#94a3b8',
-                            marginBottom: '24px', lineHeight: 1.5
+                            textAlign: 'center', fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)',
+                            marginBottom: 'var(--space-6)', lineHeight: 'var(--leading-relaxed)'
                         }}>
                             {getDescription()}
                         </p>
 
-                        <div style={{ marginBottom: '16px' }}>
+                        <div style={{ marginBottom: 'var(--space-4)' }}>
                             <input
                                 type="text"
                                 placeholder="Ваше имя"
@@ -143,17 +157,23 @@ export function LeadCaptureModal({ isOpen, onClose, mode, propertyTitle }: LeadC
                                 value={name}
                                 onChange={e => setName(e.target.value)}
                                 style={{
-                                    width: '100%', padding: '14px', borderRadius: '12px',
-                                    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-                                    color: 'white', fontSize: '16px', outline: 'none',
-                                    transition: 'border-color 0.2s'
+                                    width: '100%', padding: 'var(--space-3) var(--space-4)', borderRadius: 'var(--radius-lg)',
+                                    background: 'rgba(255,255,255,0.05)', border: '2px solid rgba(255,255,255,0.1)',
+                                    color: 'var(--color-text-primary)', fontSize: 'var(--text-base)', outline: 'none',
+                                    transition: 'all var(--transition-fast)', fontFamily: 'var(--font-sans)'
                                 }}
-                                onFocus={e => e.target.style.borderColor = '#d4af37'}
-                                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                                onFocus={e => {
+                                    e.target.style.borderColor = 'var(--color-accent-500)';
+                                    e.target.style.boxShadow = '0 0 0 3px rgba(212, 175, 55, 0.1)';
+                                }}
+                                onBlur={e => {
+                                    e.target.style.borderColor = 'rgba(255,255,255,0.1)';
+                                    e.target.style.boxShadow = 'none';
+                                }}
                             />
                         </div>
 
-                        <div style={{ marginBottom: '24px' }}>
+                        <div style={{ marginBottom: 'var(--space-6)' }}>
                             <input
                                 type="tel"
                                 placeholder="+7 (999) 000-00-00"
@@ -161,51 +181,77 @@ export function LeadCaptureModal({ isOpen, onClose, mode, propertyTitle }: LeadC
                                 value={phone}
                                 onChange={e => setPhone(e.target.value)}
                                 style={{
-                                    width: '100%', padding: '14px', borderRadius: '12px',
-                                    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-                                    color: 'white', fontSize: '16px', outline: 'none',
-                                    transition: 'border-color 0.2s'
+                                    width: '100%', padding: 'var(--space-3) var(--space-4)', borderRadius: 'var(--radius-lg)',
+                                    background: 'rgba(255,255,255,0.05)', border: '2px solid rgba(255,255,255,0.1)',
+                                    color: 'var(--color-text-primary)', fontSize: 'var(--text-base)', outline: 'none',
+                                    transition: 'all var(--transition-fast)', fontFamily: 'var(--font-sans)'
                                 }}
-                                onFocus={e => e.target.style.borderColor = '#d4af37'}
-                                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                                onFocus={e => {
+                                    e.target.style.borderColor = 'var(--color-accent-500)';
+                                    e.target.style.boxShadow = '0 0 0 3px rgba(212, 175, 55, 0.1)';
+                                }}
+                                onBlur={e => {
+                                    e.target.style.borderColor = 'rgba(255,255,255,0.1)';
+                                    e.target.style.boxShadow = 'none';
+                                }}
                             />
                         </div>
 
                         <button
                             type="submit"
                             style={{
-                                width: '100%', padding: '16px', borderRadius: '12px',
-                                background: 'linear-gradient(135deg, #d4af37 0%, #b8860b 100%)',
-                                border: 'none', color: '#000', fontSize: '16px', fontWeight: 700,
-                                cursor: 'pointer', boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)',
-                                transition: 'transform 0.1s'
+                                width: '100%', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)',
+                                background: 'linear-gradient(135deg, var(--color-accent-500) 0%, var(--color-accent-700) 100%)',
+                                border: 'none', color: 'var(--color-text-inverse)', fontSize: 'var(--text-base)', 
+                                fontWeight: 'var(--font-bold)', cursor: 'pointer', 
+                                boxShadow: '0 4px 16px rgba(212, 175, 55, 0.4), 0 0 0 0 rgba(212, 175, 55, 0)',
+                                transition: 'all var(--transition-fast)', fontFamily: 'var(--font-sans)',
+                                letterSpacing: '0.02em'
                             }}
-                            className="active:scale-[0.98]"
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                e.currentTarget.style.boxShadow = '0 6px 20px rgba(212, 175, 55, 0.5), 0 0 0 0 rgba(212, 175, 55, 0)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = '0 4px 16px rgba(212, 175, 55, 0.4), 0 0 0 0 rgba(212, 175, 55, 0)';
+                            }}
+                            onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.98)'}
+                            onMouseUp={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
                         >
                             {getButtonText()}
                         </button>
 
-                        <p style={{ textAlign: 'center', marginTop: '16px', fontSize: '11px', color: '#64748b' }}>
+                        <p style={{ textAlign: 'center', marginTop: 'var(--space-4)', fontSize: 'var(--text-xs)', color: 'var(--color-text-tertiary)', lineHeight: 'var(--leading-relaxed)' }}>
                             Нажимая кнопку, вы соглашаетесь с условиями обработки персональных данных.
                         </p>
                     </form>
                 ) : (
-                    <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                        <div style={{ fontSize: '48px', marginBottom: '16px' }}>✅</div>
-                        <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '8px', color: 'white' }}>
+                    <div style={{ textAlign: 'center', padding: 'var(--space-5) 0' }}>
+                        <div style={{ fontSize: '56px', marginBottom: 'var(--space-4)', animation: 'pulse 2s ease-in-out infinite' }}>✅</div>
+                        <h3 style={{ fontSize: 'var(--text-2xl)', fontWeight: 'var(--font-bold)', marginBottom: 'var(--space-2)', color: 'var(--color-text-primary)', fontFamily: 'var(--font-display)' }}>
                             Заявка принята!
                         </h3>
-                        <p style={{ fontSize: '14px', color: '#94a3b8', marginBottom: '24px' }}>
+                        <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginBottom: 'var(--space-6)', lineHeight: 'var(--leading-relaxed)' }}>
                             Мы свяжемся с вами в ближайшее время по номеру: <br />
-                            <span style={{ color: '#d4af37', fontWeight: 600 }}>{phone}</span>
+                            <span style={{ color: 'var(--color-accent-500)', fontWeight: 'var(--font-semibold)' }}>{phone}</span>
                         </p>
                         <button
                             onClick={onClose}
                             style={{
-                                padding: '12px 32px', borderRadius: '12px',
+                                padding: 'var(--space-3) var(--space-8)', borderRadius: 'var(--radius-lg)',
                                 background: 'rgba(255,255,255,0.1)',
-                                border: 'none', color: 'white', fontSize: '14px', fontWeight: 600,
-                                cursor: 'pointer'
+                                border: '1px solid rgba(255,255,255,0.2)', color: 'var(--color-text-primary)', 
+                                fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)',
+                                cursor: 'pointer', transition: 'all var(--transition-fast)', fontFamily: 'var(--font-sans)'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
+                                e.currentTarget.style.borderColor = 'var(--color-accent-500)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
                             }}
                         >
                             Вернуться к просмотру
@@ -215,8 +261,26 @@ export function LeadCaptureModal({ isOpen, onClose, mode, propertyTitle }: LeadC
             </div>
 
             <style jsx global>{`
-                @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-                @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+                @keyframes fadeIn { 
+                    from { opacity: 0; } 
+                    to { opacity: 1; } 
+                }
+                @keyframes slideUp { 
+                    from { opacity: 0; transform: translateY(30px) scale(0.95); } 
+                    to { opacity: 1; transform: translateY(0) scale(1); } 
+                }
+                @keyframes pulse {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.05); }
+                }
+                
+                /* Mobile responsiveness */
+                @media (max-width: 480px) {
+                    [style*="maxWidth: '420px'"] {
+                        max-width: 100% !important;
+                        padding: var(--space-6) !important;
+                    }
+                }
             `}</style>
         </div>
     );

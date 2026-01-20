@@ -93,21 +93,53 @@ export function Footer() {
                                 <span style={{ color: '#e5e7eb', fontSize: '14px' }}>{settings?.footer_address || 'Сочи, Курортный проспект, 59'}</span>
                             </li>
                             <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <span style={{ color: '#d4af37' }}>📞</span>
+                                <span style={{ color: 'var(--color-accent-500)' }}>📞</span>
                                 <a 
                                     href={`tel:${(settings?.footer_phone || '+79990000000').replace(/\D/g, '')}`} 
                                     onClick={() => reachGoal('click_phone')}
-                                    style={{ color: '#e5e7eb', fontSize: '14px', textDecoration: 'none' }}
+                                    style={{ 
+                                        color: 'var(--color-text-primary)', 
+                                        fontSize: 'var(--text-sm)', 
+                                        textDecoration: 'none',
+                                        transition: 'all var(--transition-fast)',
+                                        padding: 'var(--space-1) var(--space-2)',
+                                        borderRadius: 'var(--radius-md)',
+                                        marginLeft: 'calc(-1 * var(--space-2))'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.color = 'var(--color-accent-500)';
+                                        e.currentTarget.style.background = 'rgba(212, 175, 55, 0.1)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.color = 'var(--color-text-primary)';
+                                        e.currentTarget.style.background = 'transparent';
+                                    }}
                                 >
                                     {settings?.footer_phone || '+7 (999) 000-00-00'}
                                 </a>
                             </li>
                             <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <span style={{ color: '#d4af37' }}>✉️</span>
+                                <span style={{ color: 'var(--color-accent-500)' }}>✉️</span>
                                 <a 
                                     href={`mailto:${settings?.footer_email || 'vip@estate-analytics.ru'}`} 
                                     onClick={() => reachGoal('click_email')}
-                                    style={{ color: '#e5e7eb', fontSize: '14px', textDecoration: 'none' }}
+                                    style={{ 
+                                        color: 'var(--color-text-primary)', 
+                                        fontSize: 'var(--text-sm)', 
+                                        textDecoration: 'none',
+                                        transition: 'all var(--transition-fast)',
+                                        padding: 'var(--space-1) var(--space-2)',
+                                        borderRadius: 'var(--radius-md)',
+                                        marginLeft: 'calc(-1 * var(--space-2))'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.color = 'var(--color-accent-500)';
+                                        e.currentTarget.style.background = 'rgba(212, 175, 55, 0.1)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.color = 'var(--color-text-primary)';
+                                        e.currentTarget.style.background = 'transparent';
+                                    }}
                                 >
                                     {settings?.footer_email || 'vip@estate-analytics.ru'}
                                 </a>

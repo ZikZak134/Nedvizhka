@@ -743,6 +743,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                 }]
             };
 
+
             const map = new maplibregl.Map({
                 container: mapRef.current!,
                 style: style as any,
@@ -750,8 +751,9 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                 zoom: 13,
                 pitch: 0, 
                 bearing: 0,
-                maxBounds: [36.0, 43.0, 42.0, 47.5] // Krasnodar Krai bounds [LngMin, LatMin, LngMax, LatMax]
+                maxBounds: [[36.0, 43.0], [42.0, 46.0]] // Krasnodar Krai bounds [LngMin, LatMin, LngMax, LatMax]
             });
+
 
             // Add navigation controls
             map.addControl(new maplibregl.NavigationControl({ visualizePitch: false }), 'bottom-right');
