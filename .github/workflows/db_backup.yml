@@ -1,0 +1,33 @@
+name: Database Backup
+
+on:
+  schedule:
+    - cron: "0 0 * * 0" # Every Sunday at 00:00 UTC
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install PostgreSQL Client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Create Backup
+        env:
+          DATABASE_URL: ${{ secrets.RENDER_BACKUP_DB_URL }}
+        run: |
+          # Use pg_dump to create a backup file
+          # We use -v for verbose and --no-owner to make it easier to restore elsewhere
+          pg_dump "$DATABASE_URL" -v --no-owner --no-privileges > backup_$(date +%Y%m%d_%H%M%S).sql
+
+      - name: Upload Backup Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: database-backup-${{ github.run_id }}
+          path: backup_*.sql
+          retention-days: 90
