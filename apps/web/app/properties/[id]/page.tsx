@@ -18,6 +18,8 @@ import { Reveal } from '../../components/animations/Reveal';
 import { motion } from 'framer-motion';
 
 interface Property {
+    is_from_developer: boolean;
+    property_type: string;
     id: string;
     title: string;
     description: string | null;

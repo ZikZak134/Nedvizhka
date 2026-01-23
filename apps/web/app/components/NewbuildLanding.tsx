@@ -24,8 +24,8 @@ interface Property {
   completion_date?: string;
   badges?: string[];
   features?: Record<string, any>;
-  latitude?: number;
-  longitude?: number;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 interface NewbuildLandingProps {

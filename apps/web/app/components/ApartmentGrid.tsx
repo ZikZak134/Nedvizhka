@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useToast } from '../ToastContainer';
 
 interface Apartment {
   id: string;
@@ -22,7 +21,6 @@ interface ApartmentGridProps {
 
 export function ApartmentGrid({ complexId }: ApartmentGridProps) {
   const router = useRouter();
-  const { showError } = useToast();
   const [apartments, setApartments] = useState<Apartment[]>([]);
   const [loading, setLoading] = useState(true);
 

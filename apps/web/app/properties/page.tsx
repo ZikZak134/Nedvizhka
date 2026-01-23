@@ -90,15 +90,6 @@ export default function PropertiesPage() {
         }
     };
 
-    useEffect(() => {
-        fetchProperties();
-    }, [page, debouncedFilters]);
-
-    const handleFilterChange = (newFilters: Filters) => {
-        setFilters(newFilters);
-        setPage(1);
-    };
-
     // Debounced filter change to reduce API calls
     const [debouncedFilters, setDebouncedFilters] = useState<Filters>({});
     
@@ -108,6 +99,15 @@ export default function PropertiesPage() {
         }, 500);
         return () => clearTimeout(timer);
     }, [filters]);
+
+    useEffect(() => {
+        fetchProperties();
+    }, [page, debouncedFilters]);
+
+    const handleFilterChange = (newFilters: Filters) => {
+        setFilters(newFilters);
+        setPage(1);
+    };
 
     // Dynamic Map Import - Fixed
     const [PropertyMapComp, setPropertyMapComp] = useState<any>(null);

@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useAuth } from '../components/AuthGuard';
-import { useToast } from '../components/ToastContainer';
-import styles from '../admin.module.css';
+import { useAuth } from '../../components/AuthGuard';
+import { useToast } from '../../components/ToastContainer';
+import styles from '../../admin.module.css';
 
 const EMPTY_TEMPLATE = {
   title: '',
