@@ -1,3 +1,7 @@
+/**
+ * Property type definition for use across the application.
+ * Centralized to avoid Vercel build errors caused by type inconsistencies.
+ */
 export interface Property {
     id: string;
     title: string;
