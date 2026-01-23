@@ -2,6 +2,12 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 
+declare global {
+    interface Window {
+        DG: any;
+    }
+}
+
 interface LocationPickerProps {
     initialLat: number;
     initialLon: number;

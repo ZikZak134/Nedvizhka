@@ -1098,7 +1098,7 @@ function Input({ onChange, label, required, helper, error, ...props }: {
     helper?: string;
     error?: string;
 } & Record<string, any>) {
-    const inputId = `input-${Math.random().toString(36).substr(2, 9)}`;
+    const inputId = `input-${Math.random().toString(36).slice(2, 11)}`;
     const hasValue = props.value && props.value.toString().length > 0;
     
     return (
