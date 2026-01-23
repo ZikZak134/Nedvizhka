@@ -128,7 +128,11 @@ export default function ImageGalleryEditor({ images, onChange }: ImageGalleryEdi
                 <div className={styles.galleryGrid}>
                     {images.map((url, index) => (
                         <div key={index} className={styles.galleryItem}>
-                            <img src={url} alt={`Preview ${index}`} className={styles.galleryItemImage} />
+                            <img 
+                                src={url.startsWith('http') ? url : `${API_URL}${url.startsWith('/') ? '' : '/'}${url}`} 
+                                alt={`Preview ${index}`} 
+                                className={styles.galleryItemImage} 
+                            />
                             <button 
                                 type="button"
                                 onClick={() => removeImage(index)}

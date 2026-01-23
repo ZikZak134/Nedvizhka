@@ -404,31 +404,36 @@ export default function AdminProperties() {
               <Section title="📑 Базовая информация">
                   <div className={styles.formStack}>
                       <div>
-                          <Label>Название объекта / Заголовок</Label>
+                          <Label required>Название объекта / Заголовок</Label>
                           <Input 
                               value={formData.title} 
-                              onChange={v => setFormData({...formData, title: v})} 
-                              placeholder="Видовые апартаменты в Сириусе" 
+                              onChange={(v: string) => setFormData({...formData, title: v})} 
+                              placeholder="Напр: Видовые апартаменты в Сириусе" 
+                              helper="Привлекательный заголовок для листинга"
                               error={validationErrors.title}
                           />
                       </div>
                       <div className={styles.formGrid3}>
                           <div>
-                              <Label>Минимальная цена (₽)</Label>
+                              <Label required>Минимальная цена (₽)</Label>
                               <Input 
-                                  value={formatNumber(formData.price)} 
-                                  onChange={v => setFormData({...formData, price: cleanNumber(v)})} 
+                                  isNumeric
+                                  value={formData.price} 
+                                  onChange={(v: string) => setFormData({...formData, price: Number(v)})} 
                                   error={validationErrors.price}
-                                  placeholder="Напр. 15 000 000"
+                                  placeholder="0"
+                                  helper="Общая стоимость объекта"
                               />
                           </div>
                           <div>
                               <Label>Цена за м² (₽)</Label>
                               <div className="flex gap-2">
                                 <Input 
-                                    value={formatNumber(formData.price_per_sqm)} 
-                                    onChange={v => setFormData({...formData, price_per_sqm: cleanNumber(v)})} 
-                                    placeholder="Напр. 350 000"
+                                    isNumeric
+                                    value={formData.price_per_sqm} 
+                                    onChange={(v: string) => setFormData({...formData, price_per_sqm: Number(v)})} 
+                                    placeholder="0"
+                                    helper="Рассчитывается автоматически"
                                 />
                                 <button 
                                   type="button"
@@ -450,8 +455,9 @@ export default function AdminProperties() {
                               <Label>Жилой Комплекс</Label>
                               <Input 
                                   value={formData.complex_name} 
-                                  onChange={v => setFormData({...formData, complex_name: v})} 
+                                  onChange={(v: string) => setFormData({...formData, complex_name: v})} 
                                   placeholder="ЖК Актер Гэлакси" 
+                                  helper="Оставьте пустым для частного дома"
                               />
                           </div>
                       </div>
@@ -464,6 +470,7 @@ export default function AdminProperties() {
                               maxLength={2000}
                               helper="Подробное описание для лендинга объекта"
                               minHeight="140px"
+                              required
                           />
                       </div>
                   </div>
@@ -473,54 +480,101 @@ export default function AdminProperties() {
               <Section title="📏 Характеристики и Диапазоны (для ЖК)">
                   <div className={styles.formGrid4}>
                       <div>
-                          <Label>Площадь (м²)</Label>
+                          <Label required>Общая площадь (м²)</Label>
                           <Input 
-                              value={formatNumber(formData.area_sqm)} 
-                              onChange={v => setFormData({...formData, area_sqm: cleanNumber(v)})} 
+                              isNumeric
+                              value={formData.area_sqm} 
+                              onChange={(v: string) => setFormData({...formData, area_sqm: Number(v)})} 
+                              placeholder="0"
+                              helper="По документам"
                               error={validationErrors.area_sqm}
                           />
                       </div>
                       <div>
                           <Label>Площадь от (м²)</Label>
-                          <Input type="number" value={formData.area_min} onChange={v => setFormData({...formData, area_min: v})} />
+                          <Input 
+                              isNumeric
+                              value={formData.area_min} 
+                              onChange={(v: string) => setFormData({...formData, area_min: v})} 
+                              placeholder="0"
+                              helper="Для фильтра"
+                          />
                       </div>
                       <div>
                           <Label>Площадь до (м²)</Label>
-                          <Input type="number" value={formData.area_max} onChange={v => setFormData({...formData, area_max: v})} />
+                          <Input 
+                              isNumeric
+                              value={formData.area_max} 
+                              onChange={(v: string) => setFormData({...formData, area_max: v})} 
+                              placeholder="0"
+                          />
                       </div>
                       <div>
-                          <Label>Комнат</Label>
-                          <Input value={formData.rooms} onChange={v => setFormData({...formData, rooms: v})} />
+                          <Label>Число комнат</Label>
+                          <Input 
+                              value={formData.rooms} 
+                              onChange={(v: string) => setFormData({...formData, rooms: v})} 
+                              placeholder="2"
+                              helper="Напр: 2 или Студия"
+                          />
                       </div>
                   </div>
 
                   <div className={styles.formGrid4 + " mt-4"}>
                       <div>
                           <Label>Комнат от</Label>
-                          <Input type="number" value={formData.rooms_min} onChange={v => setFormData({...formData, rooms_min: v})} />
+                          <Input 
+                              isNumeric
+                              value={formData.rooms_min} 
+                              onChange={(v: string) => setFormData({...formData, rooms_min: v})} 
+                              placeholder="1"
+                          />
                       </div>
                       <div>
                           <Label>Комнат до</Label>
-                          <Input type="number" value={formData.rooms_max} onChange={v => setFormData({...formData, rooms_max: v})} />
+                          <Input 
+                              isNumeric
+                              value={formData.rooms_max} 
+                              onChange={(v: string) => setFormData({...formData, rooms_max: v})} 
+                              placeholder="4"
+                          />
                       </div>
                       <div>
                           <Label>Этаж от</Label>
-                          <Input type="number" value={formData.floor_min} onChange={v => setFormData({...formData, floor_min: v})} />
+                          <Input 
+                              isNumeric
+                              value={formData.floor_min} 
+                              onChange={(v: string) => setFormData({...formData, floor_min: v})} 
+                          />
                       </div>
                       <div>
                           <Label>Этаж до</Label>
-                          <Input type="number" value={formData.floor_max} onChange={v => setFormData({...formData, floor_max: v})} />
+                          <Input 
+                              isNumeric
+                              value={formData.floor_max} 
+                              onChange={(v: string) => setFormData({...formData, floor_max: v})} 
+                          />
                       </div>
                   </div>
                   
                   <div className={styles.formGrid2 + " mt-4"}>
                       <div>
                           <Label>Базовый этаж</Label>
-                          <Input type="number" value={formData.floor} onChange={v => setFormData({...formData, floor: v})} />
+                          <Input 
+                              isNumeric
+                              value={formData.floor} 
+                              onChange={(v: string) => setFormData({...formData, floor: v})} 
+                              placeholder="5"
+                          />
                       </div>
                       <div>
                           <Label>Всего этажей</Label>
-                          <Input type="number" value={formData.total_floors} onChange={v => setFormData({...formData, total_floors: v})} />
+                          <Input 
+                              isNumeric
+                              value={formData.total_floors} 
+                              onChange={(v: string) => setFormData({...formData, total_floors: v})} 
+                              placeholder="12"
+                          />
                       </div>
                   </div>
               </Section>
@@ -541,6 +595,7 @@ export default function AdminProperties() {
                               <option value="cottage">Коттедж</option>
                               <option value="commercial">Коммерция</option>
                           </select>
+                          <div className={styles.helperText}>Для фильтрации на сайте</div>
                       </div>
                       <div>
                           <Label>Планировка</Label>
@@ -576,8 +631,9 @@ export default function AdminProperties() {
                           <Label>Срок сдачи</Label>
                           <Input 
                               value={formData.completion_date} 
-                              onChange={v => setFormData({...formData, completion_date: v})} 
-                              placeholder="4 кв. 2025 / Сдан"
+                              onChange={(v: string) => setFormData({...formData, completion_date: v})} 
+                              placeholder="Напр: 4 кв. 2025 или Сдан"
+                              helper="Для новостроек"
                           />
                       </div>
                   </div>
@@ -587,8 +643,8 @@ export default function AdminProperties() {
                           <Label>Застройщик</Label>
                           <Input 
                               value={formData.developer_name} 
-                              onChange={v => setFormData({...formData, developer_name: v})} 
-                              placeholder="ГК Неометрия"
+                              onChange={(v: string) => setFormData({...formData, developer_name: v})} 
+                              placeholder="Напр: ГК Неометрия"
                           />
                       </div>
                       <div className={styles.formRow}>
@@ -600,15 +656,11 @@ export default function AdminProperties() {
                           </div>
                           <button
                               type="button"
-                              aria-label="Переключить От застройщика"
+                              aria-label="Переключить Статус от застройщика"
                               onClick={() => setFormData({...formData, is_from_developer: !formData.is_from_developer})}
-                              className={`w-[60px] h-8 rounded-[16px] border-none relative cursor-pointer transition-colors ${
-                                formData.is_from_developer ? 'bg-[#22c55e]' : 'bg-white/20'
-                              }`}
+                              className={`${styles.toggleSwitch} ${formData.is_from_developer ? styles.active : ''}`}
                           >
-                              <div className={`w-6 h-6 rounded-full bg-white absolute top-1 transition-all shadow-md ${
-                                formData.is_from_developer ? 'left-8' : 'left-1'
-                              }`} />
+                              <div className={styles.toggleHandle} />
                           </button>
                       </div>
                   </div>
@@ -631,15 +683,18 @@ export default function AdminProperties() {
               {/* 3. КАРТА */}
               <Section title="📍 Локация на карте">
                       <div>
+                          <Label required>Адрес объекта</Label>
                           <Input 
                               value={formData.address} 
-                              onChange={v => setFormData({...formData, address: v})} 
-                              placeholder="Введите адрес для отображения"
+                              onChange={(v: string) => setFormData({...formData, address: v})} 
+                              placeholder="Город, улица, дом"
+                              helper="Введите адрес или выберите точку на карте"
                               error={validationErrors.address}
                           />
                           <LocationPicker 
                               initialLat={formData.latitude} 
                               initialLon={formData.longitude}
+                              addressName={formData.address}
                               onChange={handleMapLocationChange} 
                           />
                    </div>
@@ -647,10 +702,10 @@ export default function AdminProperties() {
                        <Label>Кастомный значок на карте (3D Icon URL)</Label>
                        <Input 
                            value={formData.marker_icon} 
-                           onChange={v => setFormData({...formData, marker_icon: v})} 
+                           onChange={(v: string) => setFormData({...formData, marker_icon: v})} 
                            placeholder="https://example.com/icons/my-building-3d.png" 
+                           helper="Оставьте пустым для стандартного маркера с ценой. 64x64px, PNG."
                        />
-                       <p className={styles.helperText}>Оставьте пустым для стандартного маркера с ценой. Рекомендуемый размер: 64x64px, PNG с прозрачностью.</p>
                    </div>
               </Section>
 
@@ -670,7 +725,7 @@ export default function AdminProperties() {
                   <div className={styles.formStackSmall}>
                       <div className={styles.formGrid2}>
                           <div>
-                              <Label>Вид</Label>
+                              <Label>Вид из окна</Label>
                               <select 
                                   aria-label="Вид"
                                   value={formData.features?.['Вид'] || ''}
@@ -678,23 +733,32 @@ export default function AdminProperties() {
                                   className={styles.formSelect}
                               >
                                   <option value="">Не указан</option>
-                                  <option value="Море">Море</option>
-                                  <option value="Горы">Горы</option>
-                                  <option value="Панорама">Панорама</option>
-                                  <option value="Город">Город</option>
-                                  <option value="Парк">Парк</option>
+                                  <option value="Море">На море</option>
+                                  <option value="Горы">На горы</option>
+                                  <option value="Панорама">Панорамный</option>
+                                  <option value="Город">На город</option>
+                                  <option value="Парк">На парк</option>
                               </select>
                           </div>
                           <div>
-                              <Label>Терраса</Label>
-                              <Input value={formData.features?.['Терраса'] || ''} onChange={v => setFormData({...formData, features: {...formData.features, 'Терраса': v}})} placeholder="45 м²" />
+                              <Label>Терраса (м²)</Label>
+                              <Input 
+                                  isNumeric
+                                  value={formData.features?.['Терраса'] || ''} 
+                                  onChange={(v: string) => setFormData({...formData, features: {...formData.features, 'Терраса': v}})} 
+                                  placeholder="0" 
+                              />
                           </div>
                           <div>
                               <Label>Паркинг</Label>
-                              <Input value={formData.features?.['Паркинг'] || ''} onChange={v => setFormData({...formData, features: {...formData.features, 'Паркинг': v}})} placeholder="2 места" />
+                              <Input 
+                                  value={formData.features?.['Паркинг'] || ''} 
+                                  onChange={(v: string) => setFormData({...formData, features: {...formData.features, 'Паркинг': v}})} 
+                                  placeholder="Напр: 2 места / Подземный" 
+                              />
                           </div>
                           <div>
-                              <Label>Отделка</Label>
+                              <Label>Качество отделки</Label>
                               <select 
                                   aria-label="Отделка"
                                   value={formData.features?.['Отделка'] || ''}
@@ -709,8 +773,12 @@ export default function AdminProperties() {
                               </select>
                           </div>
                           <div>
-                              <Label>Высота потолков</Label>
-                              <Input value={formData.features?.['Потолки'] || ''} onChange={v => setFormData({...formData, features: {...formData.features, 'Потолки': v}})} placeholder="3.2 м" />
+                              <Label>Высота потолков (м)</Label>
+                              <Input 
+                                  value={formData.features?.['Потолки'] || ''} 
+                                  onChange={(v: string) => setFormData({...formData, features: {...formData.features, 'Потолки': v}})} 
+                                  placeholder="3.2" 
+                              />
                           </div>
                           <div>
                               <Label>Бассейн</Label>
@@ -762,15 +830,33 @@ export default function AdminProperties() {
                       <div className={styles.formGrid3}>
                            <div>
                               <Label>ROI Годовой (%)</Label>
-                              <Input type="number" value={formData.investment_metrics.roi} onChange={v => updateNested('investment_metrics', 'roi', v)} />
+                              <Input 
+                                  isNumeric
+                                  value={formData.investment_metrics.roi} 
+                                  onChange={(v: string) => updateNested('investment_metrics', 'roi', v)} 
+                                  placeholder="0"
+                                  helper="Процент чистой прибыли в год"
+                              />
                           </div>
                            <div>
                               <Label>Рост за 10 лет (%)</Label>
-                              <Input type="number" value={formData.investment_metrics.growth_10y} onChange={v => updateNested('investment_metrics', 'growth_10y', v)} />
+                              <Input 
+                                  isNumeric
+                                  value={formData.investment_metrics.growth_10y} 
+                                  onChange={(v: string) => updateNested('investment_metrics', 'growth_10y', v)} 
+                                  placeholder="0"
+                                  helper="Прогноз роста стоимости к 2035 г."
+                              />
                           </div>
                            <div>
                               <Label>Срок продажи (дней)</Label>
-                              <Input type="number" value={formData.investment_metrics.sale_time} onChange={v => updateNested('investment_metrics', 'sale_time', v)} />
+                              <Input 
+                                  isNumeric
+                                  value={formData.investment_metrics.sale_time} 
+                                  onChange={(v: string) => updateNested('investment_metrics', 'sale_time', v)} 
+                                  placeholder="30"
+                                  helper="Средняя ликвидность объекта"
+                              />
                           </div>
                       </div>
                       
@@ -1091,15 +1177,27 @@ function Label({ children, required }: { children: React.ReactNode, required?: b
     );
 }
 
-function Input({ onChange, label, required, helper, error, ...props }: { 
+function Input({ onChange, label, required, helper, error, isNumeric, ...props }: { 
     onChange: (val: string) => void;
     label?: string;
     required?: boolean;
-    helper?: string;
+    helper?: string | React.ReactNode;
     error?: string;
+    isNumeric?: boolean;
 } & Record<string, any>) {
     const inputId = `input-${Math.random().toString(36).slice(2, 11)}`;
-    const hasValue = props.value && props.value.toString().length > 0;
+    
+    // For numeric inputs, we display formatted string but inner value is clean
+    const displayValue = isNumeric ? formatNumber(props.value) : props.value;
+
+    const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let val = e.target.value;
+        if (isNumeric) {
+            val = cleanNumber(val);
+            if (val !== '' && isNaN(Number(val))) return; // Ignore non-numeric
+        }
+        onChange(val);
+    };
     
     return (
         <div className={styles.textareaWrapper}>
@@ -1108,7 +1206,9 @@ function Input({ onChange, label, required, helper, error, ...props }: {
                 <input 
                     id={inputId}
                     {...props} 
-                    onChange={e => onChange(e.target.value)}
+                    value={displayValue}
+                    type={isNumeric ? 'text' : props.type || 'text'}
+                    onChange={handleTextChange}
                     className={styles.formInput}
                     placeholder=" "
                 />

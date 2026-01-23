@@ -1,8 +1,9 @@
 export const formatNumber = (value: number | string | null | undefined): string => {
-    if (value === null || value === undefined) return '';
-    const clean = String(value).replace(/\D/g, ''); // Remove non-digits
-    if (!clean) return '';
-    return clean.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    if (value === null || value === undefined || value === '') return '';
+    const clean = String(value).replace(/\s/g, ''); // Remove existing spaces
+    if (isNaN(Number(clean))) return String(value); 
+    const numericValue = Number(clean);
+    return new Intl.NumberFormat('ru-RU').format(numericValue);
 };
 
 export const cleanNumber = (value: string): string => {

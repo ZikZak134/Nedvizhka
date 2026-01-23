@@ -11,15 +11,17 @@ declare global {
 interface LocationPickerProps {
     initialLat: number;
     initialLon: number;
+    addressName?: string;
     onChange: (lat: number, lon: number) => void;
 }
 
-export default function LocationPicker({ initialLat, initialLon, onChange }: LocationPickerProps) {
+export default function LocationPicker({ initialLat, initialLon, addressName, onChange }: LocationPickerProps) {
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapInstance = useRef<any>(null);
     const markerInstance = useRef<any>(null);
     const [status, setStatus] = useState('Нажмите на карту, чтобы выбрать точку');
     const [isScriptsLoaded, setIsScriptsLoaded] = useState(false);
+    const lastAddressRef = useRef<string>('');
 
     // 1. Load 2GIS Script
     useEffect(() => {
