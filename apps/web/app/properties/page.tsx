@@ -35,6 +35,9 @@ interface Filters {
     min_area?: number;
     max_area?: number;
     rooms?: string;
+    layout_type?: string;
+    finishing_type?: string;
+    is_from_developer?: boolean;
 }
 
 export default function PropertiesPage() {
@@ -58,6 +61,9 @@ export default function PropertiesPage() {
         if (filters.min_area) params.append('min_area', filters.min_area.toString());
         if (filters.max_area) params.append('max_area', filters.max_area.toString());
         if (filters.rooms) params.append('rooms', filters.rooms);
+        if (filters.layout_type) params.append('layout_type', filters.layout_type);
+        if (filters.finishing_type) params.append('finishing_type', filters.finishing_type);
+        if (filters.is_from_developer) params.append('is_from_developer', 'true');
 
         try {
             const res = await fetch(`${apiUrl}/api/v1/properties?${params.toString()}`);

@@ -200,10 +200,10 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 
 ```powershell
 # Windows (PowerShell)
-.\manage.ps1 dev       # Запустить оба сервера
-.\manage.ps1 api       # Только API
-.\manage.ps1 web       # Только Web
-.\manage.ps1 seed      # Создать демо-данные
+.\manage.ps1 api-dev   # Запустить API
+.\manage.ps1 web-dev   # Запустить Web
+.\manage.ps1 verify    # Полная проверка (Lint + Test)
+.\manage.ps1 install   # Установка зависимостей
 ```
 
 ```bash

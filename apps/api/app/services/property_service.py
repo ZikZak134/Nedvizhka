@@ -21,6 +21,9 @@ def get_properties(
     max_area: Optional[float] = None,
     rooms: Optional[str] = None,
     source: Optional[str] = None,
+    layout_type: Optional[str] = None,
+    finishing_type: Optional[str] = None,
+    is_from_developer: Optional[bool] = None,
     is_active: bool = True,
 ) -> tuple[List[Property], int]:
     """Get list of properties with filters and pagination."""
@@ -38,6 +41,12 @@ def get_properties(
         query = query.filter(Property.rooms == rooms)
     if source is not None:
         query = query.filter(Property.source == source)
+    if layout_type is not None:
+        query = query.filter(Property.layout_type == layout_type)
+    if finishing_type is not None:
+        query = query.filter(Property.finishing_type == finishing_type)
+    if is_from_developer is not None:
+        query = query.filter(Property.is_from_developer == is_from_developer)
     
     total = query.count()
     items = query.order_by(Property.created_at.desc()).offset(skip).limit(limit).all()

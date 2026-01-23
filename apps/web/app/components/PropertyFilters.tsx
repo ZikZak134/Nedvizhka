@@ -8,6 +8,9 @@ interface Filters {
     min_area?: number;
     max_area?: number;
     rooms?: string;
+    layout_type?: string;
+    finishing_type?: string;
+    is_from_developer?: boolean;
 }
 
 interface PropertyFiltersProps {
@@ -18,9 +21,15 @@ interface PropertyFiltersProps {
 export function PropertyFilters({ filters, onFilterChange }: PropertyFiltersProps) {
     const [localFilters, setLocalFilters] = useState<Filters>(filters);
 
-    const handleInputChange = (key: keyof Filters, value: string) => {
-        const numValue = value === '' ? undefined : Number(value);
-        setLocalFilters(prev => ({ ...prev, [key]: key === 'rooms' ? value || undefined : numValue }));
+    const handleInputChange = (key: keyof Filters, value: any) => {
+        const numValue = (value === '' || value === undefined) ? undefined : Number(value);
+        
+        let finalValue = value;
+        if (key === 'min_price' || key === 'max_price' || key === 'min_area' || key === 'max_area') {
+            finalValue = numValue;
+        }
+        
+        setLocalFilters(prev => ({ ...prev, [key]: finalValue }));
     };
 
     const applyFilters = () => {
@@ -94,7 +103,7 @@ export function PropertyFilters({ filters, onFilterChange }: PropertyFiltersProp
                         <button
                             key={room}
                             className={`btn btn-sm ${localFilters.rooms === room ? 'btn-primary' : 'btn-secondary'}`}
-                            onClick={() => handleInputChange('rooms', localFilters.rooms === room ? '' : room)}
+                            onClick={() => handleInputChange('rooms', localFilters.rooms === room ? undefined : room)}
                         >
                             {room}
                         </button>
@@ -102,23 +111,52 @@ export function PropertyFilters({ filters, onFilterChange }: PropertyFiltersProp
                 </div>
             </div>
 
+            {/* Layout Type */}
+            <div className="stack stack-sm">
+                <label className="label">Планировка</label>
+                <select 
+                    className="input"
+                    value={localFilters.layout_type || ''}
+                    onChange={(e) => handleInputChange('layout_type', e.target.value || undefined)}
+                >
+                    <option value="">Любая</option>
+                    <option value="Свободная">Свободная</option>
+                    <option value="Фиксированная">Фиксированная</option>
+                    <option value="Студия">Студия</option>
+                    <option value="Евро">Евро</option>
+                </select>
+            </div>
+
+            {/* Finishing Type */}
+            <div className="stack stack-sm">
+                <label className="label">Отделка</label>
+                <select 
+                    className="input"
+                    value={localFilters.finishing_type || ''}
+                    onChange={(e) => handleInputChange('finishing_type', e.target.value || undefined)}
+                >
+                    <option value="">Любая</option>
+                    <option value="Черновая">Черновая</option>
+                    <option value="Предчистовая">Предчистовая</option>
+                    <option value="Чистовая">Чистовая / Под ключ</option>
+                    <option value="Дизайнерская">Дизайнерская</option>
+                </select>
+            </div>
+
             <hr className="divider" />
 
             {/* Quick Filters */}
             <div className="stack stack-sm">
-                <label className="label">Быстрые фильтры</label>
+                <label className="label">Тип объекта</label>
                 <div className="stack stack-sm">
                     <label className="flex items-center gap-3 cursor-pointer" style={{ padding: '8px 0' }}>
-                        <input type="checkbox" className="checkbox" />
-                        <span className="body-small">С видом на море</span>
-                    </label>
-                    <label className="flex items-center gap-3 cursor-pointer" style={{ padding: '8px 0' }}>
-                        <input type="checkbox" className="checkbox" />
-                        <span className="body-small">С бассейном</span>
-                    </label>
-                    <label className="flex items-center gap-3 cursor-pointer" style={{ padding: '8px 0' }}>
-                        <input type="checkbox" className="checkbox" />
-                        <span className="body-small">Новостройка</span>
+                        <input 
+                            type="checkbox" 
+                            className="checkbox"
+                            checked={localFilters.is_from_developer || false}
+                            onChange={(e) => handleInputChange('is_from_developer', e.target.checked ? true : undefined)}
+                        />
+                        <span className="body-small">От застройщика</span>
                     </label>
                 </div>
             </div>

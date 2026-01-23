@@ -29,8 +29,12 @@ def list_properties(
     max_price: Optional[float] = Query(None, ge=0),
     min_area: Optional[float] = Query(None, ge=0),
     max_area: Optional[float] = Query(None, ge=0),
+    max_area: Optional[float] = Query(None, ge=0),
     rooms: Optional[str] = Query(None),
     source: Optional[str] = Query(None),
+    layout_type: Optional[str] = Query(None),
+    finishing_type: Optional[str] = Query(None),
+    is_from_developer: Optional[bool] = Query(None),
     db: Session = Depends(get_db),
 ):
     """List properties with filters and pagination."""
@@ -45,6 +49,9 @@ def list_properties(
         max_area=max_area,
         rooms=rooms,
         source=source,
+        layout_type=layout_type,
+        finishing_type=finishing_type,
+        is_from_developer=is_from_developer,
     )
     pages = math.ceil(total / size) if total > 0 else 1
     

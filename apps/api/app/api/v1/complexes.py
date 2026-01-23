@@ -7,11 +7,36 @@ from datetime import datetime, timedelta
 
 from app.core.deps import get_db
 from app.models.property import Property
+from app.models.complex import Complex
+from app.schemas.property import PropertyResponse
 
 router = APIRouter(prefix="/complexes", tags=["Complex Analytics"])
 
 
 # Known residential complexes in Sochi
+# ... (existing KNOWN_COMPLEXES code)
+
+
+@router.get("/{complex_id}/apartments", response_model=List[PropertyResponse])
+def get_complex_apartments(
+    complex_id: int,
+    db: Session = Depends(get_db)
+):
+    """Get all apartments belonging to a specific complex ID."""
+    complex_obj = db.query(Complex).filter(Complex.id == complex_id).first()
+    if not complex_obj:
+        raise HTTPException(status_code=404, detail="Complex not found")
+        
+    properties = db.query(Property).filter(
+        Property.complex_id == complex_id,
+        Property.is_active == True
+    ).order_by(Property.price).all()
+    
+    return properties
+
+
+@router.get("")
+# ... (rest of file)
 KNOWN_COMPLEXES = [
     {"name": "Mantera Residence", "keywords": ["mantera", "мантера"]},
     {"name": "Sochi Lighthouse", "keywords": ["lighthouse", "лайтхаус"]},

@@ -9,7 +9,7 @@
       "id": "DEV-001",
       "title": "Расширение модели Property",
       "priority": "HIGH",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Добавить новые поля в модель Property для поддержки новостроек",
       "files": [
         "apps/api/app/models/property.py",
@@ -30,17 +30,17 @@
       "id": "DEV-002", 
       "title": "Alembic миграция для новых полей",
       "priority": "HIGH",
-      "status": "TODO",
+      "status": "DONE",
       "depends_on": ["DEV-001"],
       "files": [
-        "apps/api/alembic/versions/xxx_add_developer_fields.py"
+        "apps/api/alembic/versions/8e9f1a2b3c4d_add_developer_properties_fields.py"
       ]
     },
     {
       "id": "DEV-003",
       "title": "Обновление Admin Form UI",
       "priority": "HIGH", 
-      "status": "TODO",
+      "status": "DONE",
       "depends_on": ["DEV-001"],
       "description": "Добавить новые поля в форму создания объекта",
       "files": [
@@ -60,7 +60,7 @@
       "id": "DEV-004",
       "title": "Bulk Create: Массовое создание квартир",
       "priority": "MEDIUM",
-      "status": "TODO",
+      "status": "DONE",
       "depends_on": ["DEV-003"],
       "description": "Функционал создания нескольких квартир одновременно (этажи 2-7, площадь X, цена Y)",
       "files": [
@@ -74,7 +74,7 @@
       "id": "DEV-005",
       "title": "Лендинг новостройки (отличный от квартиры)",
       "priority": "MEDIUM",
-      "status": "TODO",
+      "status": "DONE",
       "depends_on": ["DEV-001"],
       "description": "Отдельный layout для новостроек с блоками квартир вместо одной карточки",
       "files": [
@@ -95,7 +95,7 @@
       "id": "DEV-006",
       "title": "Связь ЖК и квартир (parent-child)",
       "priority": "MEDIUM",
-      "status": "TODO",
+      "status": "DONE",
       "description": "Связать таблицу complexes с properties через complex_id",
       "files": [
         "apps/api/app/models/property.py",
@@ -107,7 +107,7 @@
       "id": "DEV-007",
       "title": "Фильтры на карте и в списке",
       "priority": "LOW",
-      "status": "TODO",
+      "status": "DONE",
       "depends_on": ["DEV-001"],
       "description": "Добавить фильтры: Тип планировки, Отделка, От застройщика",
       "files": [
@@ -119,7 +119,7 @@
       "id": "DEV-008",
       "title": "PropertyCard: отображение новых полей",
       "priority": "MEDIUM",
-      "status": "TODO",
+      "status": "DONE",
       "depends_on": ["DEV-001"],
       "files": [
         "apps/web/app/components/PropertyCard.tsx"

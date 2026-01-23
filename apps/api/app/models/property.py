@@ -1,8 +1,8 @@
 import uuid
 from datetime import datetime
 from typing import Optional, List
-from sqlalchemy import String, Float, Integer, Boolean, DateTime, CheckConstraint, Index, JSON
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String, Float, Integer, Boolean, DateTime, CheckConstraint, Index, JSON, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.db import Base
 
 class Property(Base):
@@ -75,7 +75,10 @@ class Property(Base):
     developer_name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     developer_comment: Mapped[Optional[str]] = mapped_column(String, nullable=True)  # Вместо owner_quote для застройщиков
     custom_fields: Mapped[dict] = mapped_column(JSON, default={})  # Поля свободной формы
-    complex_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True, index=True)  # FK к complexes
+    complex_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("complexes.id"), nullable=True, index=True)
+    
+    # Relationships
+    complex = relationship("Complex", back_populates="properties")
     
     # System
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

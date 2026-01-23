@@ -5,6 +5,7 @@
 from sqlalchemy import Column, Integer, String, Float, JSON
 
 from app.core.db import Base
+from sqlalchemy.orm import relationship
 
 
 class Complex(Base):
@@ -42,3 +43,6 @@ class Complex(Base):
     image = Column(String(500), nullable=True)   # URL изображения
     description = Column(String(2000), nullable=True)
     district = Column(String(100), nullable=True)  # Название района
+    
+    # Relationships
+    properties = relationship("Property", back_populates="complex", cascade="all, delete-orphan")
