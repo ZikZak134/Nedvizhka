@@ -60,4 +60,11 @@ export interface Property {
     created_at?: string;
     updated_at?: string;
     marker_icon?: string | null;
+    
+    // Flattened / Legacy fields for compatibility
+    growth_10y?: number;
+    growth_5y?: number;
+    jk?: string | null;
+    complex?: string | null;
+    image?: string | null;
 }
