@@ -647,7 +647,6 @@ export default function AdminProperties() {
                               initialLon={formData.longitude}
                               onChange={handleMapLocationChange} 
                           />
-                          />
                    </div>
                    <div style={{ marginTop: '16px' }}>
                        <Label>Кастомный значок на карте (3D Icon URL)</Label>

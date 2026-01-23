@@ -14,7 +14,13 @@ This document details the production infrastructure and operational procedures f
 - **PostGIS**: Enabled (v15+)
 - **Connection**:
   - Internal: `postgresql://estate_analytics_db_user:[password]@dpg-d5n2lp0gjchc73935fdg-a/estate_analytics_db`
+  - Internal: `postgresql://estate_analytics_db_user:[password]@dpg-d5n2lp0gjchc73935fdg-a/estate_analytics_db`
   - External: `postgresql://estate_analytics_db_user:[password]@dpg-d5n2lp0gjchc73935fdg-a.virginia-postgres.render.com/estate_analytics_db`
+
+### Configuration Settings (Critical)
+- **Build Command**: `pip install -r requirements.txt` (Default)
+- **Pre-Deploy Command**: `alembic upgrade head` (Required for DB migrations)
+- **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 
 ### Frontend (Vercel)
 - **URL**: [https://web-zeta-blush-32.vercel.app](https://web-zeta-blush-32.vercel.app)

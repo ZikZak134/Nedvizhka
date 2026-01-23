@@ -245,6 +245,7 @@ interface Property {
     quality_score?: number;
     jk?: string;
     image?: string;
+    marker_icon?: string;
 }
 
 interface GeoJSONFeature {

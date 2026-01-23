@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 
 interface Filters {
     min_price?: number;
@@ -46,9 +47,14 @@ export function PropertyFilters({ filters, onFilterChange }: PropertyFiltersProp
         <div className="stack">
             <div className="flex items-center justify-between">
                 <h3 className="heading-6">Фильтры</h3>
-                <button className="btn btn-ghost btn-sm" onClick={resetFilters}>
+                <motion.button 
+                    className="btn btn-ghost btn-sm" 
+                    onClick={resetFilters}
+                    whileHover={{ opacity: 0.7 }}
+                    whileTap={{ scale: 0.95 }}
+                >
                     Сбросить
-                </button>
+                </motion.button>
             </div>
 
             <hr className="divider" />
@@ -100,13 +106,15 @@ export function PropertyFilters({ filters, onFilterChange }: PropertyFiltersProp
                 <label className="label">Комнаты</label>
                 <div className="cluster cluster-sm">
                     {['Студия', '1', '2', '3', '4+'].map((room) => (
-                        <button
+                        <motion.button
                             key={room}
                             className={`btn btn-sm ${localFilters.rooms === room ? 'btn-primary' : 'btn-secondary'}`}
                             onClick={() => handleInputChange('rooms', localFilters.rooms === room ? undefined : room)}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                         >
                             {room}
-                        </button>
+                        </motion.button>
                     ))}
                 </div>
             </div>
@@ -165,9 +173,15 @@ export function PropertyFilters({ filters, onFilterChange }: PropertyFiltersProp
 
             <hr className="divider" />
 
-            <button className="btn btn-primary w-full" onClick={applyFilters}>
+            <motion.button 
+                className="btn btn-primary w-full" 
+                onClick={applyFilters}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+            >
                 Применить фильтры
-            </button>
+            </motion.button>
         </div>
     );
 }
+
