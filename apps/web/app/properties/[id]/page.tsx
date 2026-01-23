@@ -18,56 +18,7 @@ import { FadeIn } from '../../components/animations/FadeIn';
 import { Reveal } from '../../components/animations/Reveal';
 import { motion } from 'framer-motion';
 
-interface Property {
-    is_from_developer: boolean;
-    property_type: string;
-    id: string;
-    title: string;
-    description: string | null;
-    price: number;
-    currency: string;
-    address: string;
-    latitude: number | null;
-    longitude: number | null;
-    area_sqm: number;
-    rooms: string | null;
-    floor: number | null;
-    total_floors: number | null;
-    source: string;
-    source_id: string | null;
-    url: string | null;
-    images: string[];
-    features: Record<string, any>;
-    created_at: string;
-    updated_at: string;
-    is_active: boolean;
-    district?: string;
-    complex?: string;
-    growth_10y?: number;
-    quality_score?: number;
-    ownerComment?: string;
-    ownerName?: string;
-    pricePerSqm?: number;
-    // Поля из API для динамических данных
-    badges?: string[];
-    owner_quote?: string;
-    owner_name?: string;
-    investment_metrics?: {
-        roi?: number;
-        growth_10y?: number;
-        sale_time?: number;
-    };
-    agent_profile?: {
-        name?: string;
-        role?: string;
-        photo?: string;
-        phone?: string;
-    };
-    eco_score?: Record<string, number>;
-    green_zones?: any[];
-    growth_forecasts?: any[];
-    development_projects?: any[];
-}
+import { Property } from '../../types';
 
 type TabType = 'info' | 'location' | 'potential' | 'surroundings' | 'smi';
 

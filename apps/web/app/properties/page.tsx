@@ -9,25 +9,7 @@ import { PropertyCard } from '../components/PropertyCard';
 import { PropertyFilters } from '../components/PropertyFilters';
 import styles from '../styles/public.module.css';
 
-interface Property {
-    id: string;
-    title: string;
-    description: string | null;
-    price: number;
-    currency: string;
-    address: string;
-    latitude: number | null;
-    longitude: number | null;
-    area_sqm: number;
-    rooms: string | null;
-    floor: number | null;
-    total_floors: number | null;
-    source: string;
-    images: string[];
-    features: Record<string, unknown>;
-    created_at: string;
-    is_active: boolean;
-}
+import { Property } from '../types';
 
 interface Filters {
     min_price?: number;

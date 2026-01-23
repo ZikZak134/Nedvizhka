@@ -232,21 +232,7 @@ const STATIC_DATA = [
 // Types
 // ============================================
 
-interface Property {
-    id: string;
-    title: string;
-    price: number;
-    price_per_sqm: number;
-    area_sqm: number;
-    rooms: string | null;
-    address: string;
-    growth_5y?: number;
-    growth_10y?: number;
-    quality_score?: number;
-    jk?: string;
-    image?: string;
-    marker_icon?: string;
-}
+import { Property } from '../types';
 
 interface GeoJSONFeature {
     geometry: { coordinates: [number, number] };

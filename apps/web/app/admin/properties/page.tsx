@@ -12,19 +12,7 @@ import styles from '../admin.module.css';
 import { geocodeAddress, reverseGeocode } from '../../utils/geocoder';
 import { formatNumber, cleanNumber, formatCurrency } from '../../utils/formatters';
 
-interface Property {
-  id: string;
-  title: string;
-  price: number;
-  address: string;
-  area_sqm: number;
-  rooms: string | null;
-  images: string[];
-  complex_name: string | null;
-  district: string | null;
-  is_active: boolean;
-  created_at?: string;
-}
+import { Property } from '../../types';
 
 interface PropertyListResponse {
   items: Property[];

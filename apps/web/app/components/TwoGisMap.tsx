@@ -3,16 +3,7 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 
 // Types
-interface Property {
-    id: string;
-    title: string;
-    price: number;
-    price_per_sqm: number;
-    area_sqm: number;
-    rooms: string | null;
-    address: string;
-    source: string;
-}
+import { Property } from '../types';
 
 interface GeoJSONFeature {
     type: 'Feature';

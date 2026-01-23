@@ -10,23 +10,7 @@ import { LeadCaptureModal } from './LeadCaptureModal';
 import { PropertyLocation } from './PropertyLocation';
 import { FadeIn } from './animations/FadeIn';
 
-interface Property {
-  id: string;
-  title: string;
-  price: number;
-  address: string;
-  description: string | null;
-  images: string[];
-  complex_id?: number;
-  is_from_developer: boolean;
-  developer_name?: string;
-  developer_comment?: string;
-  completion_date?: string;
-  badges?: string[];
-  features?: Record<string, any>;
-  latitude: number | null;
-  longitude: number | null;
-}
+import { Property } from '../types';
 
 interface NewbuildLandingProps {
   property: Property;

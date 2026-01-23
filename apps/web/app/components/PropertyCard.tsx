@@ -2,11 +2,7 @@ import Link from 'next/link';
 import { getMockImage } from '../utils/mockImages';
 import { formatNumber, formatCurrency } from '../utils/formatters';
 
-interface Property {
-    id: string;
-//... (omitted for brevity, just keeping imports match)
-    property_type?: string | null;
-}
+import { Property } from '../types';
 
 interface PropertyCardProps {
     property: Property;

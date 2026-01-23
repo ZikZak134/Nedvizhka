@@ -5,26 +5,7 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 // Types
-interface Property {
-    id: string;
-    title: string;
-    price: number;
-    price_per_sqm: number;
-    area_sqm: number;
-    rooms: string | null;
-    address: string;
-    source: string;
-    description?: string | null;
-    currency?: string;
-    latitude?: number | null;
-    longitude?: number | null;
-    floor?: number | null;
-    total_floors?: number | null;
-    images?: string[];
-    features?: Record<string, unknown>;
-    created_at?: string;
-    is_active?: boolean;
-}
+import { Property } from '../types';
 
 interface GeoJSONFeature {
     type: 'Feature';
