@@ -419,7 +419,7 @@ export default function AdminProperties() {
                               <Input 
                                   isNumeric
                                   value={formData.price} 
-                                  onChange={(v: string) => setFormData({...formData, price: Number(v)})} 
+                                  onChange={(v: string) => setFormData({...formData, price: v})} 
                                   error={validationErrors.price}
                                   placeholder="0"
                                   helper="Общая стоимость объекта"
@@ -431,7 +431,7 @@ export default function AdminProperties() {
                                 <Input 
                                     isNumeric
                                     value={formData.price_per_sqm} 
-                                    onChange={(v: string) => setFormData({...formData, price_per_sqm: Number(v)})} 
+                                    onChange={(v: string) => setFormData({...formData, price_per_sqm: v})} 
                                     placeholder="0"
                                     helper="Рассчитывается автоматически"
                                 />
@@ -484,7 +484,7 @@ export default function AdminProperties() {
                           <Input 
                               isNumeric
                               value={formData.area_sqm} 
-                              onChange={(v: string) => setFormData({...formData, area_sqm: Number(v)})} 
+                              onChange={(v: string) => setFormData({...formData, area_sqm: v})} 
                               placeholder="0"
                               helper="По документам"
                               error={validationErrors.area_sqm}
