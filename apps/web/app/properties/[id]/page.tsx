@@ -116,11 +116,91 @@ const FeatureIcons = {
 const NewbuildLanding = dynamic(() => import('../../components/NewbuildLanding').then(m => m.NewbuildLanding), { ssr: false });
 
 export default function PropertyDetailPage() {
-    // ... (existing hooks)
+    const params = useParams();
+    const router = useRouter();
+    const [property, setProperty] = useState<Property | null>(null);
+    const [nearbyProperties, setNearbyProperties] = useState<Property[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [activeImage, setActiveImage] = useState(0);
+    const [activeTab, setActiveTab] = useState<TabType>('info');
+    const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
+    const [leadMode, setLeadMode] = useState<'showing' | 'report' | 'question'>('showing');
 
-    // ... (existing helper functions)
+    // Fetch property data
+    useEffect(() => {
+        const fetchProperty = async () => {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            try {
+                const res = await fetch(`${apiUrl}/api/v1/properties/${params.id}`);
+                if (!res.ok) throw new Error('Property not found');
+                const data = await res.json();
+                setProperty(data);
+            } catch {
+                setError('Объект не найден или был удалён');
+                setProperty(null);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    // Loading/Error states ...
+        if (params.id) fetchProperty();
+    }, [params.id]);
+
+    const formatPrice = (price: number) => {
+        if (price >= 1_000_000) {
+            return `${(price / 1_000_000).toFixed(1)} млн ₽`;
+        }
+        return new Intl.NumberFormat('ru-RU').format(price) + ' ₽';
+    };
+
+    const formatPriceShort = (price: number) => {
+        if (price >= 1_000_000) {
+            return `${(price / 1_000_000).toFixed(1)} млн`;
+        }
+        return new Intl.NumberFormat('ru-RU').format(price);
+    };
+
+    const getCurrentIndex = () => {
+        const mockId = (Array.isArray(params.id) ? params.id[0] : params.id) || 'unknown';
+        const match = String(mockId).match(/mock-prop-(\d+)/);
+        return match ? parseInt(match[1], 10) : 0;
+    };
+
+    const navigateToProperty = (direction: 'prev' | 'next') => {
+        const currentIndex = getCurrentIndex();
+        const newIndex = direction === 'prev'
+            ? Math.max(0, currentIndex - 1)
+            : Math.min(9, currentIndex + 1);
+        router.push(`/properties/mock-prop-${newIndex}`);
+    };
+
+    // Loading state
+    if (loading) {
+        return (
+            <div className="lux-loading">
+                <div className="lux-loading-spinner" />
+                <div className="lux-loading-text">Загружаем…</div>
+            </div>
+        );
+    }
+
+    // Error state
+    if (error || !property) {
+        return (
+            <div className="lux-page">
+                <Header />
+                <main className="flex items-center justify-center min-h-[calc(100vh-200px)] py-[60px] px-6">
+                    <div className="text-center max-w-[400px]">
+                        <h1 className="font-serif text-[32px] mb-4">Объект не найден</h1>
+                        <p className="text-[var(--lux-text-secondary)] mb-8">{error || 'Запрашиваемый объект не существует или был удалён'}</p>
+                        <button onClick={() => router.push('/properties')} className="lux-btn lux-btn--primary">Вернуться к каталогу</button>
+                    </div>
+                </main>
+                <Footer />
+            </div>
+        );
+    }
 
     const images = property.images.length > 0 ? property.images : [];
     const currentIndex = getCurrentIndex();

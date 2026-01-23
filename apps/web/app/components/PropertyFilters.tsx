@@ -115,6 +115,7 @@ export function PropertyFilters({ filters, onFilterChange }: PropertyFiltersProp
             <div className="stack stack-sm">
                 <label className="label">Планировка</label>
                 <select 
+                    aria-label="Тип планировки"
                     className="input"
                     value={localFilters.layout_type || ''}
                     onChange={(e) => handleInputChange('layout_type', e.target.value || undefined)}
@@ -131,6 +132,7 @@ export function PropertyFilters({ filters, onFilterChange }: PropertyFiltersProp
             <div className="stack stack-sm">
                 <label className="label">Отделка</label>
                 <select 
+                    aria-label="Тип отделки"
                     className="input"
                     value={localFilters.finishing_type || ''}
                     onChange={(e) => handleInputChange('finishing_type', e.target.value || undefined)}

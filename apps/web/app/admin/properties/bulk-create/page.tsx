@@ -259,6 +259,7 @@ export default function BulkCreatePage() {
             <div>
               <Label>Планировка</Label>
               <select 
+                aria-label="Тип планировки"
                 value={template.layout_type}
                 onChange={e => setTemplate({...template, layout_type: e.target.value})}
                 className={styles.formSelect}
@@ -272,6 +273,7 @@ export default function BulkCreatePage() {
             <div>
               <Label>Отделка</Label>
               <select 
+                aria-label="Тип отделки"
                 value={template.finishing_type}
                 onChange={e => setTemplate({...template, finishing_type: e.target.value})}
                 className={styles.formSelect}

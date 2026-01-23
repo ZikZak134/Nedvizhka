@@ -13,10 +13,6 @@ from app.schemas.property import PropertyResponse
 router = APIRouter(prefix="/complexes", tags=["Complex Analytics"])
 
 
-# Known residential complexes in Sochi
-# ... (existing KNOWN_COMPLEXES code)
-
-
 @router.get("/{complex_id}/apartments", response_model=List[PropertyResponse])
 def get_complex_apartments(
     complex_id: int,
@@ -35,8 +31,7 @@ def get_complex_apartments(
     return properties
 
 
-@router.get("")
-# ... (rest of file)
+# Known residential complexes in Sochi
 KNOWN_COMPLEXES = [
     {"name": "Mantera Residence", "keywords": ["mantera", "мантера"]},
     {"name": "Sochi Lighthouse", "keywords": ["lighthouse", "лайтхаус"]},

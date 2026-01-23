@@ -29,7 +29,6 @@ def list_properties(
     max_price: Optional[float] = Query(None, ge=0),
     min_area: Optional[float] = Query(None, ge=0),
     max_area: Optional[float] = Query(None, ge=0),
-    max_area: Optional[float] = Query(None, ge=0),
     rooms: Optional[str] = Query(None),
     source: Optional[str] = Query(None),
     layout_type: Optional[str] = Query(None),
