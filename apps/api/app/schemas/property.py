@@ -135,3 +135,26 @@ class PropertyListResponse(BaseModel):
     page: int
     size: int
     pages: int
+
+
+class BulkPropertyCreate(BaseModel):
+    """Schema for bulk creating properties (e.g., multiple apartments in a newbuild)."""
+    # Template data (applied to all created properties)
+    template: PropertyBase
+    
+    # Floor range to generate
+    floor_from: int = Field(..., ge=1, description="Starting floor number")
+    floor_to: int = Field(..., ge=1, description="Ending floor number")
+    
+    # Optional: apartments per floor (creates multiple per floor with suffix)
+    apartments_per_floor: int = Field(default=1, ge=1, le=20)
+    
+    # Optional: price increment per floor (e.g., 100000 RUB per floor)
+    price_increment_per_floor: float = Field(default=0, ge=0)
+
+
+class BulkCreateResponse(BaseModel):
+    """Response for bulk create operation."""
+    created_count: int
+    property_ids: List[str]
+    message: str

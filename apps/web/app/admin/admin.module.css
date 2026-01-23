@@ -2034,3 +2034,93 @@
   min-height: 100px;
 }
 
+/* === BULK CREATE PAGE === */
+.previewCard {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.05) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.previewTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #d4af37;
+  margin-bottom: var(--space-md);
+}
+
+.previewGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+}
+
+.previewLabel {
+  display: block;
+  font-size: 12px;
+  color: #94a3b8;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.previewValue {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.previewValueLarge {
+  font-size: 28px;
+  font-weight: 800;
+  color: #d4af37;
+}
+
+.formSection {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.formSectionTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #d4af37;
+  margin: 0 0 var(--space-md) 0;
+}
+
+.formActions {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+}
+
+.successCard {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  text-align: center;
+  margin-top: var(--space-xl);
+}
+
+.successIcon {
+  font-size: 48px;
+  margin-bottom: var(--space-md);
+}
+
+.successText {
+  font-size: 18px;
+  font-weight: 600;
+  color: #86efac;
+  margin-bottom: var(--space-lg);
+}
+
+@media (max-width: 768px) {
+  .previewGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

@@ -10,6 +10,8 @@ from app.schemas.property import (
     PropertyUpdate,
     PropertyResponse,
     PropertyListResponse,
+    BulkPropertyCreate,
+    BulkCreateResponse,
 )
 from app.services import property_service
 
@@ -100,3 +102,53 @@ def delete_property(
     if not success:
         raise HTTPException(status_code=404, detail="Property not found")
     return None
+
+
+@router.post("/bulk", status_code=status.HTTP_201_CREATED, dependencies=[Depends(require_admin)])
+def bulk_create_properties(
+    bulk_data: "BulkPropertyCreate",
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
+    """
+    Bulk create properties for a newbuild complex.
+    
+    Creates multiple apartments based on a template and floor range.
+    Example: floors 2-10, 2 apartments per floor = 18 properties created.
+    """
+    from app.schemas.property import BulkPropertyCreate, BulkCreateResponse
+    
+    # Validate floor range
+    if bulk_data.floor_to < bulk_data.floor_from:
+        raise HTTPException(status_code=400, detail="floor_to must be >= floor_from")
+    
+    created_ids = []
+    base_price = bulk_data.template.price
+    
+    for floor in range(bulk_data.floor_from, bulk_data.floor_to + 1):
+        for apt_num in range(1, bulk_data.apartments_per_floor + 1):
+            # Calculate floor-adjusted price
+            floor_offset = floor - bulk_data.floor_from
+            adjusted_price = base_price + (floor_offset * bulk_data.price_increment_per_floor)
+            
+            # Create property data from template
+            property_dict = bulk_data.template.model_dump()
+            property_dict['floor'] = floor
+            property_dict['price'] = adjusted_price
+            
+            # Add apartment suffix to title if multiple per floor
+            if bulk_data.apartments_per_floor > 1:
+                property_dict['title'] = f"{property_dict['title']} (эт. {floor}, кв. {apt_num})"
+            else:
+                property_dict['title'] = f"{property_dict['title']} (эт. {floor})"
+            
+            # Create the property
+            property_data = PropertyCreate(**property_dict)
+            new_property = property_service.create_property(db, property_data)
+            created_ids.append(new_property.id)
+    
+    return BulkCreateResponse(
+        created_count=len(created_ids),
+        property_ids=created_ids,
+        message=f"Создано {len(created_ids)} объектов для этажей {bulk_data.floor_from}-{bulk_data.floor_to}"
+    )
