@@ -35,7 +35,7 @@ interface PropertyListResponse {
 const EMPTY_FORM = {
   title: '',
   price: '',
-  price_per_sqm: '', // New field
+  price_per_sqm: '',
   address: 'Сочи, Центр',
   latitude: 43.5855,
   longitude: 39.7231,
@@ -65,7 +65,17 @@ const EMPTY_FORM = {
   green_zones: [] as any[],
   owner_quote: '',
   owner_name: '',
-  agent_profile: { name: 'Анна Петрова', role: 'Эксперт', photo: '' }
+  agent_profile: { name: 'Анна Петрова', role: 'Эксперт', photo: '' },
+  // Developer Properties (Новостройки)
+  property_type: 'apartment',
+  layout_type: '',
+  finishing_type: '',
+  completion_date: '',
+  is_from_developer: false,
+  developer_name: '',
+  developer_comment: '',
+  custom_fields: {} as Record<string, string>,
+  complex_id: null as number | null,
 };
 
 export default function AdminProperties() {
@@ -149,6 +159,16 @@ export default function AdminProperties() {
           owner_quote: data.owner_quote || '',
           owner_name: data.owner_name || '',
           agent_profile: data.agent_profile || EMPTY_FORM.agent_profile,
+          // Developer Properties
+          property_type: data.property_type || 'apartment',
+          layout_type: data.layout_type || '',
+          finishing_type: data.finishing_type || '',
+          completion_date: data.completion_date || '',
+          is_from_developer: data.is_from_developer || false,
+          developer_name: data.developer_name || '',
+          developer_comment: data.developer_comment || '',
+          custom_fields: data.custom_fields || {},
+          complex_id: data.complex_id || null,
         });
         setEditingId(id);
         setShowForm(true);
@@ -273,6 +293,8 @@ export default function AdminProperties() {
         rooms_max: formData.rooms_max ? Number(formData.rooms_max) : null,
         floor_min: formData.floor_min ? Number(formData.floor_min) : null,
         floor_max: formData.floor_max ? Number(formData.floor_max) : null,
+        // Developer Properties
+        complex_id: formData.complex_id ? Number(formData.complex_id) : null,
       };
 
       const url = editingId 
@@ -501,6 +523,109 @@ export default function AdminProperties() {
                           <Input type="number" value={formData.total_floors} onChange={v => setFormData({...formData, total_floors: v})} />
                       </div>
                   </div>
+              </Section>
+
+              {/* 2.5 НОВОСТРОЙКИ / ЗАСТРОЙЩИК */}
+              <Section title="🏗️ Новостройка / Застройщик">
+                  <div className={styles.formGrid4}>
+                      <div>
+                          <Label>Тип объекта</Label>
+                          <select 
+                              aria-label="Тип объекта"
+                              value={formData.property_type}
+                              onChange={e => setFormData({...formData, property_type: e.target.value})}
+                              className={styles.formSelect}
+                          >
+                              <option value="apartment">Квартира</option>
+                              <option value="newbuild">Новостройка</option>
+                              <option value="cottage">Коттедж</option>
+                              <option value="commercial">Коммерция</option>
+                          </select>
+                      </div>
+                      <div>
+                          <Label>Планировка</Label>
+                          <select 
+                              aria-label="Тип планировки"
+                              value={formData.layout_type}
+                              onChange={e => setFormData({...formData, layout_type: e.target.value})}
+                              className={styles.formSelect}
+                          >
+                              <option value="">Не указана</option>
+                              <option value="Свободная">Свободная</option>
+                              <option value="Фиксированная">Фиксированная</option>
+                              <option value="Студия">Студия</option>
+                              <option value="Евро">Евро</option>
+                          </select>
+                      </div>
+                      <div>
+                          <Label>Отделка</Label>
+                          <select 
+                              aria-label="Тип отделки"
+                              value={formData.finishing_type}
+                              onChange={e => setFormData({...formData, finishing_type: e.target.value})}
+                              className={styles.formSelect}
+                          >
+                              <option value="">Не указана</option>
+                              <option value="Черновая">Черновая</option>
+                              <option value="Предчистовая">Предчистовая</option>
+                              <option value="Чистовая">Чистовая / Под ключ</option>
+                              <option value="Дизайнерская">Дизайнерская</option>
+                          </select>
+                      </div>
+                      <div>
+                          <Label>Срок сдачи</Label>
+                          <Input 
+                              value={formData.completion_date} 
+                              onChange={v => setFormData({...formData, completion_date: v})} 
+                              placeholder="4 кв. 2025 / Сдан"
+                          />
+                      </div>
+                  </div>
+                  
+                  <div className={styles.formGrid2 + " mt-4"}>
+                      <div>
+                          <Label>Застройщик</Label>
+                          <Input 
+                              value={formData.developer_name} 
+                              onChange={v => setFormData({...formData, developer_name: v})} 
+                              placeholder="ГК Неометрия"
+                          />
+                      </div>
+                      <div className={styles.formRow}>
+                          <div>
+                              <div className={styles.formLabelBold}>От застройщика</div>
+                              <div className={styles.formLabelSub}>
+                                  {formData.is_from_developer ? 'Объект от застройщика' : 'Вторичка / Частное лицо'}
+                              </div>
+                          </div>
+                          <button
+                              type="button"
+                              aria-label="Переключить От застройщика"
+                              onClick={() => setFormData({...formData, is_from_developer: !formData.is_from_developer})}
+                              className={`w-[60px] h-8 rounded-[16px] border-none relative cursor-pointer transition-colors ${
+                                formData.is_from_developer ? 'bg-[#22c55e]' : 'bg-white/20'
+                              }`}
+                          >
+                              <div className={`w-6 h-6 rounded-full bg-white absolute top-1 transition-all shadow-md ${
+                                formData.is_from_developer ? 'left-8' : 'left-1'
+                              }`} />
+                          </button>
+                      </div>
+                  </div>
+
+                  {formData.is_from_developer && (
+                      <div className="mt-4">
+                          <TextareaWithCounter 
+                              value={formData.developer_comment}
+                              onChange={v => setFormData({...formData, developer_comment: v})}
+                              placeholder="Комментарий от представителя застройщика..."
+                              label="Комментарий застройщика"
+                              maxLength={1000}
+                              helper="Вместо цитаты собственника для новостроек"
+                              minHeight="100px"
+                          />
+                      </div>
+                  )}
               </Section>
 
               {/* 3. КАРТА */}

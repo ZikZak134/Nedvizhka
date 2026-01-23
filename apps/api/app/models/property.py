@@ -66,6 +66,17 @@ class Property(Base):
     owner_name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     agent_profile: Mapped[dict] = mapped_column(JSON, default={}) # {name: "Anna", role: "Expert", photo: "url"}
     
+    # Developer Properties (Новостройки)
+    property_type: Mapped[Optional[str]] = mapped_column(String, nullable=True, default="apartment")  # apartment, newbuild, cottage, commercial
+    layout_type: Mapped[Optional[str]] = mapped_column(String, nullable=True)  # Свободная, Фиксированная, Студия, Евро
+    finishing_type: Mapped[Optional[str]] = mapped_column(String, nullable=True)  # Черновая, Предчистовая, Чистовая, Дизайнерская
+    completion_date: Mapped[Optional[str]] = mapped_column(String, nullable=True)  # "4 кв. 2025", "Сдан"
+    is_from_developer: Mapped[bool] = mapped_column(Boolean, default=False)
+    developer_name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    developer_comment: Mapped[Optional[str]] = mapped_column(String, nullable=True)  # Вместо owner_quote для застройщиков
+    custom_fields: Mapped[dict] = mapped_column(JSON, default={})  # Поля свободной формы
+    complex_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True, index=True)  # FK к complexes
+    
     # System
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

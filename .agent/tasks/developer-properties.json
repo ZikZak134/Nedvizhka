@@ -1,0 +1,204 @@
+{
+  "feature": "Developer Properties (Новостройки от застройщика)",
+  "version": "2.0",
+  "created": "2026-01-23",
+  "status": "PLANNING",
+  
+  "tasks": [
+    {
+      "id": "DEV-001",
+      "title": "Расширение модели Property",
+      "priority": "HIGH",
+      "status": "TODO",
+      "description": "Добавить новые поля в модель Property для поддержки новостроек",
+      "files": [
+        "apps/api/app/models/property.py",
+        "apps/api/app/schemas/property.py"
+      ],
+      "fields_to_add": [
+        {"name": "layout_type", "type": "String", "values": ["Свободная", "Фиксированная", "Студия", "Евро"]},
+        {"name": "finishing_type", "type": "String", "values": ["Черновая", "Предчистовая", "Чистовая", "Дизайнерская"]},
+        {"name": "completion_date", "type": "String", "example": "4 кв. 2025 / Сдан"},
+        {"name": "property_type", "type": "String", "values": ["apartment", "newbuild", "cottage", "commercial"]},
+        {"name": "is_from_developer", "type": "Boolean", "default": false},
+        {"name": "developer_name", "type": "String", "nullable": true},
+        {"name": "developer_comment", "type": "String", "nullable": true, "note": "Вместо owner_quote для застройщиков"},
+        {"name": "custom_fields", "type": "JSON", "default": {}, "note": "Поля свободной формы для доп. информации"}
+      ]
+    },
+    {
+      "id": "DEV-002", 
+      "title": "Alembic миграция для новых полей",
+      "priority": "HIGH",
+      "status": "TODO",
+      "depends_on": ["DEV-001"],
+      "files": [
+        "apps/api/alembic/versions/xxx_add_developer_fields.py"
+      ]
+    },
+    {
+      "id": "DEV-003",
+      "title": "Обновление Admin Form UI",
+      "priority": "HIGH", 
+      "status": "TODO",
+      "depends_on": ["DEV-001"],
+      "description": "Добавить новые поля в форму создания объекта",
+      "files": [
+        "apps/web/app/admin/properties/page.tsx"
+      ],
+      "ui_changes": [
+        "Dropdown: Тип планировки (layout_type)",
+        "Dropdown: Отделка (finishing_type)", 
+        "Input: Срок сдачи (completion_date)",
+        "Checkbox: От застройщика (is_from_developer)",
+        "Input: Название застройщика (developer_name)",
+        "Textarea: Комментарий застройщика (developer_comment)",
+        "JSON Editor: Дополнительные поля (custom_fields)"
+      ]
+    },
+    {
+      "id": "DEV-004",
+      "title": "Bulk Create: Массовое создание квартир",
+      "priority": "MEDIUM",
+      "status": "TODO",
+      "depends_on": ["DEV-003"],
+      "description": "Функционал создания нескольких квартир одновременно (этажи 2-7, площадь X, цена Y)",
+      "files": [
+        "apps/api/app/api/v1/properties.py",
+        "apps/web/app/admin/properties/bulk-create/page.tsx"
+      ],
+      "api_endpoint": "POST /api/v1/properties/bulk",
+      "ui_concept": "Форма: Выбрать этажи (2-7), базовые параметры, создать N объектов"
+    },
+    {
+      "id": "DEV-005",
+      "title": "Лендинг новостройки (отличный от квартиры)",
+      "priority": "MEDIUM",
+      "status": "TODO",
+      "depends_on": ["DEV-001"],
+      "description": "Отдельный layout для новостроек с блоками квартир вместо одной карточки",
+      "files": [
+        "apps/web/app/properties/[id]/page.tsx",
+        "apps/web/app/components/NewbuildLanding.tsx",
+        "apps/web/app/components/ApartmentGrid.tsx"
+      ],
+      "sections": [
+        "Hero: Фото ЖК, название, застройщик",
+        "Info: Срок сдачи, отделка, планировки",
+        "Apartments Grid: Карточки квартир в этом ЖК",
+        "Developer Comment: Комментарий от застройщика (не от собственника)",
+        "Location: Карта, инфраструктура",
+        "Contact Form: Заявка на просмотр"
+      ]
+    },
+    {
+      "id": "DEV-006",
+      "title": "Связь ЖК и квартир (parent-child)",
+      "priority": "MEDIUM",
+      "status": "TODO",
+      "description": "Связать таблицу complexes с properties через complex_id",
+      "files": [
+        "apps/api/app/models/property.py",
+        "apps/api/app/models/complex.py"
+      ],
+      "relation": "Property.complex_id -> Complex.id (Many-to-One)"
+    },
+    {
+      "id": "DEV-007",
+      "title": "Фильтры на карте и в списке",
+      "priority": "LOW",
+      "status": "TODO",
+      "depends_on": ["DEV-001"],
+      "description": "Добавить фильтры: Тип планировки, Отделка, От застройщика",
+      "files": [
+        "apps/web/app/properties/page.tsx",
+        "apps/web/app/components/PropertyFilters.tsx"
+      ]
+    },
+    {
+      "id": "DEV-008",
+      "title": "PropertyCard: отображение новых полей",
+      "priority": "MEDIUM",
+      "status": "TODO",
+      "depends_on": ["DEV-001"],
+      "files": [
+        "apps/web/app/components/PropertyCard.tsx"
+      ],
+      "display": [
+        "Бейдж 'От застройщика' если is_from_developer",
+        "Показывать отделку и планировку",
+        "Срок сдачи если не 'Сдан'"
+      ]
+    }
+  ],
+  
+  "api_changes": {
+    "new_endpoints": [
+      "POST /api/v1/properties/bulk - Массовое создание квартир",
+      "GET /api/v1/complexes/{id}/apartments - Квартиры в ЖК"
+    ],
+    "modified_endpoints": [
+      "POST/PATCH /api/v1/properties - Новые поля",
+      "GET /api/v1/properties - Новые фильтры"
+    ]
+  },
+  
+  "frontend_routes": {
+    "existing": [
+      "/properties - Список объектов",
+      "/properties/[id] - Детали объекта (будет условный рендер)",
+      "/admin/properties - Админка объектов"
+    ],
+    "new": [
+      "/admin/properties/bulk-create - Массовое создание"
+    ]
+  },
+  
+  "display_locations": {
+    "description": "Где будут отображаться новые поля",
+    "locations": [
+      {
+        "name": "Карта (popup)",
+        "file": "apps/web/app/components/PremiumMap.tsx",
+        "fields": ["is_from_developer", "finishing_type", "completion_date", "price_per_sqm"]
+      },
+      {
+        "name": "Карточка в списке",
+        "file": "apps/web/app/components/PropertyCard.tsx",
+        "fields": ["is_from_developer", "layout_type", "finishing_type", "completion_date"]
+      },
+      {
+        "name": "Страница списка объектов",
+        "file": "apps/web/app/properties/page.tsx",
+        "fields": ["Фильтры: property_type, is_from_developer, finishing_type"]
+      },
+      {
+        "name": "Лендинг объекта",
+        "file": "apps/web/app/properties/[id]/page.tsx",
+        "fields": ["Все поля + developer_comment вместо owner_quote для новостроек"]
+      },
+      {
+        "name": "Админка (форма)",
+        "file": "apps/web/app/admin/properties/page.tsx",
+        "fields": ["Все поля"]
+      }
+    ]
+  },
+  
+  "styles": {
+    "design_system": "Quiet Luxury (Deep Navy + Gold)",
+    "css_files": [
+      "apps/web/app/globals.css",
+      "apps/web/app/styles/design-tokens.css",
+      "apps/web/app/admin/admin.module.css"
+    ]
+  },
+  
+  "execution_order": [
+    "DEV-001 → DEV-002 → DEV-003 (Backend + Admin UI)",
+    "DEV-006 (Связь ЖК-квартиры)",
+    "DEV-005 → DEV-008 (Public UI)",
+    "DEV-004 (Bulk Create - можно позже)",
+    "DEV-007 (Фильтры - можно позже)"
+  ]
+}

@@ -21,6 +21,12 @@ interface Property {
     total_floors: number | null;
     images: string[];
     source: string;
+    // Developer Properties
+    is_from_developer?: boolean;
+    layout_type?: string | null;
+    finishing_type?: string | null;
+    completion_date?: string | null;
+    property_type?: string | null;
 }
 
 interface PropertyCardProps {
@@ -55,6 +61,18 @@ export function PropertyCard({ property }: PropertyCardProps) {
                         property.source === 'avito' ? 'Авито' :
                             'Вручную'}
                 </span>
+                {property.is_from_developer && (
+                    <span className="badge" style={{ 
+                        position: 'absolute', 
+                        top: '12px', 
+                        right: '12px',
+                        background: 'linear-gradient(135deg, #d4af37 0%, #f5d871 100%)',
+                        color: '#1a1a2e',
+                        fontWeight: 600
+                    }}>
+                        🏗️ Застройщик
+                    </span>
+                )}
             </div>
 
             {/* Content */}
@@ -91,6 +109,27 @@ export function PropertyCard({ property }: PropertyCardProps) {
                 }}>
                     📍 {property.address}
                 </p>
+
+                {/* Developer Info */}
+                {(property.layout_type || property.finishing_type || property.completion_date) && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                        {property.layout_type && (
+                            <span className="text-xs px-2 py-0.5 rounded bg-blue-500/20 text-blue-300">
+                                {property.layout_type}
+                            </span>
+                        )}
+                        {property.finishing_type && (
+                            <span className="text-xs px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">
+                                {property.finishing_type}
+                            </span>
+                        )}
+                        {property.completion_date && property.completion_date !== 'Сдан' && (
+                            <span className="text-xs px-2 py-0.5 rounded bg-orange-500/20 text-orange-300">
+                                📅 {property.completion_date}
+                            </span>
+                        )}
+                    </div>
+                )}
 
                 {/* Specs */}
                 <div className="property-specs">

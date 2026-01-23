@@ -45,6 +45,17 @@ class PropertyBase(BaseModel):
     owner_quote: Optional[str] = None
     owner_name: Optional[str] = None
     agent_profile: dict = Field(default_factory=dict)
+    
+    # Developer Properties (Новостройки)
+    property_type: Optional[str] = Field(default="apartment")  # apartment, newbuild, cottage, commercial
+    layout_type: Optional[str] = None  # Свободная, Фиксированная, Студия, Евро
+    finishing_type: Optional[str] = None  # Черновая, Предчистовая, Чистовая, Дизайнерская
+    completion_date: Optional[str] = None  # "4 кв. 2025", "Сдан"
+    is_from_developer: bool = Field(default=False)
+    developer_name: Optional[str] = None
+    developer_comment: Optional[str] = None
+    custom_fields: dict = Field(default_factory=dict)
+    complex_id: Optional[int] = None
 
 
 class PropertyCreate(PropertyBase):
@@ -93,6 +104,17 @@ class PropertyUpdate(BaseModel):
     owner_name: Optional[str] = None
     agent_profile: Optional[dict] = None
     is_active: Optional[bool] = None
+    
+    # Developer Properties (Новостройки)
+    property_type: Optional[str] = None
+    layout_type: Optional[str] = None
+    finishing_type: Optional[str] = None
+    completion_date: Optional[str] = None
+    is_from_developer: Optional[bool] = None
+    developer_name: Optional[str] = None
+    developer_comment: Optional[str] = None
+    custom_fields: Optional[dict] = None
+    complex_id: Optional[int] = None
 
 
 class PropertyResponse(PropertyBase):
