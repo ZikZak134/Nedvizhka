@@ -10,7 +10,7 @@ router = APIRouter(prefix="/upload", tags=["Upload"])
 
 # Путь к папке uploads в Next.js public
 # При разработке используем относительный путь от корня проекта
-UPLOAD_DIR = Path(__file__).parent.parent.parent.parent.parent.parent / "web" / "public" / "uploads"
+UPLOAD_DIR = Path(__file__).parent.parent.parent.parent.parent.parent / "apps" / "web" / "public" / "uploads"
 
 # Допустимые расширения файлов
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}

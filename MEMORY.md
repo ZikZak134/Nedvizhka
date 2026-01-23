@@ -112,6 +112,7 @@ description: MEMORY
 - ✅ **Micro-interactions**: Добавлен тактильный отклик (scale/hover) для кнопок в `PropertyFilters`.
 - ✅ **Fixes**: Исправлены критические ошибки сборки в `admin/properties` и `PremiumMap`.
 - ✅ **Build**: Проект успешно собирается (`next build`).
+- ✅ **Infrastructure**: Исправлена ошибка "Failed to fetch" при публикации. Бэкенд перезапущен, конфликт портов устранен.
 
 ### 2026-01-20 (Branding & Identity)
 

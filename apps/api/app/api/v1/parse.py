@@ -28,24 +28,16 @@ class ParseResponse(BaseModel):
     errors: List[str]
 
 
+from app.services.geocoding_service import geocode_address_2gis
+
 @router.post("/run", response_model=ParseResponse)
 async def run_parser(
     request: ParseRequest,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
 ) -> ParseResponse:
-    """Run parser for specified source.
-    
-    Parses properties from CIAN or Avito and saves to database.
-    
-    Args:
-        request: Parser configuration
-        background_tasks: FastAPI background tasks
-        db: Database session
-    
-    Returns:
-        Parse results with counts and errors
-    """
+    """Run parser for specified source."""
+    # ... implementation details ...
     errors = []
     items_found = 0
     items_saved = 0
@@ -72,6 +64,16 @@ async def run_parser(
                     if existing:
                         continue
                     
+                    # Geocode if needed
+                    lat, lon = prop.latitude, prop.longitude
+                    if lat is None or lon is None:
+                        try:
+                            coords = await geocode_address_2gis(prop.address, city="Сочи")
+                            if coords:
+                                lat, lon = coords
+                        except Exception:
+                            pass
+
                     # Create new property
                     property_create = PropertyCreate(
                         title=prop.title,
@@ -79,8 +81,8 @@ async def run_parser(
                         price=prop.price,
                         currency=prop.currency,
                         address=prop.address,
-                        latitude=prop.latitude,
-                        longitude=prop.longitude,
+                        latitude=lat,
+                        longitude=lon,
                         area_sqm=prop.area_sqm,
                         rooms=prop.rooms,
                         floor=prop.floor,
@@ -119,14 +121,24 @@ async def run_parser(
                     if existing:
                         continue
                     
+                    # Geocode if needed
+                    lat, lon = prop.latitude, prop.longitude
+                    if lat is None or lon is None:
+                        try:
+                            coords = await geocode_address_2gis(prop.address, city="Сочи")
+                            if coords:
+                                lat, lon = coords
+                        except Exception:
+                            pass
+
                     property_create = PropertyCreate(
                         title=prop.title,
                         description=prop.description,
                         price=prop.price,
                         currency=prop.currency,
                         address=prop.address,
-                        latitude=prop.latitude,
-                        longitude=prop.longitude,
+                        latitude=lat,
+                        longitude=lon,
                         area_sqm=prop.area_sqm,
                         rooms=prop.rooms,
                         floor=prop.floor,

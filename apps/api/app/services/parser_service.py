@@ -15,6 +15,9 @@ from enum import Enum
 import random
 
 
+from app.parsers import CianParser, AvitoParser
+from app.services.geocoding_service import geocode_address_2gis
+
 class PropertySource(str, Enum):
     CIAN = "cian"
     AVITO = "avito"
@@ -61,62 +64,77 @@ class ParserService:
         else:
             return None
     
-    async def _parse_cian(self, url: str) -> ParsedProperty:
+    async def _enrich_coordinates(self, prop: ParsedProperty) -> ParsedProperty:
+        """Enrich property with coordinates if missing."""
+        if prop.latitude is None or prop.longitude is None:
+            # Try to geocode
+            try:
+                coords = await geocode_address_2gis(prop.address, city="Сочи")
+                if coords:
+                    prop.latitude, prop.longitude = coords
+            except Exception as e:
+                print(f"Geocoding failed for {prop.address}: {e}")
+        return prop
+
+    async def _parse_cian(self, url: str) -> Optional[ParsedProperty]:
         """Parse property from CIAN.
-        
-        TODO: Implement actual scraping with:
-        - httpx/aiohttp for HTTP requests
-        - BeautifulSoup/lxml for HTML parsing
-        - Proxy rotation
-        - Rate limiting
         """
-        # Placeholder implementation - returns mock data
-        return ParsedProperty(
-            title="[CIAN] Квартира в Сочи",
-            description="Парсер ЦИАН в разработке. Это тестовые данные.",
-            price=random.randint(10_000_000, 150_000_000),
-            currency="RUB",
-            address="ул. Тестовая, д. 1, Сочи",
-            area_sqm=random.randint(50, 300),
-            rooms=random.choice(["Студия", "1", "2", "3", "4+"]),
-            floor=random.randint(1, 20),
-            total_floors=random.randint(5, 30),
+        parser = CianParser()
+        cian_prop = await parser.parse_listing(url)
+        
+        if not cian_prop:
+            return None
+            
+        parsed = ParsedProperty(
+            title=cian_prop.title,
+            description=cian_prop.description,
+            price=cian_prop.price,
+            currency=cian_prop.currency,
+            address=cian_prop.address,
+            area_sqm=cian_prop.area_sqm,
+            rooms=cian_prop.rooms,
+            floor=cian_prop.floor,
+            total_floors=cian_prop.total_floors,
             source=PropertySource.CIAN,
-            source_id=f"cian_{random.randint(100000, 999999)}",
-            url=url,
-            images=[],
-            features={"parsed": True, "source": "cian"},
-            latitude=43.585 + random.uniform(-0.05, 0.05),
-            longitude=39.720 + random.uniform(-0.05, 0.05),
+            source_id=cian_prop.source_id,
+            url=cian_prop.url,
+            images=cian_prop.images,
+            features=cian_prop.features,
+            latitude=cian_prop.latitude,
+            longitude=cian_prop.longitude,
         )
-    
-    async def _parse_avito(self, url: str) -> ParsedProperty:
-        """Parse property from Avito.
         
-        TODO: Implement actual scraping with:
-        - Avito API (if available)
-        - Selenium/Playwright for JS-rendered content
-        - Anti-bot bypass techniques
+        return await self._enrich_coordinates(parsed)
+    
+    async def _parse_avito(self, url: str) -> Optional[ParsedProperty]:
+        """Parse property from Avito.
         """
-        # Placeholder implementation - returns mock data
-        return ParsedProperty(
-            title="[AVITO] Квартира в Сочи",
-            description="Парсер Авито в разработке. Это тестовые данные.",
-            price=random.randint(8_000_000, 100_000_000),
-            currency="RUB",
-            address="ул. Авито, д. 2, Сочи",
-            area_sqm=random.randint(40, 250),
-            rooms=random.choice(["Студия", "1", "2", "3"]),
-            floor=random.randint(1, 15),
-            total_floors=random.randint(5, 25),
+        parser = AvitoParser()
+        avito_prop = await parser.parse_listing(url)
+        
+        if not avito_prop:
+            return None
+            
+        parsed = ParsedProperty(
+            title=avito_prop.title,
+            description=avito_prop.description,
+            price=avito_prop.price,
+            currency=avito_prop.currency,
+            address=avito_prop.address,
+            area_sqm=avito_prop.area_sqm,
+            rooms=avito_prop.rooms,
+            floor=avito_prop.floor,
+            total_floors=avito_prop.total_floors,
             source=PropertySource.AVITO,
-            source_id=f"avito_{random.randint(100000, 999999)}",
-            url=url,
-            images=[],
-            features={"parsed": True, "source": "avito"},
-            latitude=43.585 + random.uniform(-0.05, 0.05),
-            longitude=39.720 + random.uniform(-0.05, 0.05),
+            source_id=avito_prop.source_id,
+            url=avito_prop.url,
+            images=avito_prop.images,
+            features=avito_prop.features,
+            latitude=avito_prop.latitude,
+            longitude=avito_prop.longitude,
         )
+
+        return await self._enrich_coordinates(parsed)
     
     def generate_demo_properties(self, count: int = 10) -> List[ParsedProperty]:
         """Generate demo properties for testing UI."""
