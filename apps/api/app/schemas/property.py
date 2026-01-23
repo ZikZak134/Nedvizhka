@@ -31,6 +31,7 @@ class PropertyBase(BaseModel):
     url: Optional[str] = None
     features: dict = Field(default_factory=dict)
     images: List[str] = Field(default_factory=list)
+    videos: List[str] = Field(default_factory=list)  # YouTube/Vimeo URLs or direct video links
     
     # Extended Fields
     quality_score: Optional[int] = Field(default=95, ge=0, le=100)

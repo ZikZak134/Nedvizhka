@@ -45,6 +45,7 @@ class Property(Base):
     features: Mapped[dict] = mapped_column(JSON, default={}) # {"pool": true, "view": "sea"}
     distances: Mapped[dict] = mapped_column(JSON, default={}) # {"sea": 800, "airport": 25000}
     images: Mapped[List[str]] = mapped_column(JSON, default=[])
+    videos: Mapped[List[str]] = mapped_column(JSON, default=[])  # YouTube/Vimeo URLs or direct video links
     
     # Extended Data (Admin Full Control)
     quality_score: Mapped[Optional[int]] = mapped_column(Integer, default=95)

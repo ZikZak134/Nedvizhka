@@ -5,6 +5,7 @@ import { useAuth } from '../components/AuthGuard';
 import { useToast } from '../components/ToastContainer';
 import LocationPicker from '../components/LocationPicker';
 import ImageGalleryEditor from '../components/ImageGalleryEditor';
+import { VideoEditor } from '../components/VideoEditor';
 import JsonListEditor from '../components/JsonListEditor';
 import TextareaWithCounter from '../components/TextareaWithCounter';
 import styles from '../admin.module.css';
@@ -55,6 +56,7 @@ const EMPTY_FORM = {
   district: 'Центральный',
   quality_score: 95,
   images: [] as string[],
+  videos: [] as string[],
   badges: [] as string[],
   features: {} as Record<string, string>,
   is_active: true,
@@ -148,6 +150,7 @@ export default function AdminProperties() {
           district: data.district || '',
           quality_score: data.quality_score || 95,
           images: data.images || [],
+          videos: data.videos || [],
           badges: data.badges || [],
           features: data.features || {},
           is_active: data.is_active !== false,
@@ -649,6 +652,12 @@ export default function AdminProperties() {
               <ImageGalleryEditor 
                   images={formData.images} 
                   onChange={imgs => setFormData({...formData, images: imgs})} 
+              />
+
+              {/* 5. ВИДЕО */}
+              <VideoEditor 
+                  videos={formData.videos} 
+                  onChange={vids => setFormData({...formData, videos: vids})} 
               />
 
               <Section title="✨ Особенности объекта">
