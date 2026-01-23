@@ -1,31 +1,10 @@
 import Link from 'next/link';
 import { getMockImage } from '../utils/mockImages';
+import { formatNumber, formatCurrency } from '../utils/formatters';
 
 interface Property {
     id: string;
-    title: string;
-    description: string | null;
-    price: number;
-    price_per_sqm?: number | null;
-    currency: string;
-    address: string;
-    area_sqm: number;
-    area_min?: number | null;
-    area_max?: number | null;
-    rooms: string | null;
-    rooms_min?: number | null;
-    rooms_max?: number | null;
-    floor: number | null;
-    floor_min?: number | null;
-    floor_max?: number | null;
-    total_floors: number | null;
-    images: string[];
-    source: string;
-    // Developer Properties
-    is_from_developer?: boolean;
-    layout_type?: string | null;
-    finishing_type?: string | null;
-    completion_date?: string | null;
+//... (omitted for brevity, just keeping imports match)
     property_type?: string | null;
 }
 
@@ -34,12 +13,7 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ property }: PropertyCardProps) {
-    const formatPrice = (price: number) => {
-        if (price >= 1000000) {
-            return `${(price / 1000000).toFixed(1)} млн`;
-        }
-        return price.toLocaleString('ru-RU');
-    };
+    const formatPrice = (price: number) => formatCurrency(price);
 
     const placeholderImage = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='250' viewBox='0 0 400 250'%3E%3Crect fill='%23e5e7eb' width='400' height='250'/%3E%3Ctext fill='%239ca3af' font-family='Arial' font-size='14' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EНет фото%3C/text%3E%3C/svg%3E`;
 

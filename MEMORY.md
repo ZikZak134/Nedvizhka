@@ -119,6 +119,7 @@ description: MEMORY
 - ✅ **Build**: Проект успешно собирается (`next build`).
 - ✅ **Infrastructure**: Исправлена ошибка "Failed to fetch" при публикации (Local). Бэкенд перезапущен.
 - ✅ **Production**: Верифицирована связь Vercel -> Render. Админ-панель доступна, API отвечает корректно (200 OK).
+- ✅ **Security**: Исправлены настройки CORS. Wildcard `*` заменён на явный список доменов (Localhost, Vercel, Render) для поддержки авторизованных запросов.
 
 ### 2026-01-20 (Branding & Identity)
 

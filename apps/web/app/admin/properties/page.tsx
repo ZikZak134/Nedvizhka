@@ -10,6 +10,7 @@ import JsonListEditor from '../components/JsonListEditor';
 import TextareaWithCounter from '../components/TextareaWithCounter';
 import styles from '../admin.module.css';
 import { geocodeAddress, reverseGeocode } from '../../utils/geocoder';
+import { formatNumber, cleanNumber, formatCurrency } from '../../utils/formatters';
 
 interface Property {
   id: string;
@@ -365,10 +366,7 @@ export default function AdminProperties() {
   );
 
   const formatPrice = (price: number) => {
-    if (price >= 1000000) {
-      return `${(price / 1000000).toFixed(1)}M ₽`;
-    }
-    return `${price.toLocaleString('ru-RU')} ₽`;
+    return formatCurrency(price);
   };
 
   // === ФОРМА РЕДАКТИРОВАНИЯ ===
@@ -418,21 +416,19 @@ export default function AdminProperties() {
                           <div>
                               <Label>Минимальная цена (₽)</Label>
                               <Input 
-                                  type="number" 
-                                  value={formData.price} 
-                                  onChange={v => setFormData({...formData, price: v})} 
+                                  value={formatNumber(formData.price)} 
+                                  onChange={v => setFormData({...formData, price: cleanNumber(v)})} 
                                   error={validationErrors.price}
-                                  placeholder="Напр. 15000000"
+                                  placeholder="Напр. 15 000 000"
                               />
                           </div>
                           <div>
                               <Label>Цена за м² (₽)</Label>
                               <div className="flex gap-2">
                                 <Input 
-                                    type="number" 
-                                    value={formData.price_per_sqm} 
-                                    onChange={v => setFormData({...formData, price_per_sqm: v})} 
-                                    placeholder="Напр. 350000"
+                                    value={formatNumber(formData.price_per_sqm)} 
+                                    onChange={v => setFormData({...formData, price_per_sqm: cleanNumber(v)})} 
+                                    placeholder="Напр. 350 000"
                                 />
                                 <button 
                                   type="button"
@@ -479,9 +475,8 @@ export default function AdminProperties() {
                       <div>
                           <Label>Площадь (м²)</Label>
                           <Input 
-                              type="number" 
-                              value={formData.area_sqm} 
-                              onChange={v => setFormData({...formData, area_sqm: v})} 
+                              value={formatNumber(formData.area_sqm)} 
+                              onChange={v => setFormData({...formData, area_sqm: cleanNumber(v)})} 
                               error={validationErrors.area_sqm}
                           />
                       </div>

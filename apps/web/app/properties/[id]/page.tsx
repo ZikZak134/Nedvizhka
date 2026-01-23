@@ -7,6 +7,7 @@ import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
 import { LeadCaptureModal } from '../../components/LeadCaptureModal';
 import '../../styles/luxury-property.css';
+import { formatNumber, formatCurrency } from '../../utils/formatters';
 
 // Lazy load components
 const PropertyLocation = dynamic(() => import('../../components/PropertyLocation').then(m => m.PropertyLocation), { ssr: false });
@@ -150,17 +151,11 @@ export default function PropertyDetailPage() {
     }, [params.id]);
 
     const formatPrice = (price: number) => {
-        if (price >= 1_000_000) {
-            return `${(price / 1_000_000).toFixed(1)} млн ₽`;
-        }
-        return new Intl.NumberFormat('ru-RU').format(price) + ' ₽';
+        return formatCurrency(price);
     };
 
     const formatPriceShort = (price: number) => {
-        if (price >= 1_000_000) {
-            return `${(price / 1_000_000).toFixed(1)} млн`;
-        }
-        return new Intl.NumberFormat('ru-RU').format(price);
+        return formatNumber(price);
     };
 
     const getCurrentIndex = () => {
