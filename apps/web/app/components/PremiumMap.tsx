@@ -1184,7 +1184,38 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                                                 </div>
                                                 <h3 className={styles.descTitle}>О проекте</h3>
                                                 <p className={styles.descText}>Эксклюзивный проект. Премиальная отделка, закрытая территория.</p>
-                                                <button className={styles.bookBtn}>Записаться на просмотр</button>
+                                                
+                                                {/* Navigation Arrows */}
+                                                <div className="flex items-center justify-between mb-4">
+                                                    <button 
+                                                        onClick={() => navigateProperty('prev')}
+                                                        className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/70 hover:text-white transition-all"
+                                                    >
+                                                        ← Пред.
+                                                    </button>
+                                                    <span className="text-white/50 text-sm">
+                                                        {filteredFeatures.findIndex(f => f.properties.id === selectedPropertyId) + 1} / {filteredFeatures.length}
+                                                    </span>
+                                                    <button 
+                                                        onClick={() => navigateProperty('next')}
+                                                        className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/70 hover:text-white transition-all"
+                                                    >
+                                                        След. →
+                                                    </button>
+                                                </div>
+                                                
+                                                {/* Action Buttons */}
+                                                <div className="flex gap-3">
+                                                    <button 
+                                                        onClick={() => router.push(`/properties/${p.id}`)}
+                                                        className="flex-1 py-3 bg-gradient-to-r from-[#d4af37] to-[#b8860b] text-[#0f172a] font-bold rounded-xl hover:translate-y-[-2px] transition-all"
+                                                    >
+                                                        Подробнее →
+                                                    </button>
+                                                    <button className="flex-1 py-3 bg-white/10 text-white font-semibold rounded-xl hover:bg-white/20 transition-all">
+                                                        📅 На просмотр
+                                                    </button>
+                                                </div>
                                             </div>
                                         )}
                                         {activeTab === 'details' && !p && d && (<DistrictDetails district={d} onClose={() => setSelectedDistrict(null)} embedded={true} />)}
