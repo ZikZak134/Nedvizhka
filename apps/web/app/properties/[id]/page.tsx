@@ -490,7 +490,7 @@ export default function PropertyDetailPage() {
                     <div className="lux-tabs-content">
                         {activeTab === 'info' && (
                             <div className="lux-tabs-features">
-                                {Object.entries(property.features).map(([key, value]) => (
+                                {Object.entries(property.features || {}).map(([key, value]) => (
                                     <span key={key} className="lux-tabs-feature-tag">
                                         {key}: {String(value)}
                                     </span>
