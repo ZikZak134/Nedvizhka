@@ -152,6 +152,23 @@
    --border-width: 1px;
    --border-width-2: 2px;
 
+   /* Admin specific tokens */
+   --admin-space-xs: 8px;
+   --admin-space-sm: 12px;
+   --admin-space-md: 16px;
+   --admin-space-lg: 24px;
+   --admin-space-xl: 32px;
+   --admin-space-2xl: 48px;
+
+   --admin-radius-sm: 8px;
+   --admin-radius-md: 12px;
+   --admin-radius-lg: 16px;
+   --admin-radius-xl: 20px;
+
+   --admin-transition-fast: 150ms ease;
+   --admin-transition-base: 250ms ease;
+   --admin-transition-slow: 350ms ease;
+
    /* ========================================
      SHADOWS (Elevation)
      ======================================== */

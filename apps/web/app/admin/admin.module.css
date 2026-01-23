@@ -96,7 +96,7 @@
 
 .adminNavIcon {
   font-size: 18px;
-  transition: transform var(--transition-base);
+  transition: transform var(--admin-transition-base);
   display: inline-block;
 }
 
@@ -327,24 +327,7 @@
    УЛУЧШЕННАЯ ДИЗАЙН-СИСТЕМА ДЛЯ ФОРМ
    ======================================== */
 
-/* === SPACING СИСТЕМА === */
-:root {
-  --space-xs: 8px;
-  --space-sm: 12px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 32px;
-  --space-2xl: 48px;
-  
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  
-  --transition-fast: 150ms ease;
-  --transition-base: 250ms ease;
-  --transition-slow: 350ms ease;
-}
+/* === SPACING СИСТЕМА (Tokens moved to design-tokens.css) === */
 
 /* === УЛУЧШЕННЫЕ INPUT ПОЛЯ === */
 .formInput {
@@ -353,12 +336,12 @@
   padding: 16px 14px 8px 14px;
   background: rgba(15, 23, 42, 0.4);
   border: 1.5px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--radius-md);
+  border-radius: var(--admin-radius-md);
   color: #fff;
   font-size: 15px;
   font-weight: 400;
   outline: none;
-  transition: all var(--transition-base);
+  transition: all var(--admin-transition-base);
   min-height: 52px;
 }
 
@@ -393,7 +376,7 @@
   font-size: 15px;
   font-weight: 400;
   pointer-events: none;
-  transition: all var(--transition-base);
+  transition: all var(--admin-transition-base);
   background: transparent;
   padding: 0 4px;
   z-index: 1;
@@ -420,13 +403,13 @@
   padding: 14px;
   background: rgba(15, 23, 42, 0.4);
   border: 1.5px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--radius-md);
+  border-radius: var(--admin-radius-md);
   color: #fff;
   font-size: 14px;
   line-height: 1.6;
   resize: vertical;
   outline: none;
-  transition: all var(--transition-base);
+  transition: all var(--admin-transition-base);
   font-family: inherit;
 }
 
@@ -451,11 +434,11 @@
   padding: 14px 40px 14px 14px;
   background: rgba(15, 23, 42, 0.4);
   border: 1.5px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--radius-md);
+  border-radius: var(--admin-radius-md);
   color: #fff;
   font-size: 15px;
   outline: none;
-  transition: all var(--transition-base);
+  transition: all var(--admin-transition-base);
   cursor: pointer;
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
@@ -491,13 +474,13 @@
 .fieldGroup {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-lg);
+  gap: var(--admin-space-sm);
+  margin-bottom: var(--admin-space-lg);
 }
 
 .fieldRow {
   display: grid;
-  gap: var(--space-md);
+  gap: var(--admin-space-md);
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
@@ -505,11 +488,11 @@
 .sectionCard {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(30, 41, 59, 0.4) 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-lg);
-  padding: var(--space-xl);
-  margin-bottom: var(--space-xl);
+  border-radius: var(--admin-radius-lg);
+  padding: var(--admin-space-xl);
+  margin-bottom: var(--admin-space-xl);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-  transition: all var(--transition-base);
+  transition: all var(--admin-transition-base);
 }
 
 .sectionCard:hover {
@@ -520,9 +503,9 @@
 .sectionHeader {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-lg);
-  padding-bottom: var(--space-md);
+  gap: var(--admin-space-sm);
+  margin-bottom: var(--admin-space-lg);
+  padding-bottom: var(--admin-space-md);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -542,7 +525,7 @@
 /* === LABEL === */
 .inputLabel {
   display: block;
-  margin-bottom: var(--space-xs);
+  margin-bottom: var(--admin-space-xs);
   font-size: 13px;
   font-weight: 600;
   color: #cbd5e1;
@@ -558,7 +541,7 @@
 
 /* === HELPER TEXT === */
 .helperText {
-  margin-top: var(--space-xs);
+  margin-top: var(--admin-space-xs);
   font-size: 12px;
   color: #64748b;
   line-height: 1.4;
@@ -578,11 +561,11 @@
   background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
   color: #0f172a;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--admin-radius-md);
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: all var(--admin-transition-base);
   box-shadow: 0 4px 16px rgba(212, 175, 55, 0.25);
   position: relative;
   overflow: hidden;
@@ -597,7 +580,7 @@
   height: 100%;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
   opacity: 0;
-  transition: opacity var(--transition-base);
+  transition: opacity var(--admin-transition-base);
 }
 
 .btnPrimary:hover {
@@ -626,11 +609,11 @@
   background: rgba(255, 255, 255, 0.08);
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--radius-md);
+  border-radius: var(--admin-radius-md);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: all var(--admin-transition-base);
 }
 
 .btnSecondary:hover {
@@ -653,7 +636,7 @@
   font-weight: 600;
   border: 1.5px solid;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all var(--admin-transition-fast);
   -webkit-user-select: none;
   user-select: none;
 }
@@ -685,9 +668,9 @@
 .statCard {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  transition: all var(--transition-base);
+  border-radius: var(--admin-radius-lg);
+  padding: var(--admin-space-lg);
+  transition: all var(--admin-transition-base);
   position: relative;
   overflow: hidden;
 }
@@ -701,7 +684,7 @@
   height: 100%;
   background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, transparent 100%);
   opacity: 0;
-  transition: opacity var(--transition-base);
+  transition: opacity var(--admin-transition-base);
 }
 
 .statCard:hover {
@@ -720,7 +703,7 @@
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--admin-space-sm);
 }
 
 .statValue {
@@ -728,7 +711,7 @@
   font-weight: 800;
   color: #fff;
   line-height: 1;
-  margin-bottom: var(--space-xs);
+  margin-bottom: var(--admin-space-xs);
 }
 
 .statChange {
@@ -752,7 +735,7 @@
   background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-  border-radius: var(--radius-md);
+  border-radius: var(--admin-radius-md);
 }
 
 @keyframes shimmer {
@@ -773,7 +756,7 @@
   border-radius: 16px;
   border: none;
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: all var(--admin-transition-base);
 }
 
 .toggleSwitch.active {
@@ -789,7 +772,7 @@
   height: 24px;
   background: #fff;
   border-radius: 50%;
-  transition: all var(--transition-base);
+  transition: all var(--admin-transition-base);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -802,7 +785,7 @@
   font-size: 11px;
   color: #64748b;
   text-align: right;
-  margin-top: var(--space-xs);
+  margin-top: var(--admin-space-xs);
   font-weight: 500;
 }
 
@@ -823,7 +806,7 @@
   background: rgba(30, 41, 59, 0.95);
   -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
-  border-radius: var(--radius-md);
+  border-radius: var(--admin-radius-md);
   border: 1px solid;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   z-index: 9999;
@@ -864,7 +847,7 @@
 
 .adminTableWrapper {
   background: rgba(255, 255, 255, 0.03);
-  border-radius: var(--radius-lg);
+  border-radius: var(--admin-radius-lg);
   border: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
@@ -886,7 +869,7 @@
 
 .adminTableRow {
   border-top: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all var(--transition-fast);
+  transition: all var(--admin-transition-fast);
 }
 
 .adminTableRow:hover {
@@ -902,7 +885,7 @@
 .adminTableImage {
   width: 60px;
   height: 60px;
-  border-radius: var(--radius-md);
+  border-radius: var(--admin-radius-md);
   overflow: hidden;
   background: rgba(255, 255, 255, 0.05);
   display: flex;
@@ -959,12 +942,12 @@
 
 .adminTableActionBtn {
   padding: 8px 14px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--admin-radius-sm);
   border: none;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all var(--admin-transition-fast);
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -997,10 +980,10 @@
   padding: 12px 16px;
   background: rgba(15, 23, 42, 0.4);
   border: 1.5px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--radius-md);
+  border-radius: var(--admin-radius-md);
   color: #fff;
   font-size: 14px;
-  transition: all var(--transition-base);
+  transition: all var(--admin-transition-base);
 }
 
 .adminSearchInput:hover {
@@ -1023,19 +1006,19 @@
 .toast {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--admin-space-sm);
   padding: 16px 20px;
   min-width: 300px;
   max-width: 500px;
   background: rgba(30, 41, 59, 0.95);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-  border-radius: var(--radius-md);
+  border-radius: var(--admin-radius-md);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   animation: slideIn 0.3s ease-out;
-  transition: all var(--transition-base);
+  transition: all var(--admin-transition-base);
 }
 
 .toast:hover {
@@ -1080,7 +1063,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition-fast);
+  transition: all var(--admin-transition-fast);
   flex-shrink: 0;
   line-height: 1;
 }
@@ -2038,22 +2021,22 @@
 .previewCard {
   background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.05) 100%);
   border: 1px solid rgba(212, 175, 55, 0.3);
-  border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  margin-bottom: var(--space-xl);
+  border-radius: var(--admin-radius-lg);
+  padding: var(--admin-space-lg);
+  margin-bottom: var(--admin-space-xl);
 }
 
 .previewTitle {
   font-size: 16px;
   font-weight: 700;
   color: #d4af37;
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--admin-space-md);
 }
 
 .previewGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-lg);
+  gap: var(--admin-space-lg);
 }
 
 .previewLabel {
@@ -2080,43 +2063,43 @@
 .formSection {
   background: rgba(30, 41, 59, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  margin-bottom: var(--space-lg);
+  border-radius: var(--admin-radius-lg);
+  padding: var(--admin-space-lg);
+  margin-bottom: var(--admin-space-lg);
 }
 
 .formSectionTitle {
   font-size: 16px;
   font-weight: 700;
   color: #d4af37;
-  margin: 0 0 var(--space-md) 0;
+  margin: 0 0 var(--admin-space-md) 0;
 }
 
 .formActions {
   display: flex;
-  gap: var(--space-md);
-  margin-top: var(--space-xl);
+  gap: var(--admin-space-md);
+  margin-top: var(--admin-space-xl);
 }
 
 .successCard {
   background: rgba(34, 197, 94, 0.1);
   border: 1px solid rgba(34, 197, 94, 0.3);
-  border-radius: var(--radius-lg);
-  padding: var(--space-xl);
+  border-radius: var(--admin-radius-lg);
+  padding: var(--admin-space-xl);
   text-align: center;
-  margin-top: var(--space-xl);
+  margin-top: var(--admin-space-xl);
 }
 
 .successIcon {
   font-size: 48px;
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--admin-space-md);
 }
 
 .successText {
   font-size: 18px;
   font-weight: 600;
   color: #86efac;
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--admin-space-lg);
 }
 
 @media (max-width: 768px) {
@@ -2129,14 +2112,14 @@
 .videoGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: var(--space-md);
-  margin-bottom: var(--space-md);
+  gap: var(--admin-space-md);
+  margin-bottom: var(--admin-space-md);
 }
 
 .videoItem {
   position: relative;
   aspect-ratio: 16/9;
-  border-radius: var(--radius-md);
+  border-radius: var(--admin-radius-md);
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: #0f172a;
@@ -2208,7 +2191,7 @@
 
 .videoAddRow {
   display: flex;
-  gap: var(--space-sm);
+  gap: var(--admin-space-sm);
 }
 
 .videoAddRow .formInput {
