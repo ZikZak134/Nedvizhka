@@ -240,7 +240,7 @@ export default function AdminProperties() {
     }
 
     // Не запускаем если координаты уже были установлены вручную (нужна логика, но пока просто при изменении адреса)
-    // Дебаунс 1500мс
+    // Дебаунс 800мс
     const timer = setTimeout(async () => {
        const result = await geocodeAddress(formData.address);
        if (result) {
@@ -251,7 +251,7 @@ export default function AdminProperties() {
          }));
          showSuccess(`Координаты обновлены: ${result.lat.toFixed(4)}, ${result.lng.toFixed(4)}`);
        }
-    }, 1500);
+    }, 800);
 
     return () => clearTimeout(timer);
   }, [formData.address, showForm]);

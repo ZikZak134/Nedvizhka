@@ -392,7 +392,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
     const [data, setData] = useState<GeoJSONData | null>(null);
     const [loading, setLoading] = useState(true);
-    const [mapProvider, setMapProvider] = useState<'osm' | '2gis' | 'satellite'>('osm');
+    const [mapProvider, setMapProvider] = useState<'osm' | '2gis' | 'satellite'>('2gis');
     const [priceFilter, setPriceFilter] = useState<'all' | 'low' | 'mid' | 'high' | 'premium' | 'ultra' | 'luxury'>('all');
     const [scenario, setScenario] = useState<'all' | 'investor' | 'family' | 'single'>('all');
     const [showHeatmap, setShowHeatmap] = useState(true);
