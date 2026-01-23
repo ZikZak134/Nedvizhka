@@ -39,7 +39,8 @@ const getPriceColor = (price: number): string => {
     return '#3b82f6';
 };
 
-const formatPrice = (price: number): string => {
+const formatPrice = (price?: number | null): string => {
+    if (price === null || price === undefined) return '— ₽';
     if (price >= 1_000_000) {
         return `${(price / 1_000_000).toFixed(1)}M ₽`;
     }

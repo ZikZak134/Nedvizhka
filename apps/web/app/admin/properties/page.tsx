@@ -353,7 +353,8 @@ export default function AdminProperties() {
     (p.complex_name && p.complex_name.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (price?: number | null) => {
+    if (price === null || price === undefined) return '—';
     return formatCurrency(price);
   };
 
