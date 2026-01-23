@@ -936,12 +936,19 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                 const priceColor = getPriceColor(props.price);
                 const growthColor = getGrowthColor(props.growth_10y || 0);
 
-                const icon = window.DG.divIcon({
-                    className: 'custom-marker',
-                    html: createMarkerHtml(priceColor, growthColor, props.growth_10y || 0),
-                    iconSize: [36, 36],
-                    iconAnchor: [18, 36],
-                });
+                const icon = props.marker_icon 
+                    ? window.DG.icon({
+                        iconUrl: props.marker_icon,
+                        iconSize: [64, 64],
+                        iconAnchor: [32, 64],
+                        className: 'custom-3d-marker'
+                    })
+                    : window.DG.divIcon({
+                        className: 'custom-marker',
+                        html: createMarkerHtml(priceColor, growthColor, props.growth_10y || 0),
+                        iconSize: [36, 36],
+                        iconAnchor: [18, 36],
+                    });
 
                 const marker = window.DG.marker([lat, lng], { icon }).addTo(map);
                 marker.on('click', () => {

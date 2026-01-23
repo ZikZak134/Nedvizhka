@@ -29,6 +29,7 @@ class PropertyBase(BaseModel):
     source: str = Field(default="manual")
     source_id: Optional[str] = None
     url: Optional[str] = None
+    marker_icon: Optional[str] = None
     features: dict = Field(default_factory=dict)
     images: List[str] = Field(default_factory=list)
     videos: List[str] = Field(default_factory=list)  # YouTube/Vimeo URLs or direct video links

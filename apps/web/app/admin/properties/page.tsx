@@ -57,6 +57,7 @@ const EMPTY_FORM = {
   quality_score: 95,
   images: [] as string[],
   videos: [] as string[],
+  marker_icon: '',
   badges: [] as string[],
   features: {} as Record<string, string>,
   is_active: true,
@@ -151,6 +152,7 @@ export default function AdminProperties() {
           quality_score: data.quality_score || 95,
           images: data.images || [],
           videos: data.videos || [],
+          marker_icon: data.marker_icon || '',
           badges: data.badges || [],
           features: data.features || {},
           is_active: data.is_active !== false,
@@ -645,6 +647,16 @@ export default function AdminProperties() {
                               initialLon={formData.longitude}
                               onChange={handleMapLocationChange} 
                           />
+                          />
+                   </div>
+                   <div style={{ marginTop: '16px' }}>
+                       <Label>Кастомный значок на карте (3D Icon URL)</Label>
+                       <Input 
+                           value={formData.marker_icon} 
+                           onChange={v => setFormData({...formData, marker_icon: v})} 
+                           placeholder="https://example.com/icons/my-building-3d.png" 
+                       />
+                       <p className={styles.helperText}>Оставьте пустым для стандартного маркера с ценой. Рекомендуемый размер: 64x64px, PNG с прозрачностью.</p>
                    </div>
               </Section>
 

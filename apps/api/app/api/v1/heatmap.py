@@ -57,6 +57,7 @@ def get_heatmap_data(
                     "rooms": prop.rooms,
                     "address": prop.address,
                     "source": prop.source,
+                    "marker_icon": prop.marker_icon,
                 }
             })
     
