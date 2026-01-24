@@ -453,7 +453,8 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
         fetch(`${apiUrl}/api/v1/districts`, { signal: AbortSignal.timeout(2000) })
             .then(res => res.ok ? res.json() : Promise.reject())
             .then((data: DistrictData[]) => {
-                if (data && data.length > 0) {
+                // Проверяем, что data — массив перед итерацией
+                if (Array.isArray(data) && data.length > 0) {
                     const mapped: Record<string, typeof FALLBACK_DISTRICTS[keyof typeof FALLBACK_DISTRICTS]> = {};
                     data.forEach(d => {
                         mapped[d.name] = {
@@ -477,7 +478,8 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
         fetch(`${apiUrl}/api/v1/complexes-admin`, { signal: AbortSignal.timeout(2000) })
             .then(res => res.ok ? res.json() : Promise.reject())
             .then((data: ComplexData[]) => {
-                if (data && data.length > 0) {
+                // Проверяем, что data — массив перед итерацией
+                if (Array.isArray(data) && data.length > 0) {
                     const mapped = data.map(c => ({
                         id: String(c.id),
                         name: c.name,
@@ -556,6 +558,8 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                 const res = await fetch(`${apiUrl}/api/v1/infrastructure?lat=${centerLat}&lon=${centerLon}&radius=5000&types=${typeStr}`);
                 if (res.ok) {
                     const data = await res.json();
+                    // Проверяем, что data — массив перед итерацией
+                    if (!Array.isArray(data)) return;
                     const mapped = data.map((i: any) => ({
                         id: i.id,
                         type: i.type,
