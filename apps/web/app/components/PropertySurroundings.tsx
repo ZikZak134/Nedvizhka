@@ -1,4 +1,5 @@
 'use client';
+import { toArray } from '../utils/safeArray';
 
 /**
  * PropertySurroundings — Вкладка «Окружение» в боковой панели объекта
@@ -43,7 +44,10 @@ export function PropertySurroundings({
     description = "Объект расположен в элитном курортном районе с видом на море. Закрытая охраняемая территория."
 }: PropertySurroundingsProps) {
     
-    const avgScore = (environment.reduce((sum, e) => sum + e.score, 0) / environment.length).toFixed(1);
+    const safeEnvironment = toArray<EnvironmentScore>(environment);
+    const avgScore = (safeEnvironment.length > 0
+        ? safeEnvironment.reduce((sum, e) => sum + e.score, 0) / safeEnvironment.length
+        : 0).toFixed(1);
 
     return (
         <div className="lux-surroundings fade-in">
@@ -67,7 +71,7 @@ export function PropertySurroundings({
             <div className="lux-surroundings-section">
                 <h4 className="lux-surroundings-title">🎯 Показатели</h4>
                 <div className="lux-surroundings-list">
-                    {environment.map((env, idx) => (
+                    {safeEnvironment.map((env, idx) => (
                         <EnvironmentRow key={idx} item={env} />
                     ))}
                 </div>
@@ -77,7 +81,7 @@ export function PropertySurroundings({
             <div className="lux-surroundings-section">
                 <h4 className="lux-surroundings-title">🌲 Зелёные зоны рядом</h4>
                 <div className="lux-green-zones-grid">
-                    {greenZones.map((zone, idx) => (
+                    {toArray(greenZones).map((zone, idx) => (
                         <div key={idx} className="lux-green-zone-tag">
                             <span className="lux-green-zone-icon">
                                 {zone.type === 'park' ? '🌳' : zone.type === 'garden' ? '🌺' : '🌊'}

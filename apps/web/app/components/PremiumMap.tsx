@@ -767,10 +767,10 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                 // --- Add Districts (Flagpoles) ---
                 // REPLACED: Boundaries removed. Using Flags as requested.
                 // We iterate over the districtsData to place markers at the center.
-                if (districtsData) {
+                if (districtsData && typeof districtsData === 'object') {
                     Object.entries(districtsData).forEach(([name, data]) => {
                         const d = data as any;
-                        if (!d.center) return;
+                        if (!d || !d.center) return;
 
                         const growth = d.growth_10y || 0;
                         let color = '#94a3b8';
@@ -808,7 +808,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                 }
 
                 // --- Add Property Markers (Custom HTML) ---
-                filteredFeatures.forEach(feature => {
+                toArray(filteredFeatures).forEach(feature => {
                      const [lng, lat] = feature.geometry.coordinates;
                      const props = feature.properties;
                      const priceColor = getPriceColor(props.price);
@@ -833,7 +833,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
                 // --- Add Infrastructure (Simple Markers) ---
                 if (showInfra) {
-                    const visibleItems = [...realInfra, ...STATIC_DATA].filter(item => activeInfraFilters.includes(item.type));
+                    const visibleItems = [...toArray(realInfra), ...toArray(STATIC_DATA)].filter(item => activeInfraFilters.includes(item.type));
                     
                     visibleItems.forEach(item => {
                         const el = document.createElement('div');

@@ -8,6 +8,7 @@ import { Footer } from '../../components/Footer';
 import { LeadCaptureModal } from '../../components/LeadCaptureModal';
 import '../../styles/luxury-property.css';
 import { formatNumber, formatCurrency } from '../../utils/formatters';
+import { toArray } from '../../utils/safeArray';
 
 // Lazy load components
 const PropertyLocation = dynamic(() => import('../../components/PropertyLocation').then(m => m.PropertyLocation), { ssr: false });
@@ -193,9 +194,9 @@ export default function PropertyDetailPage() {
 
                 <div className="lux-hero-content">
                     {/* Динамические badges из API */}
-                    {property.badges && property.badges.length > 0 ? (
+                    {toArray(property.badges).length > 0 ? (
                         <div className="flex gap-2 mb-2">
-                            {property.badges.map((badge, idx) => (
+                            {toArray(property.badges).map((badge, idx) => (
                                 <div key={idx} className="lux-hero-badge">{badge}</div>
                             ))}
                         </div>
@@ -511,8 +512,8 @@ export default function PropertyDetailPage() {
                                 propertyId={property.id} 
                                 environment={property.eco_score ? Object.entries(property.eco_score).map(([key, val]) => ({
                                     name: key, icon: '📍', score: Number(val), description: 'Оценка из админки'
-                                })) : undefined}
-                                greenZones={property.green_zones}
+                                })) : []}
+                                greenZones={toArray(property.green_zones)}
                             />
                         )}
                         {activeTab === 'smi' && <SMIFeed />}
@@ -591,7 +592,7 @@ export default function PropertyDetailPage() {
                         <h2 className="lux-section-title">Другие объекты в этом районе</h2>
                     </div>
                     <div className="lux-nearby-scroll">
-                        {nearbyProperties.map((prop) => (
+                        {toArray(nearbyProperties).map((prop) => (
                             <div
                                 key={prop.id}
                                 className="lux-nearby-card"
