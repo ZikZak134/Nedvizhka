@@ -347,12 +347,14 @@ export default function AdminProperties() {
     setFormData(EMPTY_FORM);
   };
 
-  // Фильтрация по поиску
-  const filteredProperties = properties.filter(p => 
-    p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (p.complex_name && p.complex_name.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  // Фильтрация по поиску (с защитой от undefined полей)
+  const filteredProperties = (properties || []).filter(p => {
+    const title = (p.title || '').toLowerCase();
+    const address = (p.address || '').toLowerCase();
+    const complexName = (p.complex_name || '').toLowerCase();
+    const query = searchQuery.toLowerCase();
+    return title.includes(query) || address.includes(query) || complexName.includes(query);
+  });
 
   const formatPrice = (price?: number | null) => {
     if (price === null || price === undefined) return '—';
