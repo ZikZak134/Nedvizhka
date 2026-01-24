@@ -598,7 +598,7 @@ export default function PropertyDetailPage() {
                                 onClick={() => router.push(`/properties/${prop.id}`)}
                             >
                                 <div className="lux-nearby-card-image">
-                                    <img src={prop.images[0]} alt={prop.title} />
+                                    <img src={prop.images?.[0] || ''} alt={prop.title} />
                                 </div>
                                 <div className="lux-nearby-card-content">
                                     <div className="lux-nearby-card-title">{prop.title}</div>
