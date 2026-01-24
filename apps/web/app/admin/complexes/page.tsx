@@ -43,7 +43,9 @@ export default function ComplexesAdminPage() {
         try {
             const res = await fetch(`${API_URL}/api/v1/complexes-admin`);
             if (res.ok) {
-                setComplexes(await res.json());
+                const data = await res.json();
+                // Проверяем, что data — массив
+                setComplexes(Array.isArray(data) ? data : DEFAULT_COMPLEXES);
             } else {
                 setComplexes(DEFAULT_COMPLEXES);
             }

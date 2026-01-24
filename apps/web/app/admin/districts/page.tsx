@@ -46,7 +46,8 @@ export default function DistrictsAdminPage() {
             const res = await fetch(`${API_URL}/api/v1/districts`);
             if (res.ok) {
                 const data = await res.json();
-                setDistricts(data);
+                // Проверяем, что data — массив
+                setDistricts(Array.isArray(data) ? data : DEFAULT_DISTRICTS);
             } else {
                 setDistricts(DEFAULT_DISTRICTS);
             }
