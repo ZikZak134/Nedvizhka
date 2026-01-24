@@ -70,7 +70,7 @@ export function PropertyMap({ height = '500px', showHeatmap = true, onPropertyCl
 
     // Process properties prop or fetch data
     useEffect(() => {
-        if (properties) {
+        if (properties && Array.isArray(properties)) {
             // Convert passed properties to GeoJSON
             const features: GeoJSONFeature[] = properties
                 .filter(p => p.latitude && p.longitude)
@@ -88,7 +88,7 @@ export function PropertyMap({ height = '500px', showHeatmap = true, onPropertyCl
                 features,
                 metadata: {
                     total: properties.length,
-                    avg_price: properties.reduce((acc, p) => acc + p.price, 0) / (properties.length || 1),
+                    avg_price: properties.length > 0 ? properties.reduce((acc, p) => acc + p.price, 0) / properties.length : 0,
                     avg_price_per_sqm: 0 // not critical for this view
                 }
             });

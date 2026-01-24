@@ -1,4 +1,4 @@
-'use client';
+import { toArray } from '../utils/safeArray';
 
 /**
  * PropertyPotential — Вкладка «Потенциал» в боковой панели объекта
@@ -58,7 +58,7 @@ export function PropertyPotential({
             <div className="lux-potential-section">
                 <h4 className="lux-potential-title">🎯 Прогноз роста стоимости</h4>
                 <div className="lux-potential-grid">
-                    {forecasts.map((forecast, idx) => (
+                    {toArray<GrowthForecast>(forecasts).map((forecast, idx) => (
                         <div key={idx} className="lux-potential-item">
                             <div className="lux-potential-item-period">{forecast.period}</div>
                             <div className={`lux-potential-item-growth ${forecast.growth >= 50 ? 'growth-high' : forecast.growth >= 20 ? 'growth-med' : 'growth-low'}`}>
@@ -74,7 +74,7 @@ export function PropertyPotential({
             <div className="lux-potential-section">
                 <h4 className="lux-potential-title">🏗️ Развитие района</h4>
                 <div className="lux-potential-list">
-                    {projects.map((project, idx) => (
+                    {toArray<DevelopmentProject>(projects).map((project, idx) => (
                         <ProjectRow key={idx} project={project} />
                     ))}
                 </div>
