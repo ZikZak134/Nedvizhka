@@ -808,7 +808,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                 }
 
                 // --- Add Property Markers (Custom HTML) ---
-                toArray(filteredFeatures).forEach(feature => {
+                toArray<GeoJSONFeature>(filteredFeatures).forEach(feature => {
                      const [lng, lat] = feature.geometry.coordinates;
                      const props = feature.properties;
                      const priceColor = getPriceColor(props.price);
@@ -833,7 +833,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
                 // --- Add Infrastructure (Simple Markers) ---
                 if (showInfra) {
-                    const visibleItems = [...toArray(realInfra), ...toArray(STATIC_DATA)].filter(item => activeInfraFilters.includes(item.type));
+                    const visibleItems = [...toArray<any>(realInfra), ...toArray<any>(STATIC_DATA)].filter(item => activeInfraFilters.includes(item.type));
                     
                     visibleItems.forEach(item => {
                         const el = document.createElement('div');

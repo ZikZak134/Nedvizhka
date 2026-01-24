@@ -81,7 +81,7 @@ export function PropertySurroundings({
             <div className="lux-surroundings-section">
                 <h4 className="lux-surroundings-title">🌲 Зелёные зоны рядом</h4>
                 <div className="lux-green-zones-grid">
-                    {toArray(greenZones).map((zone, idx) => (
+                    {toArray<GreenZone>(greenZones).map((zone, idx) => (
                         <div key={idx} className="lux-green-zone-tag">
                             <span className="lux-green-zone-icon">
                                 {zone.type === 'park' ? '🌳' : zone.type === 'garden' ? '🌺' : '🌊'}

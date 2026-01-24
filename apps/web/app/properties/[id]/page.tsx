@@ -194,9 +194,9 @@ export default function PropertyDetailPage() {
 
                 <div className="lux-hero-content">
                     {/* Динамические badges из API */}
-                    {toArray(property.badges).length > 0 ? (
+                    {toArray<string>(property.badges).length > 0 ? (
                         <div className="flex gap-2 mb-2">
-                            {toArray(property.badges).map((badge, idx) => (
+                            {toArray<string>(property.badges).map((badge, idx) => (
                                 <div key={idx} className="lux-hero-badge">{badge}</div>
                             ))}
                         </div>
@@ -513,7 +513,7 @@ export default function PropertyDetailPage() {
                                 environment={property.eco_score ? Object.entries(property.eco_score).map(([key, val]) => ({
                                     name: key, icon: '📍', score: Number(val), description: 'Оценка из админки'
                                 })) : []}
-                                greenZones={toArray(property.green_zones)}
+                                greenZones={toArray<any>(property.green_zones)}
                             />
                         )}
                         {activeTab === 'smi' && <SMIFeed />}
@@ -592,7 +592,7 @@ export default function PropertyDetailPage() {
                         <h2 className="lux-section-title">Другие объекты в этом районе</h2>
                     </div>
                     <div className="lux-nearby-scroll">
-                        {toArray(nearbyProperties).map((prop) => (
+                        {toArray<Property>(nearbyProperties).map((prop) => (
                             <div
                                 key={prop.id}
                                 className="lux-nearby-card"
