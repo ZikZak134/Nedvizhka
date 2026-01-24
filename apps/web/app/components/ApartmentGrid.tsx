@@ -31,7 +31,8 @@ export function ApartmentGrid({ complexId }: ApartmentGridProps) {
         const res = await fetch(`${apiUrl}/api/v1/complexes/${complexId}/apartments`);
         if (!res.ok) throw new Error('Failed to fetch apartments');
         const data = await res.json();
-        setApartments(data);
+        // Проверяем, что data — массив
+        setApartments(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error(err);
         // Silent error or show toast? Silent is better for a section.

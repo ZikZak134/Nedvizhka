@@ -25,7 +25,8 @@ export default function ComplexesPage() {
             try {
                 const res = await fetch(`${apiUrl}/api/v1/complexes`);
                 const data = await res.json();
-                setComplexes(data);
+                // Проверяем, что data — массив
+                setComplexes(Array.isArray(data) ? data : []);
             } catch (error) {
                 console.error('Failed to fetch complexes:', error);
             } finally {
