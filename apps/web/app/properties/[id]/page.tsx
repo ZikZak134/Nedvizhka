@@ -279,7 +279,7 @@ export default function PropertyDetailPage() {
                     <div className="lux-container">
                         <div className="lux-facts-grid">
                             <div className="lux-fact">
-                                <div className="lux-fact-value">{property.area_sqm}</div>
+                                <div className="lux-fact-value">{property.area_sqm ?? '—'}</div>
                                 <div className="lux-fact-unit">м²</div>
                                 <div className="lux-fact-label">Площадь</div>
                             </div>
@@ -294,7 +294,7 @@ export default function PropertyDetailPage() {
                                 <div className="lux-fact-label">Этаж</div>
                             </div>
                             <div className="lux-fact">
-                                <div className="lux-fact-value">{formatPriceShort(property.pricePerSqm || Math.round(property.price / property.area_sqm))}</div>
+                                <div className="lux-fact-value">{formatPriceShort(property.pricePerSqm || (property.area_sqm ? Math.round(property.price / property.area_sqm) : 0))}</div>
                                 <div className="lux-fact-unit">₽/м²</div>
                                 <div className="lux-fact-label">Цена за метр</div>
                             </div>
