@@ -97,9 +97,10 @@ export default function AdminProperties() {
       const response = await authFetch(`${API_URL}/api/v1/properties?page=${page}&size=10`);
       if (response.ok) {
         const data: PropertyListResponse = await response.json();
-        setProperties(data.items);
-        setTotalPages(data.pages);
-        setCurrentPage(data.page);
+        // Безопасное извлечение items
+        setProperties(Array.isArray(data.items) ? data.items : []);
+        setTotalPages(data.pages || 1);
+        setCurrentPage(data.page || 1);
       }
     } catch (error) {
       console.error('Ошибка загрузки:', error);

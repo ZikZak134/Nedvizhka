@@ -20,7 +20,9 @@ export default function AdminDashboard() {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
         const res = await fetch(`${apiUrl}/api/v1/properties`);
         if (res.ok) {
-          const properties = await res.json();
+          const data = await res.json();
+          // API возвращает {items: [...], total, pages}, а не просто массив
+          const properties = Array.isArray(data) ? data : (Array.isArray(data.items) ? data.items : []);
           const total = properties.length;
           const totalValue = properties.reduce((sum: number, p: { price?: number }) => sum + (p.price || 0), 0);
           setStats({
