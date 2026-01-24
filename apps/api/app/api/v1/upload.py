@@ -8,13 +8,14 @@ from pydantic import BaseModel
 
 router = APIRouter(prefix="/upload", tags=["Upload"])
 
-# Путь к папке uploads в Next.js public
-# При разработке используем относительный путь от корня проекта
-UPLOAD_DIR = Path(__file__).parent.parent.parent.parent.parent.parent / "apps" / "web" / "public" / "uploads"
+# Путь к папке uploads. Храним локально в API.
+# В продакшене (Render) это временное хранилище (очищается при деплое).
+# Для постоянного хранения нужен S3. Но для MVP это решит проблему 404.
+UPLOAD_DIR = Path("uploads")
 
 # Допустимые расширения файлов
-ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
-MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
+ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".mp4", ".mov", ".webm"}
+MAX_FILE_SIZE = 100 * 1024 * 1024  # 100 MB
 
 
 class UploadResponse(BaseModel):
@@ -27,10 +28,10 @@ class UploadResponse(BaseModel):
 @router.post("", response_model=UploadResponse)
 async def upload_image(file: UploadFile = File(...)):
     """
-    Загрузить изображение на сервер.
+    Загрузить изображение или видео на сервер.
     
-    Поддерживаемые форматы: JPG, PNG, WebP, GIF.
-    Максимальный размер: 10 MB.
+    Поддерживаемые форматы: JPG, PNG, WebP, GIF, MP4, MOV, WEBM.
+    Максимальный размер: 100 MB.
     
     Возвращает URL для использования в галерее.
     """

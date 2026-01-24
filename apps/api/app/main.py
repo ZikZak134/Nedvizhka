@@ -61,9 +61,9 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 async def health_check():
     return {"status": "ok", "app": settings.PROJECT_NAME}
 
-# Монтируем папку uploads для раздачи статики (локальная разработка)
-# Путь: apps/web/public/uploads
-upload_dir = Path(__file__).parent.parent.parent.parent / "web" / "public" / "uploads"
+# Монтируем папку uploads для раздачи статики
+# Теперь используем локальную папку API, так как на Render нет доступа к 'apps/web'
+upload_dir = Path("uploads")
 if not upload_dir.exists():
     upload_dir.mkdir(parents=True, exist_ok=True)
 

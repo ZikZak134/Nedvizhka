@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../components/AuthGuard';
 import { useToast } from '../components/ToastContainer';
 import LocationPicker from '../components/LocationPicker';
+import LocationAutocomplete from '../components/LocationAutocomplete';
 import ImageGalleryEditor from '../components/ImageGalleryEditor';
 import { VideoEditor } from '../components/VideoEditor';
 import JsonListEditor from '../components/JsonListEditor';
@@ -675,12 +676,21 @@ export default function AdminProperties() {
               {/* 3. КАРТА */}
               <Section title="📍 Локация на карте">
                       <div>
+                      <div>
                           <Label required>Адрес объекта</Label>
-                          <Input 
-                              value={formData.address} 
-                              onChange={(v: string) => setFormData({...formData, address: v})} 
-                              placeholder="Город, улица, дом"
-                              helper="Введите адрес или выберите точку на карте"
+                          <LocationAutocomplete 
+                              value={formData.address}
+                              onChange={(val) => setFormData({...formData, address: val})}
+                              onSelect={(lat, lon, addr) => {
+                                  // Обновляем и адрес и карту / маркер
+                                  setFormData(prev => ({ 
+                                      ...prev, 
+                                      address: addr,
+                                      latitude: lat, 
+                                      longitude: lon 
+                                  }));
+                                  showSuccess(`Координаты обновлены по адресу`);
+                              }}
                               error={validationErrors.address}
                           />
                           <LocationPicker 

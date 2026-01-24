@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import styles from '../admin.module.css';
 
 interface VideoEditorProps {
@@ -14,6 +14,58 @@ interface VideoEditorProps {
 export function VideoEditor({ videos, onChange }: VideoEditorProps) {
   const [newUrl, setNewUrl] = useState('');
   const [error, setError] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+  // Загрузка файла на сервер
+  const uploadFile = async (file: File): Promise<string | null> => {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+          const response = await fetch(`${API_URL}/api/v1/upload`, {
+              method: 'POST',
+              body: formData,
+          });
+
+          if (!response.ok) {
+              const error = await response.json();
+              throw new Error(error.detail || 'Ошибка загрузки');
+          }
+
+          const data = await response.json();
+          return data.url;
+      } catch (error) {
+          console.error('Upload error:', error);
+          setError('Ошибка при загрузке файла');
+          return null;
+      }
+  };
+
+  const handleFileSelect = () => {
+      fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = e.target.files;
+      if (!files || files.length === 0) return;
+
+      setIsUploading(true);
+      setError('');
+      
+      const file = files[0];
+      const url = await uploadFile(file);
+      
+      if (url) {
+          onChange([...videos, url]);
+      }
+      
+      setIsUploading(false);
+      // Reset input
+      if (fileInputRef.current) fileInputRef.current.value = '';
+  };
 
   // Проверка и нормализация URL
   const normalizeVideoUrl = (url: string): string | null => {
@@ -134,6 +186,27 @@ export function VideoEditor({ videos, onChange }: VideoEditorProps) {
           + Добавить
         </button>
       </div>
+      
+      <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'center', gap: '12px', alignItems: 'center' }}>
+          <span style={{ fontSize: '12px', color: '#64748b' }}>или</span>
+          <button
+              type="button"
+              onClick={handleFileSelect}
+              className={styles.btnSecondary}
+              style={{ fontSize: '14px', padding: '8px 24px' }}
+              disabled={isUploading}
+          >
+              {isUploading ? '⏳ Загрузка...' : '📁 Загрузить видео (MP4)'}
+          </button>
+      </div>
+
+      <input
+          ref={fileInputRef}
+          type="file"
+          accept="video/mp4,video/quicktime,video/webm"
+          onChange={handleFileChange}
+          style={{ display: 'none' }}
+      />
 
       {error && <p className={styles.formError}>{error}</p>}
 
