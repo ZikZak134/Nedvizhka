@@ -1,7 +1,5 @@
 /* EstateAnalytics Typography System */
-
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+/* Note: Google Fonts imported in globals.css for correct @import order */
 
 /* ========================================
    TYPOGRAPHY UTILITIES

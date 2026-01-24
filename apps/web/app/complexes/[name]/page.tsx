@@ -110,7 +110,12 @@ export default function ComplexDetailPage() {
         );
     }
 
-    const maxDistributionCount = Math.max(...data.price_distribution.map(d => d.count));
+    // Безопасный доступ к данным с fallback на пустые структуры
+    const priceDistribution = data.price_distribution || [];
+    const roomDistribution = data.room_distribution || {};
+    const sourceDistribution = data.source_distribution || {};
+    const properties = data.properties || [];
+    const maxDistributionCount = priceDistribution.length > 0 ? Math.max(...priceDistribution.map(d => d.count)) : 0;
 
     return (
         <div className="page">
@@ -167,7 +172,7 @@ export default function ComplexDetailPage() {
                                 <div className="card-body">
                                     <h3 className="heading-5 mb-4">📊 Распределение цен</h3>
                                     <div className="stack stack-sm">
-                                        {data.price_distribution.map(item => (
+                                        {priceDistribution.map(item => (
                                             <div key={item.range}>
                                                 <div className="flex justify-between body-small mb-1">
                                                     <span>{item.range} ₽</span>
@@ -197,7 +202,7 @@ export default function ComplexDetailPage() {
                                 <div className="card-body">
                                     <h3 className="heading-5 mb-4">🛏️ По количеству комнат</h3>
                                     <div className="grid grid-cols-2 gap-4">
-                                        {Object.entries(data.room_distribution).map(([room, count]) => (
+                                        {Object.entries(roomDistribution).map(([room, count]) => (
                                             <div key={room} className="flex items-center justify-between" style={{
                                                 padding: 'var(--space-3)',
                                                 background: 'var(--color-bg-secondary)',
@@ -211,7 +216,7 @@ export default function ComplexDetailPage() {
 
                                     <h3 className="heading-5 mb-4 mt-6">📡 По источнику</h3>
                                     <div className="cluster">
-                                        {Object.entries(data.source_distribution).map(([source, count]) => (
+                                        {Object.entries(sourceDistribution).map(([source, count]) => (
                                             <span key={source} className="badge badge-neutral">
                                                 {source === 'cian' ? 'ЦИАН' : source === 'avito' ? 'Авито' : source} ({count})
                                             </span>
@@ -252,7 +257,7 @@ export default function ComplexDetailPage() {
                             <div className="card-body">
                                 <h3 className="heading-5 mb-4">🏠 Объекты в этом ЖК</h3>
                                 <div className="stack stack-sm">
-                                    {data.properties.slice(0, 10).map(prop => (
+                                    {properties.slice(0, 10).map(prop => (
                                         <Link
                                             key={prop.id}
                                             href={`/properties/${prop.id}`}
@@ -281,10 +286,10 @@ export default function ComplexDetailPage() {
                                     ))}
                                 </div>
 
-                                {data.properties.length > 10 && (
+                                {properties.length > 10 && (
                                     <div className="mt-4 text-center">
                                         <span className="body-small" style={{ color: 'var(--color-text-tertiary)' }}>
-                                            Показаны первые 10 из {data.properties.length} объектов
+                                            Показаны первые 10 из {properties.length} объектов
                                         </span>
                                     </div>
                                 )}
