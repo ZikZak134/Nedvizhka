@@ -127,7 +127,8 @@ export function TwoGisMap({ height = '100%', onPropertyClick, showFilters = true
 
     // Filter properties
     const filteredFeatures = useMemo(() => {
-        if (!data?.features) return [];
+        // Проверяем, что data.features — массив
+        if (!data?.features || !Array.isArray(data.features)) return [];
 
         return data.features.filter(f => {
             const price = f.properties.price;

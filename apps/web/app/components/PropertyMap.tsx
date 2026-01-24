@@ -154,7 +154,8 @@ export function PropertyMap({ height = '500px', showHeatmap = true, onPropertyCl
             mapInstanceRef.current = map;
 
             map.on('load', () => {
-                if (data?.features) {
+                // Проверяем, что data.features — массив
+                if (data?.features && Array.isArray(data.features)) {
                      // Add source
                     map.addSource('properties', {
                         type: 'geojson',
