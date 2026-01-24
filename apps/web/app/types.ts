@@ -5,14 +5,14 @@
 export interface Property {
     id: string;
     title: string;
-    description: string | null;
+    description?: string | null;
     price: number;
     price_per_sqm?: number | null;
     currency?: string;
     address: string;
-    latitude: number | null;
-    longitude: number | null;
-    area_sqm: number;
+    latitude?: number | null;
+    longitude?: number | null;
+    area_sqm?: number | null;
     area_min?: number | null;
     area_max?: number | null;
     rooms?: string | number | null;
@@ -22,12 +22,12 @@ export interface Property {
     floor_min?: number | null;
     floor_max?: number | null;
     total_floors?: number | null;
-    images: string[];
+    images?: string[];
     videos?: string[];
-    source: string;
+    source?: string;
     source_id?: string | null;
     url?: string | null;
-    is_active: boolean;
+    is_active?: boolean;
     is_from_developer?: boolean;
     property_type?: string | null;
     layout_type?: string | null;
