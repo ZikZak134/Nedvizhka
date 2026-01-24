@@ -606,7 +606,10 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                 const res = await fetch(`${apiUrl}/api/v1/heatmap`, { signal: AbortSignal.timeout(1500) });
                 if (res.ok) {
                     const json = await res.json();
-                    if (json.features) features = json.features;
+                    // Безопасное присвоение: убеждаемся, что features — массив
+                    if (Array.isArray(json.features)) {
+                        features = json.features;
+                    }
                 }
             } catch (error) {
                 console.warn('API недоступен или время ожидания истекло');
@@ -618,6 +621,10 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
             // Если нужна демонстрация — добавьте объекты через админку /admin/properties
 
             // Mock data removed. Only API data is used.
+            // Дополнительная проверка перед .map() на случай, если features не массив
+            if (!Array.isArray(features)) {
+                features = [];
+            }
             features = features.map((f, idx) => ({
                 ...f,
                 properties: {
