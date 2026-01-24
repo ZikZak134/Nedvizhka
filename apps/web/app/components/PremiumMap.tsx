@@ -648,7 +648,8 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
     }, []);
 
     const filteredFeatures = useMemo(() => {
-        if (!data?.features) return [];
+        // Проверяем, что data.features — массив
+        if (!data?.features || !Array.isArray(data.features)) return [];
         return data.features.filter(f => {
             const price = f.properties.price;
             const growth = f.properties.growth_10y || 0;
@@ -1132,7 +1133,8 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
             {!isMobile && (selectedPropertyId || selectedDistrict) && (
                 (() => {
                     const sidePanelStyles = { '--panel-width': `${panelWidth}px` } as React.CSSProperties;
-                    const p = data?.features.find(f => f.properties.id === selectedPropertyId)?.properties;
+                    const features = Array.isArray(data?.features) ? data.features : [];
+                    const p = features.find(f => f.properties.id === selectedPropertyId)?.properties;
                     const d = selectedDistrict;
                     if (!p && !d) return null;
                     const title = p ? p.title : d.name;
