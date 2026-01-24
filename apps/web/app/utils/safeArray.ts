@@ -20,6 +20,9 @@ export function toArray<T>(value: unknown): T[] {
     
     // null или undefined
     if (value == null) {
+        if (process.env.NODE_ENV === 'development') {
+            console.warn('[safeArray] toArray received null/undefined. Returning empty array. Check your API response or data source.');
+        }
         return [];
     }
     
@@ -40,6 +43,9 @@ export function toArray<T>(value: unknown): T[] {
     }
     
     // Всё остальное — пустой массив
+    if (process.env.NODE_ENV === 'development') {
+        console.warn('[safeArray] toArray received non-array value:', value);
+    }
     return [];
 }
 

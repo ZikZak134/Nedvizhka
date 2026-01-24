@@ -8,6 +8,7 @@ import { GlowTrailOverlay } from './components/effects/GlowTrailOverlay';
 import { ElitePreloader } from './components/effects/ElitePreloader';
 import { playfair, inter, cormorant, tangerine } from './fonts/luxury';
 import { YandexMetrika } from './components/YandexMetrika';
+import { RuntimeTests } from './components/RuntimeTests';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -48,6 +49,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <YandexMetrika />
+        <RuntimeTests />
         {/* Elite Effects */}
         <GlowTrailOverlay /> {/* Added effect component */}
         <ElitePreloader /> {/* Added effect component */}

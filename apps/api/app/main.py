@@ -2,7 +2,10 @@ from contextlib import asynccontextmanager
 
 import structlog
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.responses import ORJSONResponse
+import os
+from pathlib import Path
 
 from app.api.v1.router import api_router
 from app.core.config import settings
@@ -56,4 +59,12 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 
 @app.get("/healthz", tags=["Health"])
 async def health_check():
-    return {"status": "ok", "app": settings.PROJECT_NAME} 
+    return {"status": "ok", "app": settings.PROJECT_NAME}
+
+# Монтируем папку uploads для раздачи статики (локальная разработка)
+# Путь: apps/web/public/uploads
+upload_dir = Path(__file__).parent.parent.parent.parent / "web" / "public" / "uploads"
+if not upload_dir.exists():
+    upload_dir.mkdir(parents=True, exist_ok=True)
+
+app.mount("/uploads", StaticFiles(directory=str(upload_dir)), name="uploads")

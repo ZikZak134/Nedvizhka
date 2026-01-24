@@ -129,7 +129,19 @@ export default function ImageGalleryEditor({ images, onChange }: ImageGalleryEdi
                     {images.map((url, index) => (
                         <div key={index} className={styles.galleryItem}>
                             <img 
-                                src={url.startsWith('http') ? url : `${API_URL}${url.startsWith('/') ? '' : '/'}${url}`} 
+                                src={
+                                    url.startsWith('http') 
+                                        ? url 
+                                        : `${API_URL}${url.startsWith('/') ? '' : '/'}${url}`
+                                } 
+                                onError={(e) => {
+                                    /* Fallback to local public folder if API fails */
+                                    const target = e.target as HTMLImageElement;
+                                    if (!target.src.includes(API_URL)) return;
+                                    // Try loading directly from Next.js public serve
+                                    const relativePath = url.startsWith('/') ? url : `/${url}`;
+                                    target.src = relativePath;
+                                }}
                                 alt={`Preview ${index}`} 
                                 className={styles.galleryItemImage} 
                             />
@@ -170,6 +182,18 @@ export default function ImageGalleryEditor({ images, onChange }: ImageGalleryEdi
                         </p>
                     </>
                 )}
+            </div>
+
+            {/* Явная кнопка загрузки (по просьбе пользователя) */}
+            <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'center' }}>
+                <button
+                    type="button"
+                    onClick={handleFileSelect}
+                    className={styles.btnSecondary}
+                    style={{ fontSize: '14px', padding: '8px 24px' }}
+                >
+                    📁 Выбрать файлы с компьютера
+                </button>
             </div>
 
             {/* Скрытый input для файлов */}
