@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { toArray } from '../utils/safeArray';
 
 // Types
 import { Property } from '../types';
@@ -127,10 +128,11 @@ export function TwoGisMap({ height = '100%', onPropertyClick, showFilters = true
 
     // Filter properties
     const filteredFeatures = useMemo(() => {
-        // Проверяем, что data.features — массив
-        if (!data?.features || !Array.isArray(data.features)) return [];
+        // Используем toArray для гарантированного получения массива
+        const features = toArray<GeoJSONFeature>(data?.features);
+        if (features.length === 0) return [];
 
-        return data.features.filter(f => {
+        return features.filter(f => {
             const price = f.properties.price;
             switch (priceFilter) {
                 case 'low': return price < 15_000_000;

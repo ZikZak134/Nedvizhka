@@ -16,6 +16,7 @@ import { useBreakpoint } from '../hooks/useBreakpoint';
 
 import { getMockImage } from '../utils/mockImages';
 import { getMockLocation } from '../utils/mockLocations';
+import { toArray } from '../utils/safeArray';
 
 // Lazy load heavy sidebar components
 const NewsFeed = dynamic(() => import('./NewsFeed').then(m => m.NewsFeed), { ssr: false });
@@ -648,9 +649,11 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
     }, []);
 
     const filteredFeatures = useMemo(() => {
-        // Проверяем, что data.features — массив
-        if (!data?.features || !Array.isArray(data.features)) return [];
-        return data.features.filter(f => {
+        // Используем toArray для гарантированного получения массива
+        const features = toArray<GeoJSONFeature>(data?.features);
+        if (features.length === 0) return [];
+        
+        return features.filter(f => {
             const price = f.properties.price;
             const growth = f.properties.growth_10y || 0;
 
@@ -1133,7 +1136,8 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
             {!isMobile && (selectedPropertyId || selectedDistrict) && (
                 (() => {
                     const sidePanelStyles = { '--panel-width': `${panelWidth}px` } as React.CSSProperties;
-                    const features = Array.isArray(data?.features) ? data.features : [];
+                    // Используем toArray для безопасного доступа к features
+                    const features = toArray<GeoJSONFeature>(data?.features);
                     const p = features.find(f => f.properties.id === selectedPropertyId)?.properties;
                     const d = selectedDistrict;
                     if (!p && !d) return null;

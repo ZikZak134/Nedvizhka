@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { toArray } from '../utils/safeArray';
 
 // Types
 import { Property } from '../types';
@@ -154,8 +155,9 @@ export function PropertyMap({ height = '500px', showHeatmap = true, onPropertyCl
             mapInstanceRef.current = map;
 
             map.on('load', () => {
-                // Проверяем, что data.features — массив
-                if (data?.features && Array.isArray(data.features)) {
+                // Используем toArray для безопасного доступа к features
+                const features = toArray<GeoJSONFeature>(data?.features);
+                if (features.length > 0) {
                      // Add source
                     map.addSource('properties', {
                         type: 'geojson',
