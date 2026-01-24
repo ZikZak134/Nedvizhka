@@ -150,7 +150,7 @@ export default function PropertyDetailPage() {
         );
     }
 
-    const images = property.images.length > 0 ? property.images : [];
+    const images = property.images && property.images.length > 0 ? property.images : [];
     const currentIndex = getCurrentIndex();
 
     // Conditional Render for Developer Properties

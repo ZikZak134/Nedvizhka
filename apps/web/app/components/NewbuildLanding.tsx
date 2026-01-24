@@ -26,7 +26,7 @@ export function NewbuildLanding({ property }: NewbuildLandingProps) {
     setIsLeadModalOpen(true);
   };
 
-  const images = property.images.length > 0 ? property.images : [];
+  const images = property.images && property.images.length > 0 ? property.images : [];
   const minPrice = property.price; // Usually newbuild card shows "from X price"
 
   return (
