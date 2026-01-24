@@ -1106,13 +1106,13 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                  {/* </VIBE> */}
             </div>
 
-            {/* Mobile Widgets */}
+            {/* News Widgets - Bottom Left */}
             <div className="widgets-container">
                 {isMobile ? (<MobileNewsCarousel />) : (
                     <>
-                        <div className="flex-1 min-w-[300px]"><NewsFeed /></div>
-                        <div className="flex-1 min-w-[300px]"><SocialFeed /></div>
-                        <div className="flex-1 min-w-[300px]"><SMIFeed /></div>
+                        <NewsFeed />
+                        <SocialFeed />
+                        <SMIFeed />
                     </>
                 )}
             </div>

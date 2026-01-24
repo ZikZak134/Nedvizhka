@@ -8,15 +8,13 @@ export function NewsFeed() {
         <div style={{
             background: 'rgba(15, 23, 42, 0.95)',
             backdropFilter: 'blur(16px)',
-            borderRadius: 'var(--radius-xl)',
+            borderRadius: '12px',
             width: '100%',
-            maxWidth: '340px',
             color: 'white',
             overflow: 'hidden',
             transition: 'all 0.3s ease',
             border: '1px solid rgba(255,255,255,0.1)',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
-            marginBottom: '10px'
+            boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
         }}>
             {/* Header */}
             <div

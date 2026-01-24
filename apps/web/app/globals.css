@@ -315,3 +315,35 @@
         display: none;
     }
 }
+
+/* ========================================
+   WIDGETS CONTAINER (News Panels on Map)
+   ======================================== */
+
+.widgets-container {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 100;
+    max-width: 320px;
+    pointer-events: auto;
+}
+
+/* Hide on mobile - replaced by MobileNewsCarousel */
+@media (max-width: 768px) {
+    .widgets-container {
+        display: none;
+    }
+}
+
+/* Adjust for tablets */
+@media (min-width: 769px) and (max-width: 1200px) {
+    .widgets-container {
+        bottom: 16px;
+        left: 16px;
+        max-width: 280px;
+    }
+}
