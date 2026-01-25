@@ -58,3 +58,7 @@
 - [x] **Leaflet Controls**: z-index 400 (below menu, above map).
 - [x] **Map Panels**: z-index 300 (fade when popup open).
 - [x] **Popup CSS**: `:has()` selector for auto-fading panels.
+
+## 9. Admin Panel Improvements (Active)
+
+- [x] Fix Admin Property Map (Dark Box Issue).

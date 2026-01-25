@@ -18,6 +18,13 @@ class Settings(BaseSettings):
     POSTGRES_PORT: int = 5432
     POSTGRES_DB: str = "estate_db"
 
+    # S3 Storage (Yandex Cloud)
+    S3_BUCKET_NAME: str = "estate-storage-pro"
+    S3_ACCESS_KEY_ID: str = ""
+    S3_SECRET_ACCESS_KEY: str = ""
+    S3_REGION: str = "ru-central1"
+    S3_ENDPOINT_URL: str = "https://storage.yandexcloud.net"
+
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=True, extra="ignore")
 
     @property

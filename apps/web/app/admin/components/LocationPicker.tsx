@@ -21,7 +21,7 @@ export default function LocationPicker({ initialLat, initialLon, addressName, on
     const markerInstance = useRef<any>(null);
     const [status, setStatus] = useState('Нажмите на карту, чтобы выбрать точку');
     const [isScriptsLoaded, setIsScriptsLoaded] = useState(false);
-    const lastAddressRef = useRef<string>('');
+    const [error, setError] = useState<string | null>(null);
 
     // 1. Load 2GIS Script
     useEffect(() => {
@@ -33,11 +33,21 @@ export default function LocationPicker({ initialLat, initialLon, addressName, on
         const script = document.createElement('script');
         script.src = 'https://maps.api.2gis.ru/2.0/loader.js?pkg=full';
         script.async = true;
-        script.onload = () => setIsScriptsLoaded(true);
+        
+        script.onload = () => {
+            console.log('✅ 2GIS Script loaded successfully');
+            setIsScriptsLoaded(true);
+        };
+        
+        script.onerror = (e) => {
+            console.error('❌ Failed to load 2GIS script:', e);
+            setError('Не удалось загрузить скрипт карты (2GIS). Проверьте интернет-соединение или блокировщик рекламы.');
+        };
+
         document.body.appendChild(script);
 
         return () => {
-             // Cleanup if needed? Usually shared global script.
+             // Cleanup if needed
         };
     }, []);
 
@@ -46,37 +56,55 @@ export default function LocationPicker({ initialLat, initialLon, addressName, on
         if (!isScriptsLoaded || !mapContainer.current) return;
         if (mapInstance.current) return;
 
-        const DG = window.DG;
+        try {
+            const DG = window.DG;
+            if (!DG) {
+                throw new Error('DG object is missing despite script load');
+            }
 
-        mapInstance.current = DG.map(mapContainer.current, {
-            center: [initialLat, initialLon],
-            zoom: 16,
-            fullscreenControl: false,
-            zoomControl: true
-        });
+            console.log('🗺️ Initializing 2GIS Map...');
+            
+            mapInstance.current = DG.map(mapContainer.current, {
+                center: [initialLat, initialLon],
+                zoom: 16,
+                fullscreenControl: false,
+                zoomControl: true,
+                geoclicker: true
+            });
 
-        markerInstance.current = DG.marker([initialLat, initialLon], {
-            draggable: true
-        }).addTo(mapInstance.current);
+            console.log('✅ Map initialized. Creating marker...');
 
-        // Events
-        markerInstance.current.on('dragend', (e: any) => {
-            const lat = e.target.getLatLng().lat;
-            const lng = e.target.getLatLng().lng;
-            onChange(lat, lng);
-            setStatus(`Выбрано: ${lat.toFixed(6)}, ${lng.toFixed(6)}`);
-        });
+            markerInstance.current = DG.marker([initialLat, initialLon], {
+                draggable: true
+            }).addTo(mapInstance.current);
 
-        mapInstance.current.on('click', (e: any) => {
-            markerInstance.current.setLatLng(e.latlng);
-            onChange(e.latlng.lat, e.latlng.lng);
-            setStatus(`Выбрано: ${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`);
-        });
+            // Events
+            markerInstance.current.on('dragend', (e: any) => {
+                const lat = e.target.getLatLng().lat;
+                const lng = e.target.getLatLng().lng;
+                onChange(lat, lng);
+                setStatus(`Выбрано: ${lat.toFixed(6)}, ${lng.toFixed(6)}`);
+            });
+
+            mapInstance.current.on('click', (e: any) => {
+                markerInstance.current.setLatLng(e.latlng);
+                onChange(e.latlng.lat, e.latlng.lng);
+                setStatus(`Выбрано: ${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`);
+            });
+
+        } catch (err: any) {
+            console.error('❌ Map Initialization Error:', err);
+            setError(`Ошибка инициализации карты: ${err.message}`);
+        }
 
         // Cleanup
         return () => {
             if (mapInstance.current) {
-                mapInstance.current.remove();
+                try {
+                    mapInstance.current.remove();
+                } catch (e) {
+                    console.warn('Error removing map:', e);
+                }
                 mapInstance.current = null;
             }
         };
@@ -97,12 +125,38 @@ export default function LocationPicker({ initialLat, initialLon, addressName, on
         }
     }, [initialLat, initialLon]);
 
+    if (error) {
+        return (
+            <div style={{ 
+                border: '1px solid #ef4444', 
+                borderRadius: '12px', 
+                padding: '24px', 
+                background: '#450a0a', 
+                color: '#fca5a5',
+                textAlign: 'center'
+            }}>
+                <div style={{ fontSize: '24px', marginBottom: '8px' }}>🗺️⚠️</div>
+                <strong>Ошибка карты</strong>
+                <p style={{ marginTop: '8px', fontSize: '14px' }}>{error}</p>
+            </div>
+        );
+    }
+
     return (
-        <div style={{ border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', overflow: 'hidden' }}>
+        <div style={{ 
+            border: '1px solid rgba(255,255,255,0.1)', 
+            borderRadius: '12px', 
+            overflow: 'hidden',
+            position: 'relative', // Context for absolute children
+            zIndex: 1 // Ensure it sits above background but below modals
+        }}>
             <div style={{ background: '#1e293b', padding: '12px', fontSize: '13px', color: '#94a3b8', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                 📍 {status}
             </div>
-            <div ref={mapContainer} style={{ height: '400px', width: '100%' }} />
+            <div 
+                ref={mapContainer} 
+                style={{ height: '400px', width: '100%', display: 'block' }} // Added display block
+            />
         </div>
     );
 }

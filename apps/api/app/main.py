@@ -48,7 +48,9 @@ app.add_middleware(
         "http://127.0.0.1:3000",
         "http://127.0.0.1:3001",
         "https://web-zeta-blush-32.vercel.app",
-        "https://nedvizhkaestate-analytics-api.onrender.com"
+        "https://nedvizhkaestate-analytics-api.onrender.com",
+        "http://217.199.254.119",
+        "http://217.199.254.119:8000"
     ],
     allow_credentials=True,
     allow_methods=["*"],

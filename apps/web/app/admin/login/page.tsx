@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from '../admin.module.css';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+// Ensure no trailing slash
+const API_URL = API_BASE.endsWith('/') ? API_BASE.slice(0, -1) : API_BASE;
 
 export default function AdminLoginPage() {
     const router = useRouter();
@@ -19,7 +21,7 @@ export default function AdminLoginPage() {
         const token = localStorage.getItem('admin_token');
         if (token) {
             // Проверяем валидность токена
-            fetch(`${API_URL}/api/v1/auth/me`, {
+            fetch(`${API_URL}/auth/me`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
                 .then(res => {
@@ -45,7 +47,7 @@ export default function AdminLoginPage() {
         setError(null);
 
         try {
-            const endpoint = isSetup ? '/api/v1/auth/setup' : '/api/v1/auth/login';
+            const endpoint = isSetup ? '/auth/setup' : '/auth/login';
             const res = await fetch(`${API_URL}${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

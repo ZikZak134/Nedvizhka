@@ -67,9 +67,12 @@ def create_property(db: Session, property_data: PropertyCreate) -> Property:
             data['latitude'], data['longitude'] = coords
     
     # Auto-Calculate Distances
-    if data.get('latitude') and data.get('longitude'):
-        distances = GeoService.calculate_distances(db, data['latitude'], data['longitude'])
-        data['distances'] = distances
+    # if data.get('latitude') and data.get('longitude'):
+    #     try:
+    #         distances = GeoService.calculate_distances(db, data['latitude'], data['longitude'])
+    #         data['distances'] = distances
+    #     except Exception:
+    #         pass # Ignore geo errors to prevent transaction abort
 
     db_property = Property(**data)
     db.add(db_property)

@@ -2,52 +2,54 @@
 
 This document details the production infrastructure and operational procedures for the project.
 
-## Cloud Infrastructure
+## Cloud Infrastructure (Target: Timeweb Cloud)
 
-### Backend (Render.com)
-- **Web Service**: `estate-analytics-api`
-- **URL**: [https://nedvizhkaestate-analytics-api.onrender.com](https://nedvizhkaestate-analytics-api.onrender.com)
-- **Repo Root**: `apps/api`
-- **Port**: Managed by Render ($PORT)
+All components (Frontend, Backend, Database) are hosted on a single VPS server managed via Docker Compose.
 
-### Database (Render PostgreSQL)
-- **PostGIS**: Enabled (v15+)
-- **Connection**:
-  - Internal: `postgresql://estate_analytics_db_user:[password]@dpg-d5n2lp0gjchc73935fdg-a/estate_analytics_db`
-  - Internal: `postgresql://estate_analytics_db_user:[password]@dpg-d5n2lp0gjchc73935fdg-a/estate_analytics_db`
-  - External: `postgresql://estate_analytics_db_user:[password]@dpg-d5n2lp0gjchc73935fdg-a.virginia-postgres.render.com/estate_analytics_db`
+### VPS Configuration
+- **Provider**: Timeweb Cloud
+- **OS**: Ubuntu 22.04 LTS
+- **Resources**: 2 vCPU / 4 GB RAM / 50 GB NVMe
+- **Location**: Moscow / Netherlands
 
-### Configuration Settings (Critical)
-- **Build Command**: `pip install -r requirements.txt` (Default)
-- **Pre-Deploy Command**: `alembic upgrade head` (Required for DB migrations)
-- **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+### Backend (Docker)
+- **Service**: `api`
+- **Port**: 8000 (Internal)
+- **Log path**: Docker logs
 
-### Frontend (Vercel)
-- **URL**: [https://web-zeta-blush-32.vercel.app](https://web-zeta-blush-32.vercel.app)
-- **Critical Env Vars**:
-  - `NEXT_PUBLIC_API_URL`: `https://nedvizhkaestate-analytics-api.onrender.com`
-  - ✅ **Verified**: Configured for all environments (Production, Preview, Development)
-  - Last updated: 2026-01-20 ~09:00 (Tomsk time)
+### Frontend (Docker)
+- **Service**: `web`
+- **Port**: 3000 (Internal)
+
+### Database (Docker)
+- **Image**: `postgis/postgis:16-3.4-alpine`
+- **Port**: 5432 (Internal)
+- **Volume**: `postgres_data_prod`
+
+### Storage (Local)
+- **Type**: Local Filesystem (Docker Volume)
+- **Access**: Nginx static hosting via `/uploads`
+- **Backup**: Essential to backup `/var/lib/docker/volumes/...` or the mounted host path.
+
+---
+## Legacy Infrastructure (For Reference)
+*These services were used during MVP phase and are being migrated from.*
+- **Backend**: Render.com
+- **Frontend**: Vercel
+- **Storage**: Yandex Object Storage (S3) [DELETED]
+
+---
 
 ## Operational Procedures
 
 ### 1. Database Backups
 Automated backups are handled via GitHub Actions in [.github/workflows/db_backup.yml](file:///c:/Users/grama/OneDrive/Docs/Nedvizhka/.github/workflows/db_backup.yml).
-- **Schedule**: Every Sunday at 00:00 UTC.
-- **Artifacts**: Stored in GitHub Actions tab for 90 days.
-- **Required Secret**: `RENDER_BACKUP_DB_URL` (The External Database URL).
+*Note: Pipeline needs update to target VPS instead of Render.*
 
-### 2. Restoring Data
-To restore from a backup:
-1. Download the `.sql` artifact from GitHub.
-2. Ensure the target DB has PostGIS: `CREATE EXTENSION IF NOT EXISTS postgis;`
-3. Run: `psql "DATABASE_URL" < backup_file.sql`
-
-### 3. Updating Dependencies
-If you add a new Python library to `apps/api`:
-1. Add it to `apps/api/requirements.txt`.
-2. Push to GitHub.
-3. Render will automatically rebuild.
-
-> [!WARNING]
-> Render Free instances spin down after 15 minutes of inactivity. The first request after a long pause may take 50+ seconds to respond.
+### 2. Updating Application
+To deploy new code:
+1. `git push origin main`
+2. SSH into VPS.
+3. `cd /opt/estate-analytics`
+4. `git pull`
+5. `docker-compose -f docker-compose.prod.yml up -d --build`

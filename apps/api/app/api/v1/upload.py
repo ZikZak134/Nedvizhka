@@ -1,91 +1,102 @@
-"""API endpoint для загрузки файлов изображений."""
 import os
 import uuid
 import shutil
+import time
 from pathlib import Path
 from fastapi import APIRouter, File, UploadFile, HTTPException
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/upload", tags=["Upload"])
 
-# Путь к папке uploads. Храним локально в API.
-# В продакшене (Render) это временное хранилище (очищается при деплое).
-# Для постоянного хранения нужен S3. Но для MVP это решит проблему 404.
+# Локальная папка для хранения (внутри контейнера будет /app/uploads)
 UPLOAD_DIR = Path("uploads")
+# Убедимся, что папка существует
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
-# Допустимые расширения файлов
+# Допустимые расширения
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".mp4", ".mov", ".webm"}
 MAX_FILE_SIZE = 100 * 1024 * 1024  # 100 MB
 
+# Базовый URL для раздачи статики (Nginx или FastAPI static mount)
+# В продакшене Nginx будет перехватывать /uploads/
+STATIC_URL_PREFIX = "/uploads"
 
 class UploadResponse(BaseModel):
-    """Ответ после успешной загрузки."""
     url: str
     filename: str
     size: int
 
+class FileItem(BaseModel):
+    key: str # Используем key для совместимости с фронтендом, это будет filename
+    size: int
+    last_modified: str
+    url: str
+
+class FileListResponse(BaseModel):
+    files: list[FileItem]
+    # next_token не нужен для локальной папки пока, или можно реализовать offset
 
 @router.post("", response_model=UploadResponse)
-async def upload_image(file: UploadFile = File(...)):
-    """
-    Загрузить изображение или видео на сервер.
+async def upload_file(file: UploadFile = File(...)):
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="Filename required")
     
-    Поддерживаемые форматы: JPG, PNG, WebP, GIF, MP4, MOV, WEBM.
-    Максимальный размер: 100 MB.
-    
-    Возвращает URL для использования в галерее.
-    """
-    # Проверяем расширение файла
-    if file.filename:
-        ext = Path(file.filename).suffix.lower()
-    else:
-        raise HTTPException(status_code=400, detail="Имя файла не указано")
-    
+    ext = Path(file.filename).suffix.lower()
     if ext not in ALLOWED_EXTENSIONS:
-        raise HTTPException(
-            status_code=400, 
-            detail=f"Недопустимый формат файла. Разрешены: {', '.join(ALLOWED_EXTENSIONS)}"
-        )
+        raise HTTPException(status_code=400, detail=f"Invalid extension. Allowed: {', '.join(ALLOWED_EXTENSIONS)}")
     
-    # Читаем содержимое для проверки размера
     content = await file.read()
     if len(content) > MAX_FILE_SIZE:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Файл слишком большой. Максимум: {MAX_FILE_SIZE // (1024 * 1024)} MB"
-        )
+        raise HTTPException(status_code=400, detail="File too large")
     
-    # Создаём папку uploads если не существует
-    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-    
-    # Генерируем уникальное имя файла
+    # Генерация уникального имени
     unique_name = f"{uuid.uuid4().hex}{ext}"
     file_path = UPLOAD_DIR / unique_name
     
-    # Сохраняем файл
-    with open(file_path, "wb") as buffer:
-        buffer.write(content)
-    
+    with open(file_path, "wb") as f:
+        f.write(content)
+        
     return UploadResponse(
-        url=f"/uploads/{unique_name}",
+        url=f"{STATIC_URL_PREFIX}/{unique_name}",
         filename=unique_name,
         size=len(content)
     )
 
-
 @router.delete("/{filename}")
-async def delete_image(filename: str):
-    """Удалить загруженное изображение."""
+async def delete_file(filename: str):
     file_path = UPLOAD_DIR / filename
-    
     if not file_path.exists():
-        raise HTTPException(status_code=404, detail="Файл не найден")
+        raise HTTPException(status_code=404, detail="File not found")
     
-    # Проверка что файл находится в uploads (защита от path traversal)
     try:
-        file_path.resolve().relative_to(UPLOAD_DIR.resolve())
-    except ValueError:
-        raise HTTPException(status_code=400, detail="Недопустимый путь")
-    
-    os.remove(file_path)
-    return {"message": "Файл удалён"}
+        os.remove(file_path)
+        return {"message": "Deleted"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Delete error: {e}")
+
+@router.get("/files", response_model=FileListResponse)
+async def list_files():
+    """Список файлов в локальной папке uploads."""
+    try:
+        files = []
+        # Проходим по папке
+        if UPLOAD_DIR.exists():
+            with os.scandir(UPLOAD_DIR) as entries:
+                for entry in entries:
+                    if entry.is_file():
+                        stat = entry.stat()
+                        files.append(FileItem(
+                            key=entry.name,
+                            size=stat.st_size,
+                            last_modified=time.strftime('%Y-%m-%dT%H:%M:%S', time.gmtime(stat.st_mtime)),
+                            url=f"{STATIC_URL_PREFIX}/{entry.name}"
+                        ))
+        
+        # Сортировка по дате (свежие первые)
+        files.sort(key=lambda x: x.last_modified, reverse=True)
+        
+        return FileListResponse(files=files)
+        
+    except Exception as e:
+        print(f"List Error: {e}")
+        raise HTTPException(status_code=500, detail=f"List error: {e}")

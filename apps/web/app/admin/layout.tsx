@@ -26,6 +26,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: 'Объекты', icon: '🏠', href: '/admin/properties' },
     { label: 'Районы', icon: '🏙️', href: '/admin/districts' },
     { label: 'ЖК', icon: '🏢', href: '/admin/complexes' },
+    { label: 'Файлы', icon: '🗂', href: '/admin/files' },
     { label: 'Контент', icon: '📝', href: '/admin/content' },
     { label: 'Настройки', icon: '⚙️', href: '/admin/settings' },
   ];

@@ -37,12 +37,31 @@ def upgrade() -> None:
     op.add_column('properties', sa.Column('custom_fields', sa.JSON(), nullable=True, server_default='{}'))
     op.add_column('properties', sa.Column('complex_id', sa.Integer(), nullable=True))
     
-    # Index for complex_id (FK optimization)
     op.create_index('idx_property_complex', 'properties', ['complex_id'])
+
+    # Create complexes table (Missing migration fix)
+    op.create_table(
+        'complexes',
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('name', sa.String(length=200), nullable=False),
+        sa.Column('center_lat', sa.Float(), nullable=False),
+        sa.Column('center_lng', sa.Float(), nullable=False),
+        sa.Column('growth', sa.Float(), nullable=True),
+        sa.Column('price_sqm', sa.Integer(), nullable=True),
+        sa.Column('min_price', sa.Integer(), nullable=True),
+        sa.Column('tags', sa.JSON(), nullable=True),
+        sa.Column('image', sa.String(length=500), nullable=True),
+        sa.Column('description', sa.String(length=2000), nullable=True),
+        sa.Column('district', sa.String(length=100), nullable=True),
+        sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_complexes_id'), 'complexes', ['id'], unique=False)
+    op.create_index(op.f('ix_complexes_name'), 'complexes', ['name'], unique=True)
 
 
 def downgrade() -> None:
     """Remove Developer Properties fields."""
+    op.drop_table('complexes')
     op.drop_index('idx_property_complex', table_name='properties')
     op.drop_column('properties', 'complex_id')
     op.drop_column('properties', 'custom_fields')

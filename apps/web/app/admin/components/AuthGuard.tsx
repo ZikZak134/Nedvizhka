@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import styles from '../admin.module.css';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
 
 interface User {
     id: string;
@@ -46,7 +46,9 @@ export function AuthGuard({ children }: AuthGuardProps) {
             }
 
             try {
-                const res = await fetch(`${API_URL}/api/v1/auth/me`, {
+                // Ensure no double slash if API_URL ends with /
+                const baseUrl = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL;
+                const res = await fetch(`${baseUrl}/auth/me`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
