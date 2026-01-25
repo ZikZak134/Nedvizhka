@@ -676,7 +676,7 @@ export default function AdminProperties() {
               {/* 3. КАРТА */}
               <Section title="📍 Локация на карте">
                       <div>
-                      <div>
+
                           <Label required>Адрес объекта</Label>
                           <LocationAutocomplete 
                               value={formData.address}
