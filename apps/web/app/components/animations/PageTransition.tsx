@@ -25,7 +25,7 @@ export const PageTransition = ({ children }: PageTransitionProps) => {
                 animate="enter"
                 exit="exit"
                 variants={variants}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }} // Custom easing for premium feel
+                transition={{ duration: 0.55, ease: [0.6, 0.01, -0.05, 0.9] }} // Custom easing for premium feel
                 className="w-full flex-grow flex flex-col"
             >
                 {children}

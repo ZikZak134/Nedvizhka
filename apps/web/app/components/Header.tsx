@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ThemeToggle } from './ThemeToggle';
 import { HamburgerMenu } from './HamburgerMenu';
@@ -8,6 +9,9 @@ import { AboutDrawer } from './AboutDrawer';
 import { useMagneticEffect } from '../hooks/useMagneticEffect';
 import { useRippleEffect } from '../hooks/useRippleEffect';
 import { NAV_LINKS } from '../constants/routes';
+
+const MotionLink = motion.create(Link);
+const MotionButton = motion.button;
 
 export function Header() {
     const [isAboutOpen, setIsAboutOpen] = useState(false);
@@ -22,10 +26,12 @@ export function Header() {
                 <div className="container">
                     <div className="page-header-inner relative">
                         {/* Logo with Magnetic Effect */}
-                        <Link
+                        <MotionLink
                             href="/"
                             className="flex items-center gap-2 elite-magnetic-btn group"
                             {...logoMagnetic}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.95 }}
                         >
                             <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-accent-400 to-accent-600 shadow-premium-gold text-primary-900 font-bold text-lg">
                                 EA
@@ -33,24 +39,34 @@ export function Header() {
                             <span className="heading-5 hidden md:block m-0 text-white tracking-wide transition-colors duration-300 group-hover:text-accent-400">
                                 EstateAnalytics
                             </span>
-                        </Link>
+                        </MotionLink>
 
                         {/* About Company Button - CENTER */}
-                        <button
+                        <MotionButton
                             className="about-btn-vintage"
                             onClick={() => setIsAboutOpen(true)}
                             aria-label="О компании"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 10 }}
                         >
                             <span className="about-btn-text">О КОМПАНИИ</span>
                             <span className="about-btn-arrow">▼</span>
-                        </button>
+                        </MotionButton>
 
                         {/* Desktop Navigation with Ripple */}
                         <nav className="hidden md:flex items-center gap-6 elite-ripple" style={{ position: 'relative' }}>
                             {NAV_LINKS.map((link) => (
-                                <Link key={link.href} href={link.href} className="link body-base" onClick={createRipple}>
+                                <MotionLink 
+                                    key={link.href} 
+                                    href={link.href} 
+                                    className="link body-base" 
+                                    onClick={createRipple}
+                                    whileHover={{ scale: 1.05, y: -1 }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
                                     {link.label}
-                                </Link>
+                                </MotionLink>
                             ))}
                             <ThemeToggle />
 

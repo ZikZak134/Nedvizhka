@@ -125,7 +125,8 @@ export function HamburgerMenu() {
                                         font-display text-lg font-semibold transition-all duration-200
                                         ${pathname === link.href 
                                             ? 'text-accent-500 bg-accent-500/15 border border-accent-500/30' 
-                                            : 'text-white bg-white/5 border border-white/10 active:bg-white/10'}
+                                            : 'text-white bg-white/5 border border-white/10 active:bg-white/10 active:scale-[0.98]'}
+
                                     `}
                                     style={{ animationDelay: `${0.1 + index * 0.05}s` }}
                                 >

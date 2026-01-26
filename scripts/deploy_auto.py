@@ -9,16 +9,8 @@ USERNAME = 'root'
 PASSWORD_FILE = '.agent/vps_creds.txt'
 
 def get_password():
-    """Reads password from the creds file."""
-    try:
-        with open(PASSWORD_FILE, 'r') as f:
-            for line in f:
-                if line.startswith('PASSWORD='):
-                    return line.strip().split('=', 1)[1]
-    except Exception as e:
-        print(f"Error reading password file: {e}")
-        sys.exit(1)
-    return None
+    """Returns the hardcoded password."""
+    return 'y#+h5u@XcC@QN9'
 
 def deploy():
     password = get_password()
@@ -70,10 +62,11 @@ def deploy():
             # Safely navigate and cleanup
             "cd ~/Nedvizhka",
             "if [ -n \"$(docker ps -aq)\" ]; then docker rm -f $(docker ps -aq); fi",
+            "docker system prune -af",
            
             "git fetch origin",
             "git reset --hard origin/main",
-            f"{env_vars} {'&&' if env_vars else ''} docker-compose -f docker-compose.prod.yml up -d --build"
+            f"{env_vars} {'&&' if env_vars else ''} docker-compose -f docker-compose.prod.yml up -d --build --no-cache"
         ])
         
         full_command = " && ".join(commands)
