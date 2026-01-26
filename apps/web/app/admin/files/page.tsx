@@ -31,7 +31,7 @@ export default function FilesPage() {
 
   const fetchFiles = useCallback(async (continuationToken?: string) => {
     try {
-      const url = new URL(`${API_URL}/api/v1/upload/files`);
+      const url = new URL('/api/v1/upload/files', window.location.origin);
       url.searchParams.set('limit', '50');
       if (continuationToken) {
         url.searchParams.set('continuation_token', continuationToken);
@@ -66,7 +66,7 @@ export default function FilesPage() {
     if (!confirm('Удалить файл навсегда?')) return;
 
     try {
-      const res = await fetch(`${API_URL}/api/v1/upload/${key}`, {
+      const res = await fetch(`/api/v1/upload/${key}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -88,7 +88,7 @@ export default function FilesPage() {
     formData.append('file', file);
 
     try {
-      const res = await fetch(`${API_URL}/api/v1/upload`, {
+      const res = await fetch(`/api/v1/upload`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData

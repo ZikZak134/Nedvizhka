@@ -43,7 +43,7 @@ export default function DistrictsAdminPage() {
 
     const fetchDistricts = async () => {
         try {
-            const res = await fetch(`${API_URL}/api/v1/districts`);
+            const res = await fetch(`/api/v1/districts`);
             if (res.ok) {
                 const data = await res.json();
                 // Проверяем, что data — массив
@@ -61,7 +61,7 @@ export default function DistrictsAdminPage() {
     const saveDistrict = async (district: District) => {
         try {
             const method = district.id ? 'PUT' : 'POST';
-            const url = district.id ? `${API_URL}/api/v1/districts/${district.id}` : `${API_URL}/api/v1/districts`;
+            const url = district.id ? `/api/v1/districts/${district.id}` : `/api/v1/districts`;
             
             const res = await fetch(url, {
                 method,
@@ -85,7 +85,7 @@ export default function DistrictsAdminPage() {
     const deleteDistrict = async (id: number) => {
         if (!confirm('Удалить район?')) return;
         try {
-            await fetch(`${API_URL}/api/v1/districts/${id}`, { method: 'DELETE' });
+            await fetch(`/api/v1/districts/${id}`, { method: 'DELETE' });
             setMessage({ type: 'success', text: 'Район удалён' });
             fetchDistricts();
         } catch {
@@ -96,7 +96,7 @@ export default function DistrictsAdminPage() {
     const seedDefaults = async () => {
         if (!confirm('Это добавит 6 стандартных районов Сочи. Продолжить?')) return;
         for (const d of DEFAULT_DISTRICTS) {
-            await fetch(`${API_URL}/api/v1/districts`, {
+            await fetch(`/api/v1/districts`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(d),

@@ -41,7 +41,7 @@ export default function ComplexesAdminPage() {
 
     const fetchComplexes = async () => {
         try {
-            const res = await fetch(`${API_URL}/api/v1/complexes-admin`);
+            const res = await fetch(`/api/v1/complexes-admin`);
             if (res.ok) {
                 const data = await res.json();
                 // Проверяем, что data — массив
@@ -59,7 +59,7 @@ export default function ComplexesAdminPage() {
     const saveComplex = async (complex: Complex) => {
         try {
             const method = complex.id ? 'PUT' : 'POST';
-            const url = complex.id ? `${API_URL}/api/v1/complexes-admin/${complex.id}` : `${API_URL}/api/v1/complexes-admin`;
+            const url = complex.id ? `/api/v1/complexes-admin/${complex.id}` : `/api/v1/complexes-admin`;
             
             const res = await fetch(url, {
                 method,
@@ -83,7 +83,7 @@ export default function ComplexesAdminPage() {
     const deleteComplex = async (id: number) => {
         if (!confirm('Удалить ЖК?')) return;
         try {
-            await fetch(`${API_URL}/api/v1/complexes-admin/${id}`, { method: 'DELETE' });
+            await fetch(`/api/v1/complexes-admin/${id}`, { method: 'DELETE' });
             setMessage({ type: 'success', text: 'ЖК удалён' });
             fetchComplexes();
         } catch {
@@ -94,7 +94,7 @@ export default function ComplexesAdminPage() {
     const seedDefaults = async () => {
         if (!confirm('Добавить 6 стандартных ЖК?')) return;
         for (const c of DEFAULT_COMPLEXES) {
-            await fetch(`${API_URL}/api/v1/complexes-admin`, {
+            await fetch(`/api/v1/complexes-admin`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(c),

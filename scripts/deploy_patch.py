@@ -27,13 +27,16 @@ def deploy_patch():
         
         # 2. Upload next.config.js
         print("Uploading apps/web/next.config.js...")
-        local_conf = 'apps/web/next.config.js'
-        remote_conf = '/root/Nedvizhka/apps/web/next.config.js'
-        sftp.put(local_conf, remote_conf)
-        
+        sftp.put('apps/web/next.config.js', '/root/Nedvizhka/apps/web/next.config.js')
+
+        # 3. Upload Dashboard Fixes
+        print("Uploading Dashboard Fixes...")
+        sftp.put('apps/web/app/admin/page.tsx', '/root/Nedvizhka/apps/web/app/admin/page.tsx')
+        sftp.put('apps/web/app/admin/admin.module.css', '/root/Nedvizhka/apps/web/app/admin/admin.module.css')
+
         sftp.close()
         
-        # 3. Rebuild
+        # 4. Rebuild
         print("Triggering rebuild...")
         # Note: We do NOT run git reset here, so our patched files stay
         # We need to rebuild 'web' container to bake in the new NEXT_PUBLIC_API_URL arg

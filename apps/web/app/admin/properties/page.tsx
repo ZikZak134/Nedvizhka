@@ -95,7 +95,7 @@ export default function AdminProperties() {
   const fetchProperties = async (page = 1) => {
     setIsLoading(true);
     try {
-      const response = await authFetch(`${API_URL}/api/v1/properties?page=${page}&size=10`);
+      const response = await authFetch(`/api/v1/properties?page=${page}&size=10`);
       if (response.ok) {
         const data: PropertyListResponse = await response.json();
         // Безопасное извлечение items
@@ -117,7 +117,7 @@ export default function AdminProperties() {
   // Загрузка объекта для редактирования
   const loadPropertyForEdit = async (id: string) => {
     try {
-      const response = await authFetch(`${API_URL}/api/v1/properties/${id}`);
+      const response = await authFetch(`/api/v1/properties/${id}`);
       if (response.ok) {
         const data = await response.json();
         setFormData({
@@ -179,7 +179,7 @@ export default function AdminProperties() {
     if (!confirm('Удалить этот объект?')) return;
     
     try {
-      const response = await authFetch(`${API_URL}/api/v1/properties/${id}`, {
+      const response = await authFetch(`/api/v1/properties/${id}`, {
         method: 'DELETE',
       });
       if (response.ok) {
@@ -294,8 +294,8 @@ export default function AdminProperties() {
       };
 
       const url = editingId 
-        ? `${API_URL}/api/v1/properties/${editingId}`
-        : `${API_URL}/api/v1/properties`;
+        ? `/api/v1/properties/${editingId}`
+        : `/api/v1/properties`;
       
       console.log('📤 Отправка данных:', { url, method: editingId ? 'PATCH' : 'POST', payload });
       

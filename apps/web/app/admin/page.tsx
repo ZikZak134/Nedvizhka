@@ -17,8 +17,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-        const res = await fetch(`${apiUrl}/api/v1/properties`);
+        const res = await fetch('/api/v1/properties');
         if (res.ok) {
           const data = await res.json();
           // API возвращает {items: [...], total, pages}, а не просто массив
