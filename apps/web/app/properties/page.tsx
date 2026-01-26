@@ -7,6 +7,7 @@ import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { PropertyCard } from '../components/PropertyCard';
 import { PropertyFilters } from '../components/PropertyFilters';
+import { StaggerContainer, StaggerItem } from '../components/animations/Stagger';
 import styles from '../styles/public.module.css';
 
 import { Property } from '../types';
@@ -191,11 +192,13 @@ export default function PropertiesPage() {
                                     </div>
                                 ) : (
                                     <>
-                                        <div className="grid grid-auto-fill-md">
+                                        <StaggerContainer className="grid grid-auto-fill-md">
                                             {properties.map((property) => (
-                                                <PropertyCard key={property.id} property={property} />
+                                                <StaggerItem key={property.id}>
+                                                    <PropertyCard property={property} />
+                                                </StaggerItem>
                                             ))}
-                                        </div>
+                                        </StaggerContainer>
 
                                         {/* Pagination */}
                                         {totalPages > 1 && (

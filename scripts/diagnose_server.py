@@ -21,8 +21,11 @@ def diagnose():
     client.connect(HOSTNAME, username=USERNAME, password=get_password())
     
     cmds = [
+        "echo '--- MEMORY ---'",
+        "free -h",
         "echo '--- PORTS ---'",
         "netstat -tulpn | grep :80",
+
         "netstat -tulpn | grep :443",
         "echo '--- DOCKER CONTAINERS ---'",
         "docker ps -a",

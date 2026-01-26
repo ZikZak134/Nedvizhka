@@ -1,6 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import { getMockImage } from '../utils/mockImages';
 import { formatNumber, formatCurrency } from '../utils/formatters';
+import { TouchRipple } from './effects/TouchRipple';
 
 import { Property } from '../types';
 
@@ -14,14 +17,15 @@ export function PropertyCard({ property }: PropertyCardProps) {
     const placeholderImage = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='250' viewBox='0 0 400 250'%3E%3Crect fill='%23e5e7eb' width='400' height='250'/%3E%3Ctext fill='%239ca3af' font-family='Arial' font-size='14' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EНет фото%3C/text%3E%3C/svg%3E`;
 
     return (
-
         <Link 
             href={`/properties/${property.id}`} 
-            className="card property-card mobile-card-animated touch-ripple group transition-all duration-300 hover:-translate-y-1 hover:shadow-premium-xl border border-transparent hover:border-accent-500/30" 
+            className="card property-card mobile-card-animated touch-ripple group transition-all duration-300 hover:-translate-y-1 hover:shadow-premium-xl border border-transparent hover:border-accent-500/30 relative overflow-hidden block" 
             style={{ textDecoration: 'none' }}
         >
+            <TouchRipple />
+            
             {/* Image */}
-            <div className="relative overflow-hidden aspect-[4/3]">
+            <div className="relative overflow-hidden aspect-[4/3] group-hover:glimmer">
                 <img
                     src={property.images?.[0] || getMockImage(property.id)}
                     alt={property.title}
@@ -31,7 +35,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
                         e.currentTarget.src = getMockImage(property.id + '-fallback');
                     }}
                 />
-                <span className="badge backdrop-blur-md bg-neutral-900/60 text-white border border-white/10" style={{ position: 'absolute', top: '12px', left: '12px' }}>
+                <span className="badge backdrop-blur-md bg-neutral-900/60 text-white border border-white/10" style={{ position: 'absolute', top: '12px', left: '12px', zIndex: 1 }}>
                     {property.source === 'cian' ? 'ЦИАН' :
                         property.source === 'avito' ? 'Авито' :
                             'Вручную'}
@@ -43,7 +47,8 @@ export function PropertyCard({ property }: PropertyCardProps) {
                         right: '12px',
                         background: 'linear-gradient(135deg, var(--color-accent-400) 0%, var(--color-accent-300) 100%)',
                         color: 'var(--color-primary-900)',
-                        fontWeight: 600
+                        fontWeight: 600,
+                        zIndex: 1
                     }}>
                         🏗️ Застройщик
                     </span>

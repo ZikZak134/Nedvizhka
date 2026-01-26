@@ -62,15 +62,26 @@ export default function LocationPicker({ initialLat, initialLon, addressName, on
                 throw new Error('DG object is missing despite script load');
             }
 
-            console.log('🗺️ Initializing 2GIS Map...');
+            // Fallback to Sochi center if coordinates are invalid
+            const lat = (initialLat && !isNaN(initialLat)) ? initialLat : 43.5855;
+            const lng = (initialLon && !isNaN(initialLon)) ? initialLon : 39.7231;
+
+            console.log(`🗺️ Initializing 2GIS Map at [${lat}, ${lng}]...`);
             
             mapInstance.current = DG.map(mapContainer.current, {
-                center: [initialLat, initialLon],
+                center: [lat, lng],
                 zoom: 16,
                 fullscreenControl: false,
                 zoomControl: true,
                 geoclicker: true
             });
+
+            // Fix for map not rendering correctly in hidden containers/modals
+            setTimeout(() => {
+                if (mapInstance.current) {
+                    mapInstance.current.invalidateSize();
+                }
+            }, 500);
 
             console.log('✅ Map initialized. Creating marker...');
 

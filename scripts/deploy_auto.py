@@ -51,12 +51,12 @@ def deploy():
         commands.extend([
             "cd ~/Nedvizhka",
             
-            # NUKE OPTION: Remove all running containers to free ports from old project names
-            "docker rm -f $(docker ps -aq) || true",
+            # Safely remove containers if they exist
+            "if [ -n \"$(docker ps -aq)\" ]; then docker rm -f $(docker ps -aq); fi",
             
             "git fetch origin",
             "git reset --hard origin/main",
-            "docker-compose -f docker-compose.prod.yml up -d --build --force-recreate"
+            "docker-compose -f docker-compose.prod.yml up -d"
         ])
         
         full_command = " && ".join(commands)

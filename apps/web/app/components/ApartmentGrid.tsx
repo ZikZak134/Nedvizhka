@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { StaggerContainer, StaggerItem } from './animations/Stagger';
 
 interface Apartment {
   id: string;
@@ -60,13 +61,14 @@ export function ApartmentGrid({ complexId }: ApartmentGridProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {apartments.map((apt) => (
-        <div 
+        <StaggerItem
           key={apt.id} 
           className="bg-[#1e293b]/50 border border-white/10 rounded-xl overflow-hidden cursor-pointer hover:border-[#d4af37]/50 transition-all hover:-translate-y-1 group"
-          onClick={() => router.push(`/properties/${apt.id}`)}
+          tag="div"
         >
+          <div onClick={() => router.push(`/properties/${apt.id}`)}>
           {/* Image */}
           <div className="h-48 relative overflow-hidden bg-[#0f172a]">
             {apt.images?.[0] ? (
@@ -103,8 +105,9 @@ export function ApartmentGrid({ complexId }: ApartmentGridProps) {
               </button>
             </div>
           </div>
-        </div>
+          </div>
+        </StaggerItem>
       ))}
-    </div>
+    </StaggerContainer>
   );
 }

@@ -9,6 +9,7 @@ import { ElitePreloader } from './components/effects/ElitePreloader';
 import { playfair, inter, cormorant, tangerine } from './fonts/luxury';
 import { YandexMetrika } from './components/YandexMetrika';
 import { RuntimeTests } from './components/RuntimeTests';
+import { PageTransition } from './components/animations/PageTransition';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -55,7 +56,9 @@ export default function RootLayout({
         <ElitePreloader /> {/* Added effect component */}
 
         <ThemeProvider>
-          {children}
+          <PageTransition>
+            {children}
+          </PageTransition>
         </ThemeProvider>
 
         {/* Service Worker Registration for Map Tile Caching */}

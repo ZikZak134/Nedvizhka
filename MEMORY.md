@@ -116,6 +116,9 @@ ssh -i .agent/keys/vm_key -o StrictHostKeyChecking=no root@217.199.254.119 "cd ~
     - Использован `docker-compose.prod.yml`.
     - Очищены старые контейнеры (`docker rm -f`).
     - Backend/Frontend запущены.
+- 🔄 **CI/CD**: Настроен GitHub Actions (`.github/workflows/deploy.yml`).
+    - Авто-деплой при пуше в `main`.
+    - Vercel отключен.
 - 🔧 **Automation**: Создан скрипт `scripts/deploy_auto.py` (Paramiko) для обхода ввода пароля.
 - ⏳ **SSL**: Отложено до покупки домена. Работаем по HTTP.
 
