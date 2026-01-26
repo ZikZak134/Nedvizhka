@@ -63,14 +63,14 @@ def deploy():
         env_vars = f"export NEXT_PUBLIC_YANDEX_MAPS_KEY={yandex_key}" if yandex_key else ""
 
         commands.extend([
+            # Safely navigate and cleanup
             "cd ~/Nedvizhka",
-            
-            # Safely remove containers if they exist
-            "if [ -n \"$(docker ps -aq)\" ]; then docker rm -f $(docker ps -aq); fi",
-            
+            "docker-compose -f docker-compose.prod.yml down || true",
+            "docker system prune -af",
+           
             "git fetch origin",
             "git reset --hard origin/main",
-            f"{env_vars} && docker-compose -f docker-compose.prod.yml up -d --build"
+            f"{env_vars} {'&&' if env_vars else ''} docker-compose -f docker-compose.prod.yml up -d --build"
         ])
         
         full_command = " && ".join(commands)
