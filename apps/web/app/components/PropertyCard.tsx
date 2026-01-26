@@ -14,7 +14,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
     const placeholderImage = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='250' viewBox='0 0 400 250'%3E%3Crect fill='%23e5e7eb' width='400' height='250'/%3E%3Ctext fill='%239ca3af' font-family='Arial' font-size='14' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EНет фото%3C/text%3E%3C/svg%3E`;
 
     return (
-    return (
+
         <Link 
             href={`/properties/${property.id}`} 
             className="card property-card mobile-card-animated touch-ripple group transition-all duration-300 hover:-translate-y-1 hover:shadow-premium-xl border border-transparent hover:border-accent-500/30" 
