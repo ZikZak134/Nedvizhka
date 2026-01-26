@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 declare global {
     interface Window {
-        DG: any;
+        ymaps: any;
     }
 }
 
@@ -12,161 +12,147 @@ interface LocationPickerProps {
     initialLat: number;
     initialLon: number;
     addressName?: string;
-    onChange: (lat: number, lon: number) => void;
+    onChange: (lat: number, lon: number, address?: string) => void;
 }
 
 export default function LocationPicker({ initialLat, initialLon, addressName, onChange }: LocationPickerProps) {
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapInstance = useRef<any>(null);
-    const markerInstance = useRef<any>(null);
-    const [status, setStatus] = useState('Нажмите на карту, чтобы выбрать точку');
+    const placemarkRef = useRef<any>(null);
+    
+    const [status, setStatus] = useState('Загрузка карты (Yandex)...');
     const [isScriptsLoaded, setIsScriptsLoaded] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [loadingAddress, setLoadingAddress] = useState(false);
 
-    // 1. Load 2GIS Script
+    // 1. Load Yandex Script
     useEffect(() => {
-        if (window.DG) {
-            setIsScriptsLoaded(true);
+        if (window.ymaps) {
+            window.ymaps.ready(() => setIsScriptsLoaded(true));
             return;
         }
 
         const script = document.createElement('script');
-        script.src = 'https://maps.api.2gis.ru/2.0/loader.js?pkg=full';
+        // Dev mode without key works, but for prod use env
+        const apiKey = process.env.NEXT_PUBLIC_YANDEX_MAPS_KEY || '';
+        script.src = `https://api-maps.yandex.ru/2.1/?apikey=${apiKey}&lang=ru_RU`;
         script.async = true;
         
         script.onload = () => {
-            console.log('✅ 2GIS Script loaded successfully');
-            setIsScriptsLoaded(true);
+             window.ymaps.ready(() => setIsScriptsLoaded(true));
         };
         
-        script.onerror = (e) => {
-            console.error('❌ Failed to load 2GIS script:', e);
-            setError('Не удалось загрузить скрипт карты (2GIS). Проверьте интернет-соединение или блокировщик рекламы.');
+        script.onerror = () => {
+            setStatus('Ошибка загрузки Яндекс Карт');
         };
 
         document.body.appendChild(script);
-
-        return () => {
-             // Cleanup if needed
-        };
     }, []);
 
     // 2. Initialize Map
     useEffect(() => {
-        if (!isScriptsLoaded || !mapContainer.current) return;
-        if (mapInstance.current) return;
+        if (!isScriptsLoaded || !mapContainer.current || mapInstance.current) return;
 
-        try {
-            const DG = window.DG;
-            if (!DG) {
-                throw new Error('DG object is missing despite script load');
-            }
+        const startLat = (initialLat && !isNaN(initialLat) && initialLat !== 0) ? initialLat : 43.5855;
+        const startLng = (initialLon && !isNaN(initialLon) && initialLon !== 0) ? initialLon : 39.7231;
 
-            // Fallback to Sochi center if coordinates are invalid
-            const lat = (initialLat && !isNaN(initialLat)) ? initialLat : 43.5855;
-            const lng = (initialLon && !isNaN(initialLon)) ? initialLon : 39.7231;
+        console.log(`🗺️ Yandex Map Init at [${startLat}, ${startLng}]`);
 
-            console.log(`🗺️ Initializing 2GIS Map at [${lat}, ${lng}]...`);
-            
-            mapInstance.current = DG.map(mapContainer.current, {
-                center: [lat, lng],
-                zoom: 16,
-                fullscreenControl: false,
-                zoomControl: true,
-                geoclicker: true
-            });
+        const map = new window.ymaps.Map(mapContainer.current, {
+            center: [startLat, startLng],
+            zoom: 16,
+            controls: ['zoomControl', 'searchControl', 'typeSelector']
+        });
 
-            // Fix for map not rendering correctly in hidden containers/modals
-            setTimeout(() => {
-                if (mapInstance.current) {
-                    mapInstance.current.invalidateSize();
-                }
-            }, 500);
+        // Draggable Placemark
+        const placemark = new window.ymaps.Placemark([startLat, startLng], {
+            hintContent: 'Перетащите метку',
+            balloonContent: addressName || 'Выбранная точка'
+        }, {
+            draggable: true,
+            preset: 'islands#blueDotIcon'
+        });
 
-            console.log('✅ Map initialized. Creating marker...');
+        placeMarkEvents(placemark);
 
-            markerInstance.current = DG.marker([initialLat, initialLon], {
-                draggable: true
-            }).addTo(mapInstance.current);
+        map.geoObjects.add(placemark);
+        mapInstance.current = map;
+        placemarkRef.current = placemark;
 
-            // Events
-            markerInstance.current.on('dragend', (e: any) => {
-                const lat = e.target.getLatLng().lat;
-                const lng = e.target.getLatLng().lng;
-                onChange(lat, lng);
-                setStatus(`Выбрано: ${lat.toFixed(6)}, ${lng.toFixed(6)}`);
-            });
+        setStatus(addressName ? `📍 ${addressName}` : 'Перетащите метку для выбора адреса');
 
-            mapInstance.current.on('click', (e: any) => {
-                markerInstance.current.setLatLng(e.latlng);
-                onChange(e.latlng.lat, e.latlng.lng);
-                setStatus(`Выбрано: ${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`);
-            });
+        // Click on map to move marker
+        map.events.add('click', (e: any) => {
+            const coords = e.get('coords');
+            placemark.geometry.setCoordinates(coords);
+            handleDragEnd(coords);
+        });
 
-        } catch (err: any) {
-            console.error('❌ Map Initialization Error:', err);
-            setError(`Ошибка инициализации карты: ${err.message}`);
-        }
+    }, [isScriptsLoaded]);
 
-        // Cleanup
-        return () => {
-            if (mapInstance.current) {
-                try {
-                    mapInstance.current.remove();
-                } catch (e) {
-                    console.warn('Error removing map:', e);
-                }
-                mapInstance.current = null;
-            }
-        };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isScriptsLoaded]); // init only once when script loads
+    const placeMarkEvents = (placemark: any) => {
+        placemark.events.add('dragend', () => {
+            const coords = placemark.geometry.getCoordinates();
+            handleDragEnd(coords);
+        });
+    };
 
-    // 3. React to Prop Changes (Manual Typing)
-    useEffect(() => {
-        if (!mapInstance.current || !markerInstance.current) return;
+    const handleDragEnd = (coords: number[]) => {
+        const [lat, lon] = coords;
+        setStatus(`Координаты: ${lat.toFixed(6)}, ${lon.toFixed(6)}`);
         
-        const currentPos = markerInstance.current.getLatLng();
-        // Only update if significantly different (avoid loops)
-        if (Math.abs(currentPos.lat - initialLat) > 0.0001 || Math.abs(currentPos.lng - initialLon) > 0.0001) {
-            const newLatLng = [initialLat, initialLon];
-            markerInstance.current.setLatLng(newLatLng);
-            mapInstance.current.panTo(newLatLng);
-            setStatus(`Обновлено: ${initialLat.toFixed(6)}, ${initialLon.toFixed(6)}`);
+        // Reverse Geocoding
+        setLoadingAddress(true);
+        window.ymaps.geocode(coords).then((res: any) => {
+            const firstGeoObject = res.geoObjects.get(0);
+            const address = firstGeoObject ? firstGeoObject.getAddressLine() : 'Адрес не найден';
+            
+            setStatus(`📍 ${address}`);
+            onChange(lat, lon, address); // Pass address back to form!
+            
+            if (firstGeoObject && placemarkRef.current) {
+                placemarkRef.current.properties.set({
+                    balloonContent: address
+                });
+            }
+        }).catch((err: any) => {
+            console.error('Geo error', err);
+            onChange(lat, lon); // Pass at least coords
+            setStatus(`Координаты: ${lat.toFixed(6)}, ${lon.toFixed(6)} (Ошибка адреса)`);
+        }).finally(() => {
+            setLoadingAddress(false);
+        });
+    };
+
+    // Sync external props (if changed manually)
+    useEffect(() => {
+        if (mapInstance.current && placemarkRef.current) {
+            const current = placemarkRef.current.geometry.getCoordinates();
+            if (Math.abs(current[0] - initialLat) > 0.0001 || Math.abs(current[1] - initialLon) > 0.0001) {
+                // Only act if valid
+                 if (initialLat && initialLon) {
+                    const newCoords = [initialLat, initialLon];
+                    placemarkRef.current.geometry.setCoordinates(newCoords);
+                    mapInstance.current.setCenter(newCoords);
+                 }
+            }
         }
     }, [initialLat, initialLon]);
 
-    if (error) {
-        return (
-            <div style={{ 
-                border: '1px solid #ef4444', 
-                borderRadius: '12px', 
-                padding: '24px', 
-                background: '#450a0a', 
-                color: '#fca5a5',
-                textAlign: 'center'
-            }}>
-                <div style={{ fontSize: '24px', marginBottom: '8px' }}>🗺️⚠️</div>
-                <strong>Ошибка карты</strong>
-                <p style={{ marginTop: '8px', fontSize: '14px' }}>{error}</p>
-            </div>
-        );
-    }
-
     return (
-        <div style={{ 
+         <div style={{ 
             border: '1px solid rgba(255,255,255,0.1)', 
             borderRadius: '12px', 
             overflow: 'hidden',
-            position: 'relative', // Context for absolute children
-            zIndex: 1 // Ensure it sits above background but below modals
+            position: 'relative', 
+            zIndex: 1 
         }}>
-            <div style={{ background: '#1e293b', padding: '12px', fontSize: '13px', color: '#94a3b8', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                📍 {status}
+            <div style={{ background: '#1e293b', padding: '12px', fontSize: '13px', color: '#94a3b8', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between' }}>
+                <span className="truncate pr-4">{status}</span>
+                {loadingAddress && <span className="animate-pulse text-yellow-500">Поиск...</span>}
             </div>
             <div 
                 ref={mapContainer} 
-                style={{ height: '400px', width: '100%', display: 'block' }} // Added display block
+                style={{ height: '400px', width: '100%', display: 'block' }} 
             />
         </div>
     );

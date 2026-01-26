@@ -27,6 +27,7 @@ const SMIFeed = dynamic(() => import('./SMIFeed').then(m => m.SMIFeed), { ssr: f
 const PropertyLocation = dynamic(() => import('./PropertyLocation').then(m => m.PropertyLocation), { ssr: false });
 const PropertyPotential = dynamic(() => import('./PropertyPotential').then(m => m.PropertyPotential), { ssr: false });
 const PropertySurroundings = dynamic(() => import('./PropertySurroundings').then(m => m.PropertySurroundings), { ssr: false });
+import { YandexMap } from './YandexMap';
 
 // ============================================
 // TYPES — для районов и ЖК из API
@@ -380,7 +381,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
 
     const [data, setData] = useState<GeoJSONData | null>(null);
     const [loading, setLoading] = useState(true);
-    const [mapProvider, setMapProvider] = useState<'osm' | '2gis' | 'satellite'>('2gis');
+    const [mapProvider, setMapProvider] = useState<'osm' | 'yandex' | 'satellite'>('yandex');
     const [priceFilter, setPriceFilter] = useState<'all' | 'low' | 'mid' | 'high' | 'premium' | 'ultra' | 'luxury'>('all');
     const [scenario, setScenario] = useState<'all' | 'investor' | 'family' | 'single'>('all');
     const [showHeatmap, setShowHeatmap] = useState(true);
@@ -875,101 +876,15 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
     }, [mapProvider, filteredFeatures, showHeatmap, showInfra, activeInfraFilters]);
 
 
-    // 2GIS Implementation
+    // Yandex is handled by component internally
     useEffect(() => {
-        if (mapProvider !== '2gis') return;
-        
-        // Wait for container ref to be ready
-        if (!twoGisContainerRef.current) return;
-        
-        // If map already exists, just ensure it's resized? 
-        // 2GIS might need invalidatesize if it was hidden.
-        if (twoGisMapRef.current) {
-             setTimeout(() => twoGisMapRef.current.invalidateSize(), 100);
-             return;
-        }
-
-        if (!dgReady) return; // Wait for script
-
-        window.DG.then(() => {
-            if (!twoGisContainerRef.current) return;
-            
-            // Initialize map
-            const map = window.DG.map(twoGisContainerRef.current, {
-                center: [43.585, 39.720],
-                zoom: 13,
-                fullscreenControl: false,
-                zoomControl: true,
-            });
-            twoGisMapRef.current = map;
-
-            // Fix for gray screen on init
+        // Compatibility for MapLibre updates if needed when provider changes
+        if (mapProvider === 'osm' || mapProvider === 'satellite') {
             setTimeout(() => {
-                if (twoGisMapRef.current) {
-                    twoGisMapRef.current.invalidateSize();
-                }
-            }, 500);
-
-            // ... 2GIS Layers ...
-            // ... 2GIS Layers ...
-             Object.entries(districtsData).forEach(([name, district]) => {
-                const growth = district.growth_10y;
-                let color = '#94a3b8'; // Default Slate
-                if (growth > 150) color = '#10b981'; // Emerald
-                else if (growth > 100) color = '#fbbf24'; // Amber
-                else if (growth > 50) color = '#f59e0b'; // Amber-600
-                else if (growth > 0) color = '#ef4444'; // Red
-
-                // Use Flagpoles for consistency with MapLibre
-                const icon = window.DG.divIcon({
-                    className: 'district-flag-icon',
-                    html: createDistrictFlagHtml(name, color),
-                    iconSize: [200, 50], // Approximate size for the flag
-                    iconAnchor: [100, 50], // Anchor at bottom center (lines up with the "pole")
-                    popupAnchor: [0, -50]
-                });
-
-                const marker = window.DG.marker([district.center[0], district.center[1]], { 
-                    icon: icon,
-                    clickable: true 
-                }).addTo(map);
-
-                marker.on('click', () => { setSelectedDistrict({ name, ...district }); });
-                
-                // Note: Hover effects in 2GIS are harder with divIcons, relying on CSS pointer-events
-            });
-            
-            // Markers for 2GIS
-             filteredFeatures.forEach(feature => {
-                const [lng, lat] = feature.geometry.coordinates;
-                const props = feature.properties;
-                const priceColor = getPriceColor(props.price);
-                const growthColor = getGrowthColor(props.growth_10y || 0);
-
-                const icon = props.marker_icon 
-                    ? window.DG.icon({
-                        iconUrl: props.marker_icon,
-                        iconSize: [64, 64],
-                        iconAnchor: [32, 64],
-                        className: 'custom-3d-marker'
-                    })
-                    : window.DG.divIcon({
-                        className: 'custom-marker',
-                        html: createMarkerHtml(priceColor, growthColor, props.growth_10y || 0),
-                        iconSize: [36, 36],
-                        iconAnchor: [18, 36],
-                    });
-
-                const marker = window.DG.marker([lat, lng], { icon }).addTo(map);
-                marker.on('click', () => {
-                    setSelectedPropertyId(props.id);
-                    map.setView([lat, lng], 18, { animate: true });
-                });
-            });
-        });
-
-        // No cleanup - keep instance alive
-    }, [mapProvider, dgReady, filteredFeatures]);
+                if (mapInstanceRef.current) mapInstanceRef.current.resize();
+            }, 100);
+        }
+    }, [mapProvider]);
 
 
 
@@ -998,19 +913,31 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                 className={`${styles.mapLayer} ${mapProvider === '2gis' ? styles.mapLayerHidden : styles.mapLayerVisible}`}
             />
             
-            {/* 2GIS Container */}
-            <div 
-                ref={twoGisContainerRef}
-                className={`${styles.mapLayer} ${styles.twoGisPlaceholder} ${mapProvider === '2gis' ? styles.mapLayerVisible : styles.mapLayerHidden}`}
-            />
+            {/* Yandex Map Container */}
+            {mapProvider === 'yandex' && (
+                <div className={`${styles.mapLayer} ${styles.mapLayerVisible}`} style={{ zIndex: 1, background: '#f8fafc' }}>
+                    <YandexMap 
+                        properties={filteredFeatures.map(f => ({
+                            ...f.properties,
+                            longitude: f.geometry.coordinates[0],
+                            latitude: f.geometry.coordinates[1]
+                        }))}
+                        selectedPropertyId={selectedPropertyId}
+                        onPropertySelect={(id) => {
+                            setSelectedPropertyId(id);
+                            // Also open side panel
+                        }}
+                    />
+                </div>
+            )}
             
             {/* Top Controls Container */}
             <div className={styles.topControlsContainer}>
                 {/* Map Provider Toggle */}
                 <div className={styles.providerToggle}>
                     {[
-                        { key: 'osm', label: '🗺️ Схема', color: '#d4af37' }, // GOLD for luxury
-                        { key: '2gis', label: '🟢 2GIS', color: '#22c55e' },
+                        { key: 'osm', label: '🗺️ Схема', color: '#d4af37' },
+                        { key: 'yandex', label: '🔴 Яндекс', color: '#ef4444' },
                         { key: 'satellite', label: '🛰️ Спутник', color: '#8b5cf6' },
                     ].map(item => {
                         const isActive = mapProvider === item.key;
@@ -1021,7 +948,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                                 className={styles.providerBtn}
                                 style={{
                                     backgroundColor: isActive ? item.color : 'transparent',
-                                    color: isActive ? (item.key === 'osm' ? '#0f172a' : '#ffffff') : '#94a3b8', // Dark text on Gold, White on others
+                                    color: isActive ? (item.key === 'osm' ? '#0f172a' : '#ffffff') : '#94a3b8',
                                     fontWeight: isActive ? 700 : 500
                                 }}
                             >
