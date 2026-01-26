@@ -84,60 +84,18 @@ export function HamburgerMenu() {
             {/* Mobile Menu Overlay */}
             {isOpen && (
                 <>
-                    {/* Backdrop - полностью непрозрачный */}
+                    {/* Backdrop */}
                     <div
-                        style={{
-                            position: 'fixed',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            width: '100vw',
-                            height: '100vh',
-                            zIndex: 9998,
-                            backgroundColor: '#0a1128'
-                        }}
+                        className="fixed inset-0 w-screen h-screen z-[9998] bg-primary-900 mobile-menu-overlay"
                         onClick={() => setIsOpen(false)}
                     />
 
                     {/* Menu Content */}
-                    <div
-                        style={{
-                            position: 'fixed',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            width: '100vw',
-                            height: '100vh',
-                            zIndex: 9999,
-                            background: 'linear-gradient(180deg, #0a1128 0%, #1a2742 50%, #0a1128 100%)',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            padding: '20px',
-                            overflowY: 'auto'
-                        }}
-                    >
+                    <div className="fixed inset-0 w-screen h-screen z-[9999] bg-gradient-to-b from-primary-900 via-primary-800 to-primary-900 flex flex-col items-center justify-center p-5 overflow-y-auto mobile-menu-content">
                         {/* Close Button */}
                         <button
                             onClick={() => setIsOpen(false)}
-                            style={{
-                                position: 'absolute',
-                                top: '20px',
-                                right: '20px',
-                                width: '48px',
-                                height: '48px',
-                                background: 'rgba(255, 255, 255, 0.1)',
-                                border: '1px solid rgba(255, 255, 255, 0.2)',
-                                borderRadius: '50%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                cursor: 'pointer',
-                                color: '#ffffff'
-                            }}
+                            className="absolute top-5 right-5 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white active:scale-95 transition-transform"
                             aria-label="Закрыть меню"
                         >
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -146,82 +104,40 @@ export function HamburgerMenu() {
                         </button>
 
                         {/* Logo */}
-                        <div style={{ marginBottom: '48px', textAlign: 'center' }}>
-                            <div style={{
-                                fontSize: '32px',
-                                fontFamily: 'var(--font-heading)',
-                                fontWeight: 700,
-                                color: '#d4af37',
-                                letterSpacing: '0.05em'
-                            }}>
+                        <div className="mb-12 text-center mobile-nav-item" style={{ animationDelay: '0.05s' }}>
+                            <div className="text-3xl font-display font-bold text-accent-500 tracking-wide">
                                 EstateAnalytics
                             </div>
-                            <div style={{
-                                fontSize: '12px',
-                                color: 'rgba(255, 255, 255, 0.5)',
-                                marginTop: '8px',
-                                letterSpacing: '0.2em',
-                                textTransform: 'uppercase'
-                            }}>
+                            <div className="text-xs text-white/50 mt-2 tracking-[0.2em] uppercase">
                                 Элитная недвижимость
                             </div>
                         </div>
 
                         {/* Navigation Links */}
-                        <nav style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            gap: '12px',
-                            width: '100%',
-                            maxWidth: '280px'
-                        }}>
-                            {NAV_LINKS.map((link) => (
+                        <nav className="flex flex-col items-center gap-3 w-full max-w-[280px]">
+                            {NAV_LINKS.map((link, index) => (
                                 <Link
                                     key={link.href}
                                     href={link.href}
                                     onClick={() => setIsOpen(false)}
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '16px',
-                                        width: '100%',
-                                        padding: '16px 24px',
-                                        borderRadius: '16px',
-                                        textDecoration: 'none',
-                                        fontFamily: 'var(--font-heading)',
-                                        fontSize: '18px',
-                                        fontWeight: 600,
-                                        color: pathname === link.href ? '#d4af37' : '#ffffff',
-                                        background: pathname === link.href
-                                            ? 'rgba(212, 175, 55, 0.15)'
-                                            : 'rgba(255, 255, 255, 0.05)',
-                                        border: pathname === link.href
-                                            ? '1px solid rgba(212, 175, 55, 0.3)'
-                                            : '1px solid rgba(255, 255, 255, 0.1)',
-                                        transition: 'all 0.2s ease'
-                                    }}
+                                    className={`
+                                        mobile-nav-item flex items-center gap-4 w-full p-4 rounded-xl no-underline 
+                                        font-display text-lg font-semibold transition-all duration-200
+                                        ${pathname === link.href 
+                                            ? 'text-accent-500 bg-accent-500/15 border border-accent-500/30' 
+                                            : 'text-white bg-white/5 border border-white/10 active:bg-white/10'}
+                                    `}
+                                    style={{ animationDelay: `${0.1 + index * 0.05}s` }}
                                 >
-                                    <span style={{ fontSize: '24px' }}>{link.icon}</span>
+                                    <span className="text-2xl">{link.icon}</span>
                                     {link.label}
                                 </Link>
                             ))}
                         </nav>
 
                         {/* Theme Toggle */}
-                        <div style={{
-                            marginTop: '48px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            gap: '12px'
-                        }}>
-                            <span style={{
-                                fontSize: '12px',
-                                color: 'rgba(255, 255, 255, 0.5)',
-                                letterSpacing: '0.1em',
-                                textTransform: 'uppercase'
-                            }}>
+                        <div className="mt-12 flex flex-col items-center gap-3 mobile-nav-item" style={{ animationDelay: '0.4s' }}>
+                            <span className="text-xs text-white/50 tracking-widest uppercase">
                                 Тема оформления
                             </span>
                             <ThemeToggle />

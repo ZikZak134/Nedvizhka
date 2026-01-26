@@ -16,43 +16,21 @@ export function Header() {
 
     return (
         <>
-            <header className="page-header elite-glass" style={{
-                position: 'sticky',
-                top: 0,
-                zIndex: 10000, /* Выше bottom-sheet (9990) чтобы мобильное меню перекрывало карточку */
+            <header className="page-header elite-glass sticky top-0 z-[10000]" style={{
+                /* Выше bottom-sheet (9990) чтобы мобильное меню перекрывало карточку */
             }}>
                 <div className="container">
-                    <div className="page-header-inner" style={{ position: 'relative' }}>
+                    <div className="page-header-inner relative">
                         {/* Logo with Magnetic Effect */}
                         <Link
                             href="/"
-                            className="flex items-center gap-2 elite-magnetic-btn"
+                            className="flex items-center gap-2 elite-magnetic-btn group"
                             {...logoMagnetic}
                         >
-                            <div style={{
-                                width: '36px',
-                                height: '36px',
-                                background: 'linear-gradient(135deg, var(--elite-accent-gold), var(--elite-accent-gold-muted))',
-                                borderRadius: 'var(--radius-lg)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: 'var(--elite-bg-primary)',
-                                fontWeight: 'bold',
-                                fontSize: '18px',
-                                boxShadow: 'var(--shadow-gold)',
-                            }}>
+                            <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-accent-400 to-accent-600 shadow-premium-gold text-primary-900 font-bold text-lg">
                                 EA
                             </div>
-                            <span className="heading-5 hide-mobile" style={{
-                                margin: 0,
-                                color: 'var(--white)',
-                                letterSpacing: '0.02em',
-                                transition: 'color 0.3s ease'
-                            }}
-                                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--elite-accent-gold)'}
-                                onMouseLeave={(e) => e.currentTarget.style.color = 'var(--white)'}
-                            >
+                            <span className="heading-5 hidden md:block m-0 text-white tracking-wide transition-colors duration-300 group-hover:text-accent-400">
                                 EstateAnalytics
                             </span>
                         </Link>

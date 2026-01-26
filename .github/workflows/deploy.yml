@@ -1,0 +1,38 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "🚀 Connecting to server..."
+            cd ~/Nedvizhka || git clone https://github.com/ZikZak134/Nedvizhka.git ~/Nedvizhka
+            cd ~/Nedvizhka
+
+            echo "📥 Pulling latest code..."
+            git fetch origin
+            git reset --hard origin/main
+
+            echo "🏗️ Rebuilding containers..."
+            # Clean up potential zombie containers first
+            docker rm -f $(docker ps -aq) || true
+
+            # Start full stack
+            docker-compose -f docker-compose.prod.yml up -d --build --force-recreate
+
+            echo "🧹 Pruning unused images..."
+            docker image prune -a -f
+
+            echo "✅ Deployment complete!"

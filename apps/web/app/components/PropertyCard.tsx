@@ -14,30 +14,35 @@ export function PropertyCard({ property }: PropertyCardProps) {
     const placeholderImage = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='250' viewBox='0 0 400 250'%3E%3Crect fill='%23e5e7eb' width='400' height='250'/%3E%3Ctext fill='%239ca3af' font-family='Arial' font-size='14' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EНет фото%3C/text%3E%3C/svg%3E`;
 
     return (
-        <Link href={`/properties/${property.id}`} className="card property-card touch-ripple group transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-transparent hover:border-[#d4af37]/30" style={{ textDecoration: 'none' }}>
+    return (
+        <Link 
+            href={`/properties/${property.id}`} 
+            className="card property-card mobile-card-animated touch-ripple group transition-all duration-300 hover:-translate-y-1 hover:shadow-premium-xl border border-transparent hover:border-accent-500/30" 
+            style={{ textDecoration: 'none' }}
+        >
             {/* Image */}
-            <div className="relative overflow-hidden">
+            <div className="relative overflow-hidden aspect-[4/3]">
                 <img
                     src={property.images?.[0] || getMockImage(property.id)}
                     alt={property.title}
-                    className="card-image w-full h-[200px] object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="card-image w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     loading="lazy"
                     onError={(e) => {
                         e.currentTarget.src = getMockImage(property.id + '-fallback');
                     }}
                 />
-                <span className="badge badge-neutral" style={{ position: 'absolute', top: '12px', left: '12px' }}>
+                <span className="badge backdrop-blur-md bg-neutral-900/60 text-white border border-white/10" style={{ position: 'absolute', top: '12px', left: '12px' }}>
                     {property.source === 'cian' ? 'ЦИАН' :
                         property.source === 'avito' ? 'Авито' :
                             'Вручную'}
                 </span>
                 {property.is_from_developer && (
-                    <span className="badge" style={{ 
+                    <span className="badge shadow-premium-sm" style={{ 
                         position: 'absolute', 
                         top: '12px', 
                         right: '12px',
-                        background: 'linear-gradient(135deg, #d4af37 0%, #f5d871 100%)',
-                        color: '#1a1a2e',
+                        background: 'linear-gradient(135deg, var(--color-accent-400) 0%, var(--color-accent-300) 100%)',
+                        color: 'var(--color-primary-900)',
                         fontWeight: 600
                     }}>
                         🏗️ Застройщик
