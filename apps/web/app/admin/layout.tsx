@@ -11,10 +11,27 @@ import {
 } from './components/AdminIcons';
 import styles from './admin.module.css';
 
+// Hamburger Icon (inline SVG)
+const IconMenu = ({ size = 24 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="3" y1="6" x2="21" y2="6" />
+    <line x1="3" y1="12" x2="21" y2="12" />
+    <line x1="3" y1="18" x2="21" y2="18" />
+  </svg>
+);
+
+const IconClose = ({ size = 24 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { getUser, logout } = useAuth();
   const [user, setUser] = useState<{ display_name?: string; role?: string } | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Страница логина не использует sidebar
   const isLoginPage = pathname === '/admin/login';
@@ -25,6 +42,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }, [isLoginPage]);
 
+  // Закрывать sidebar при смене страницы
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
+
+  // Закрывать sidebar при resize на desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setSidebarOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const navItems = [
     { label: 'Дашборд', icon: <IconDashboard />, href: '/admin' },
     { label: 'Объекты', icon: <IconHome />, href: '/admin/properties' },
@@ -33,6 +66,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: 'Файлы', icon: <IconFolder />, href: '/admin/files' },
     { label: 'Контент', icon: <IconFileText />, href: '/admin/content' },
     { label: 'Настройки', icon: <IconSettings />, href: '/admin/settings' },
+  ];
+
+  // Bottom nav items (только 4 главных)
+  const bottomNavItems = [
+    { label: 'Главная', icon: <IconDashboard size={20} />, href: '/admin' },
+    { label: 'Объекты', icon: <IconHome size={20} />, href: '/admin/properties' },
+    { label: 'Настройки', icon: <IconSettings size={20} />, href: '/admin/settings' },
   ];
 
   // Breadcrumbs generation
@@ -61,10 +101,45 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <AuthGuard>
       <ToastProvider>
         <div className={styles.adminContainer}>
+          {/* Mobile Header */}
+          <header className={styles.mobileHeader}>
+            <button 
+              className={styles.hamburgerBtn}
+              onClick={() => setSidebarOpen(true)}
+              aria-label="Открыть меню"
+            >
+              <IconMenu />
+            </button>
+            <div className={styles.mobileHeaderTitle}>
+              <IconShield size={20} />
+              <span>Админка</span>
+            </div>
+            <div className={styles.mobileHeaderAvatar}>
+              {(user?.display_name || 'A')[0].toUpperCase()}
+            </div>
+          </header>
+
+          {/* Backdrop */}
+          {sidebarOpen && (
+            <div 
+              className={styles.sidebarBackdrop}
+              onClick={() => setSidebarOpen(false)}
+            />
+          )}
+
           {/* Sidebar */}
-          <div className={styles.adminSidebar}>
-            <div className={styles.adminLogo}>
-              <IconShield size={24} /> <span>Центр Управления</span>
+          <div className={`${styles.adminSidebar} ${sidebarOpen ? styles.sidebarOpen : ''}`}>
+            <div className={styles.sidebarHeader}>
+              <div className={styles.adminLogo}>
+                <IconShield size={24} /> <span>Центр Управления</span>
+              </div>
+              <button 
+                className={styles.sidebarCloseBtn}
+                onClick={() => setSidebarOpen(false)}
+                aria-label="Закрыть меню"
+              >
+                <IconClose />
+              </button>
             </div>
           
             <nav className={styles.adminNavGroup}>
@@ -75,6 +150,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     key={item.href} 
                     href={item.href} 
                     className={`${styles.adminNavItem} ${isActive ? styles.adminNavItemActive : ''}`}
+                    onClick={() => setSidebarOpen(false)}
                   >
                     <span className={styles.adminNavIcon}>{item.icon}</span>
                     <span>{item.label}</span>
@@ -128,6 +204,30 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             )}
             {children}
           </div>
+
+          {/* Bottom Navigation (Mobile) */}
+          <nav className={styles.bottomNav}>
+            {bottomNavItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`${styles.bottomNavItem} ${isActive ? styles.bottomNavItemActive : ''}`}
+                >
+                  <span className={styles.bottomNavIcon}>{item.icon}</span>
+                  <span className={styles.bottomNavLabel}>{item.label}</span>
+                </Link>
+              );
+            })}
+            <button
+              className={styles.bottomNavItem}
+              onClick={() => setSidebarOpen(true)}
+            >
+              <span className={styles.bottomNavIcon}><IconMenu size={20} /></span>
+              <span className={styles.bottomNavLabel}>Меню</span>
+            </button>
+          </nav>
         </div>
       </ToastProvider>
     </AuthGuard>
