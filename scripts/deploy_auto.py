@@ -32,13 +32,17 @@ def deploy():
         # Get Yandex Key from local .env
         yandex_key = ""
         try:
-            with open('apps/web/.env', 'r') as f:
-                for line in f:
-                    if line.startswith('NEXT_PUBLIC_YANDEX_MAPS_KEY='):
-                        yandex_key = line.strip().split('=', 1)[1]
-                        break
-        except Exception:
-            print("⚠️ Could not read NEXT_PUBLIC_YANDEX_MAPS_KEY from apps/web/.env")
+            print(f"Current CWD: {os.getcwd()}")
+            if os.path.exists('apps/web/.env'):
+                 with open('apps/web/.env', 'r') as f:
+                    for line in f:
+                        if line.startswith('NEXT_PUBLIC_YANDEX_MAPS_KEY='):
+                            yandex_key = line.strip().split('=', 1)[1]
+                            break
+            else:
+                 print("apps/web/.env does not exist")
+        except Exception as e:
+            print(f"⚠️ Could not read NEXT_PUBLIC_YANDEX_MAPS_KEY: {e}")
 
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -65,8 +69,7 @@ def deploy():
         commands.extend([
             # Safely navigate and cleanup
             "cd ~/Nedvizhka",
-            "docker-compose -f docker-compose.prod.yml down || true",
-            "docker system prune -af",
+            "if [ -n \"$(docker ps -aq)\" ]; then docker rm -f $(docker ps -aq); fi",
            
             "git fetch origin",
             "git reset --hard origin/main",

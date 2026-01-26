@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_API_URL: http://217.199.254.119
-        NEXT_PUBLIC_YANDEX_MAPS_KEY: ${NEXT_PUBLIC_YANDEX_MAPS_KEY}
+        NEXT_PUBLIC_YANDEX_MAPS_KEY: f5af7aa8-5a76-4586-a2b0-b59ed3e0a2ca
     restart: always
     environment:
       - NEXT_PUBLIC_API_URL=http://217.199.254.119
