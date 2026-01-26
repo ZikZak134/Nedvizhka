@@ -5,6 +5,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AuthGuard, useAuth } from './components/AuthGuard';
 import { ToastProvider } from './components/ToastContainer';
+import { 
+  IconDashboard, IconHome, IconCity, IconBuilding, 
+  IconFolder, IconFileText, IconSettings, IconShield, IconLogOut 
+} from './components/AdminIcons';
 import styles from './admin.module.css';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -22,13 +26,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [isLoginPage]);
 
   const navItems = [
-    { label: 'Дашборд', icon: '📊', href: '/admin' },
-    { label: 'Объекты', icon: '🏠', href: '/admin/properties' },
-    { label: 'Районы', icon: '🏙️', href: '/admin/districts' },
-    { label: 'ЖК', icon: '🏢', href: '/admin/complexes' },
-    { label: 'Файлы', icon: '🗂', href: '/admin/files' },
-    { label: 'Контент', icon: '📝', href: '/admin/content' },
-    { label: 'Настройки', icon: '⚙️', href: '/admin/settings' },
+    { label: 'Дашборд', icon: <IconDashboard />, href: '/admin' },
+    { label: 'Объекты', icon: <IconHome />, href: '/admin/properties' },
+    { label: 'Районы', icon: <IconCity />, href: '/admin/districts' },
+    { label: 'ЖК', icon: <IconBuilding />, href: '/admin/complexes' },
+    { label: 'Файлы', icon: <IconFolder />, href: '/admin/files' },
+    { label: 'Контент', icon: <IconFileText />, href: '/admin/content' },
+    { label: 'Настройки', icon: <IconSettings />, href: '/admin/settings' },
   ];
 
   // Breadcrumbs generation
@@ -60,7 +64,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* Sidebar */}
           <div className={styles.adminSidebar}>
             <div className={styles.adminLogo}>
-              🛡️ Центр Управления
+              <IconShield size={24} /> <span>Центр Управления</span>
             </div>
           
             <nav className={styles.adminNavGroup}>
@@ -90,7 +94,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </div>
               </div>
               <button onClick={logout} className={styles.adminLogoutBtn}>
-                🚪 Выйти
+                <IconLogOut size={16} /> Выйти
               </button>
               <Link href="/" className={`${styles.adminNavItem} ${styles.backToSiteLink}`}>
                 <span className={styles.backToSiteIcon}>←</span>

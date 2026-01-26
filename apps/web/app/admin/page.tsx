@@ -3,6 +3,15 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './admin.module.css';
+import { IconHome, IconClipboard, IconCoins, IconPlus, IconSettings, IconBuilding, IconBarChart } from './components/AdminIcons';
+
+// Inline timer icon (не хочется добавлять ещё экспорт)
+const IconTimer = ({ size = 14 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }}>
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12,6 12,12 16,14" />
+  </svg>
+);
 
 interface Stats {
   totalProperties: number;
@@ -66,7 +75,7 @@ export default function AdminDashboard() {
           <div className={styles.statCardInner}>
             <div className={styles.statCardHeader}>
               <div className={styles.statLabel}>Всего объектов</div>
-              <div className={styles.statCardIcon}>🏠</div>
+              <div className={styles.statCardIcon}><IconHome /></div>
             </div>
             <div className={styles.statValue}>
               {loading ? (
@@ -86,7 +95,7 @@ export default function AdminDashboard() {
           <div className={styles.statCardInner}>
             <div className={styles.statCardHeader}>
               <div className={styles.statLabel}>Активные заявки</div>
-              <div className={styles.statCardIcon}>📋</div>
+              <div className={styles.statCardIcon}><IconClipboard /></div>
             </div>
             <div className={styles.statValue}>
               {loading ? (
@@ -96,7 +105,7 @@ export default function AdminDashboard() {
               )}
             </div>
             <div className={`${styles.statChange} ${styles.statChangeWarning}`}>
-              ⏳ Ожидают обработки
+              <IconTimer /> Ожидают обработки
             </div>
           </div>
         </div>
@@ -106,7 +115,7 @@ export default function AdminDashboard() {
           <div className={styles.statCardInner}>
             <div className={styles.statCardHeader}>
               <div className={styles.statLabel}>Общая стоимость</div>
-              <div className={styles.statCardIcon}>💰</div>
+              <div className={styles.statCardIcon}><IconCoins /></div>
             </div>
             <div className={`${styles.statValue} ${styles.statValueSmall}`}>
               {loading ? (
@@ -116,7 +125,7 @@ export default function AdminDashboard() {
               )}
             </div>
             <div className={`${styles.statChange} ${styles.statChangeNeutral}`}>
-              📊 Сумма всех объектов
+              Сумма всех объектов
             </div>
           </div>
         </div>
@@ -127,13 +136,13 @@ export default function AdminDashboard() {
         <h2 className={styles.quickActionsTitle}>Быстрые действия</h2>
         <div className={styles.quickActionsGrid}>
           <Link href="/admin/properties" className={styles.btnPrimary}>
-            ➕ Добавить объект
+            <IconPlus size={16} /> Добавить объект
           </Link>
           <Link href="/admin/settings" className={styles.btnSecondary}>
-            ⚙️ Настройки сайта
+            <IconSettings size={16} /> Настройки сайта
           </Link>
           <Link href="/admin/complexes" className={styles.btnSecondary}>
-            🏢 Управление ЖК
+            <IconBuilding size={16} /> Управление ЖК
           </Link>
         </div>
       </div>

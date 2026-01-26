@@ -449,10 +449,10 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
     
     // Загрузка районов и ЖК из API
     useEffect(() => {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
         
         // Загрузка районов
-        fetch(`${apiUrl}/api/v1/districts`, { signal: AbortSignal.timeout(2000) })
+        fetch(`${apiUrl}/districts`, { signal: AbortSignal.timeout(2000) })
             .then(res => res.ok ? res.json() : Promise.reject())
             .then((data: DistrictData[]) => {
                 // Проверяем, что data — массив перед итерацией
@@ -477,7 +477,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
             .catch(() => console.log('[PremiumMap] Используем fallback для районов'));
         
         // Загрузка ЖК
-        fetch(`${apiUrl}/api/v1/complexes-admin`, { signal: AbortSignal.timeout(2000) })
+        fetch(`${apiUrl}/complexes-admin`, { signal: AbortSignal.timeout(2000) })
             .then(res => res.ok ? res.json() : Promise.reject())
             .then((data: ComplexData[]) => {
                 // Проверяем, что data — массив перед итерацией
@@ -552,12 +552,12 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
             if (remoteTypes.length === 0) return;
 
             try {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
                 const centerLat = 43.5855;
                 const centerLon = 39.7231;
                 const typeStr = remoteTypes.join(',');
 
-                const res = await fetch(`${apiUrl}/api/v1/infrastructure?lat=${centerLat}&lon=${centerLon}&radius=5000&types=${typeStr}`);
+                const res = await fetch(`${apiUrl}/infrastructure?lat=${centerLat}&lon=${centerLon}&radius=5000&types=${typeStr}`);
                 if (res.ok) {
                     const data = await res.json();
                     // Проверяем, что data — массив перед итерацией
@@ -605,11 +605,11 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
     useEffect(() => {
         let isCancelled = false;
         const fetchData = async () => {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
             let features: GeoJSONFeature[] = [];
 
             try {
-                const res = await fetch(`${apiUrl}/api/v1/heatmap`, { signal: AbortSignal.timeout(1500) });
+                const res = await fetch(`${apiUrl}/heatmap`, { signal: AbortSignal.timeout(1500) });
                 if (res.ok) {
                     const json = await res.json();
                     // Безопасное присвоение: убеждаемся, что features — массив

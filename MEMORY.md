@@ -52,6 +52,12 @@
 - [x] **Limits**:
   - [x] Geocoder: < 1000 requests/day (HTTP API), < 25000 requests/day (JS API).
 - [x] **Verified**: Hardcoded Key in Build.
+- [x] **Optimization (26.01.2026)**:
+  - [x] Заблокированы карточки чужих организаций (`suppressMapOpenBlock: true`)
+  - [x] Отключена интерактивность POI (`yandexMapDisablePoiInteractivity: true`)
+  - [x] Добавлена геолокация и линейка
+  - [x] Удалён поиск Яндекса (не нужен — свои данные)
+  - [x] Логотип и условия использования сохранены (обязательно по ToS)
 
 ## 8. Final E2E Verification (Active)
 

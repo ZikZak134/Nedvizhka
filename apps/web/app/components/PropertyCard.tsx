@@ -69,14 +69,14 @@ export function PropertyCard({ property }: PropertyCardProps) {
                 <div className="property-price mb-2">
                     {property.price_per_sqm ? (
                         <>
-                            {formatPrice(property.price_per_sqm)} <span style={{ fontSize: '14px', fontWeight: 'normal' }}>₽/м²</span>
+                            {formatPrice(property.price_per_sqm).replace(' ₽', '')} <span style={{ fontSize: '14px', fontWeight: 'normal' }}>₽/м²</span>
                             <div style={{ fontSize: '12px', color: 'var(--color-text-muted)', fontWeight: 'normal' }}>
-                                от {formatPrice(property.price)} ₽
+                                от {formatPrice(property.price)}
                             </div>
                         </>
                     ) : (
                         <>
-                            {formatPrice(property.price)} <span style={{ fontSize: '14px', fontWeight: 'normal' }}>₽</span>
+                            {formatPrice(property.price)}
                         </>
                     )}
                 </div>

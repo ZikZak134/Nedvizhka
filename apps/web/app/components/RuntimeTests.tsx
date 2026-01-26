@@ -13,7 +13,7 @@ export function RuntimeTests() {
         console.group('🔍 [RuntimeTests] Starting checks...');
         
         const runChecks = async () => {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
             console.log('Environment:', {
                 NODE_ENV: process.env.NODE_ENV,
                 API_URL: apiUrl
@@ -33,7 +33,7 @@ export function RuntimeTests() {
             // 2. Heatmap Structure Check
             try {
                 console.time('Heatmap Check');
-                const heatRes = await fetch(`${apiUrl}/api/v1/heatmap`);
+                const heatRes = await fetch(`${apiUrl}/heatmap`);
                 const heatData = await heatRes.json();
                 
                 if (heatData && typeof heatData === 'object' && Array.isArray(heatData.features)) {

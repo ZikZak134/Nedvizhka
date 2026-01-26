@@ -28,8 +28,8 @@ export function ApartmentGrid({ complexId }: ApartmentGridProps) {
   useEffect(() => {
     const fetchApartments = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-        const res = await fetch(`${apiUrl}/api/v1/complexes/${complexId}/apartments`);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
+        const res = await fetch(`${apiUrl}/complexes/${complexId}/apartments`);
         if (!res.ok) throw new Error('Failed to fetch apartments');
         const data = await res.json();
         // Проверяем, что data — массив

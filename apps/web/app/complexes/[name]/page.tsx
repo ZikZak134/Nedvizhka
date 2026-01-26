@@ -49,9 +49,9 @@ export default function ComplexDetailPage() {
 
     useEffect(() => {
         const fetchComplex = async () => {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
             try {
-                const res = await fetch(`${apiUrl}/api/v1/complexes/${encodeURIComponent(complexName)}`);
+                const res = await fetch(`${apiUrl}/complexes/${encodeURIComponent(complexName)}`);
                 if (!res.ok) throw new Error('Complex not found');
                 const json = await res.json();
                 setData(json);

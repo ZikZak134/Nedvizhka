@@ -85,9 +85,9 @@ export default function PropertyDetailPage() {
     // Fetch property data
     useEffect(() => {
         const fetchProperty = async () => {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
             try {
-                const res = await fetch(`${apiUrl}/api/v1/properties/${params.id}`);
+                const res = await fetch(`${apiUrl}/properties/${params.id}`);
                 if (!res.ok) throw new Error('Property not found');
                 const data = await res.json();
                 setProperty(data);
@@ -223,7 +223,7 @@ export default function PropertyDetailPage() {
                     {/* Ask Owner Link */}
                     <button
                         onClick={() => openLeadModal('question')}
-                        className="bg-transparent border-none text-[#d4af37] underline mt-3 text-[13px] cursor-pointer font-sans"
+                        className="bg-transparent border-none text-[#d4af37] hover:underline mt-3 text-[13px] cursor-pointer font-sans"
                     >
                         💬 Задать вопрос представителю владельца
                     </button>
@@ -244,13 +244,20 @@ export default function PropertyDetailPage() {
                                 ← На главную
                             </a>
                             <span className="lux-breadcrumb-sep">/</span>
-                            <a href={`/?district=${property.district}`} className="lux-breadcrumb-link">
-                                {property.district || 'Район'}
+                            <a 
+                                href={property.district ? `/?district=${encodeURIComponent(property.district)}` : '/properties'} 
+                                className="lux-breadcrumb-link"
+                            >
+                                {property.district || 'Все районы'}
                             </a>
-                            <span className="lux-breadcrumb-sep">/</span>
-                            <a href="#" className="lux-breadcrumb-link">
-                                {property.complex || 'ЖК'}
-                            </a>
+                            {property.complex && (
+                                <>
+                                    <span className="lux-breadcrumb-sep">/</span>
+                                    <a href={`/properties?complex=${encodeURIComponent(property.complex)}`} className="lux-breadcrumb-link">
+                                        {property.complex}
+                                    </a>
+                                </>
+                            )}
                             <span className="lux-breadcrumb-sep">/</span>
                             <span className="lux-breadcrumb-current">{property.address}</span>
                         </div>

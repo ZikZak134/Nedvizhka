@@ -21,9 +21,9 @@ export default function ComplexesPage() {
 
     useEffect(() => {
         const fetchComplexes = async () => {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
             try {
-                const res = await fetch(`${apiUrl}/api/v1/complexes`);
+                const res = await fetch(`${apiUrl}/complexes`);
                 const data = await res.json();
                 // Проверяем, что data — массив
                 setComplexes(Array.isArray(data) ? data : []);

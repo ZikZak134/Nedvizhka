@@ -33,7 +33,7 @@ export default function PropertiesPage() {
 
     const fetchProperties = async () => {
         setLoading(true);
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
 
         const params = new URLSearchParams();
         params.append('page', page.toString());
@@ -49,7 +49,7 @@ export default function PropertiesPage() {
         if (filters.is_from_developer) params.append('is_from_developer', 'true');
 
         try {
-            const res = await fetch(`${apiUrl}/api/v1/properties?${params.toString()}`);
+            const res = await fetch(`${apiUrl}/properties?${params.toString()}`);
             if (!res.ok) throw new Error('Network response was not ok');
             const data = await res.json();
 

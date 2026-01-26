@@ -95,9 +95,9 @@ export function PropertyMap({ height = '500px', showHeatmap = true, onPropertyCl
             setLoading(false);
         } else {
             const fetchData = async () => {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
                 try {
-                    const res = await fetch(`${apiUrl}/api/v1/heatmap`);
+                    const res = await fetch(`${apiUrl}/heatmap`);
                     const json = await res.json();
                     setData(json);
                 } catch (error) {

@@ -18,8 +18,8 @@ export function Footer() {
     useEffect(() => {
         const fetchSettings = async () => {
             try {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-                const res = await fetch(`${apiUrl}/api/v1/settings`);
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
+                const res = await fetch(`${apiUrl}/settings`);
                 if (res.ok) {
                     setSettings(await res.json());
                 }

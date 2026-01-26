@@ -79,9 +79,14 @@ export function YandexMap({
             const map = new window.ymaps.Map(mapContainerRef.current, {
                 center: center,
                 zoom: zoom,
-                controls: ['zoomControl', 'fullscreenControl', 'typeSelector']
+                controls: ['zoomControl', 'fullscreenControl', 'typeSelector', 'geolocationControl', 'rulerControl']
             }, {
-                searchControlProvider: 'yandex#search'
+                // Блокируем карточки чужих организаций (музеи, такси и т.д.)
+                suppressMapOpenBlock: true,
+                // Отключаем интерактивность POI (точки интереса Яндекса)
+                yandexMapDisablePoiInteractivity: true,
+                // Не показывать устаревшее уведомление браузера
+                suppressObsoleteBrowserNotifier: true
             });
 
             // Create ObjectManager
