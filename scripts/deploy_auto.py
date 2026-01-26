@@ -29,6 +29,17 @@ def deploy():
     print(f"Connecting to {USERNAME}@{HOSTNAME}...")
     
     try:
+        # Get Yandex Key from local .env
+        yandex_key = ""
+        try:
+            with open('apps/web/.env', 'r') as f:
+                for line in f:
+                    if line.startswith('NEXT_PUBLIC_YANDEX_MAPS_KEY='):
+                        yandex_key = line.strip().split('=', 1)[1]
+                        break
+        except Exception:
+            print("⚠️ Could not read NEXT_PUBLIC_YANDEX_MAPS_KEY from apps/web/.env")
+
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.connect(HOSTNAME, username=USERNAME, password=password)
@@ -48,6 +59,9 @@ def deploy():
         else:
              print("📂 Directory exists.")
 
+        # Build env string
+        env_vars = f"export NEXT_PUBLIC_YANDEX_MAPS_KEY={yandex_key}" if yandex_key else ""
+
         commands.extend([
             "cd ~/Nedvizhka",
             
@@ -56,11 +70,11 @@ def deploy():
             
             "git fetch origin",
             "git reset --hard origin/main",
-            "docker-compose -f docker-compose.prod.yml up -d"
+            f"{env_vars} && docker-compose -f docker-compose.prod.yml up -d --build"
         ])
         
         full_command = " && ".join(commands)
-        print(f"Executing: {full_command}")
+        print(f"Executing deployment with Yandex Key: {yandex_key[:5]}...")
         
         stdin, stdout, stderr = client.exec_command(full_command)
         
@@ -83,7 +97,7 @@ def deploy():
         client.close()
         
     except Exception as e:
-        print(f"❌ Connection failed: {e}")
+        print(f"❌ Connection or Execution failed: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":
