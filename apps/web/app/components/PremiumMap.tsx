@@ -885,7 +885,7 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
         // If map already exists, just ensure it's resized? 
         // 2GIS might need invalidatesize if it was hidden.
         if (twoGisMapRef.current) {
-             twoGisMapRef.current.invalidateSize();
+             setTimeout(() => twoGisMapRef.current.invalidateSize(), 100);
              return;
         }
 
@@ -902,6 +902,13 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
                 zoomControl: true,
             });
             twoGisMapRef.current = map;
+
+            // Fix for gray screen on init
+            setTimeout(() => {
+                if (twoGisMapRef.current) {
+                    twoGisMapRef.current.invalidateSize();
+                }
+            }, 500);
 
             // ... 2GIS Layers ...
             // ... 2GIS Layers ...
