@@ -366,12 +366,12 @@ export default function AdminProperties() {
   if (showForm) {
     return (
       <div className={styles.adminMainContent}>
-        <header className="mb-10 flex justify-between items-center">
+        <header className={styles.pageHeader}>
           <div>
-            <h1 className="text-[32px] font-bold text-white">
+            <h1 className={styles.pageTitle}>
               {editingId ? 'Редактирование объекта' : 'Новый объект'}
             </h1>
-            <p className="text-slate-500">Полный контроль над контентом, аналитикой и медиа</p>
+            <p className={styles.pageSubtitle}>Полный контроль над контентом, аналитикой и медиа</p>
           </div>
           <button 
             onClick={handleCancel}
@@ -999,10 +999,10 @@ export default function AdminProperties() {
   // === СПИСОК ОБЪЕКТОВ ===
   return (
     <div className={styles.adminMainContent}>
-      <header className="mb-8 flex justify-between items-center">
+      <header className={styles.pageHeader}>
         <div>
-          <h1 className="text-[32px] font-bold text-white">Объекты недвижимости</h1>
-          <p className="text-slate-500">Всего объектов: {properties.length}</p>
+          <h1 className={styles.pageTitle}>Объекты недвижимости</h1>
+          <p className={styles.pageSubtitle}>Всего объектов: {properties.length}</p>
         </div>
         <button 
           onClick={handleNewProperty}

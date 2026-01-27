@@ -1857,6 +1857,28 @@
   height: 38px;
 }
 
+/* === PAGE HEADER === */
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  gap: 16px;
+}
+
+.pageTitle {
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.pageSubtitle {
+  color: #64748b;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
 /* === PROPERTIES FORM === */
 .formColumn {
   display: flex;
