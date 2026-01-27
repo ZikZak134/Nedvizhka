@@ -2889,7 +2889,8 @@
   }
 
   /* === Submit button full width === */
-  button[type="submit"] {
+  /* === Submit button full width === */
+  .btnFull {
     width: 100%;
   }
 }
