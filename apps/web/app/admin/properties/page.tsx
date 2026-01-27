@@ -388,7 +388,7 @@ export default function AdminProperties() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-[1fr_400px] gap-10 items-start">
+        <form onSubmit={handleSubmit} className={styles.propertyForm}>
           
           {/* LEFT COLUMN */}
           <div className={styles.formColumn}>

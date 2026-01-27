@@ -1879,6 +1879,14 @@
   margin-top: 4px;
 }
 
+/* === PROPERTY EDIT FORM LAYOUT === */
+.propertyForm {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 40px;
+  align-items: start;
+}
+
 /* === PROPERTIES FORM === */
 .formColumn {
   display: flex;
@@ -2593,11 +2601,24 @@
     grid-template-columns: 1fr !important;
   }
 
+  /* === Property form: 1 column on mobile === */
+  .propertyForm {
+    grid-template-columns: 1fr !important;
+    gap: 24px;
+  }
+
   /* === Page header fix: title and button stacked === */
   .pageHeader {
     flex-direction: column;
-    align-items: flex-start !important;
-    gap: 12px;
+    align-items: stretch !important;
+    gap: 16px;
+  }
+
+  .pageHeader > button,
+  .pageHeader > a {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
   }
 
   .pageTitle {
@@ -2605,6 +2626,10 @@
     word-break: break-word;
     overflow-wrap: break-word;
     max-width: 100%;
+  }
+
+  .pageSubtitle {
+    word-break: break-word;
   }
 
   /* === Form sections spacing fix === */
@@ -2620,6 +2645,12 @@
     border-top: none;
   }
 
+  /* === Section cards overflow === */
+  .sectionCard {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
   /* === Map & Gallery overflow fix === */
   .mapWrapper,
   .imageGallery,
@@ -2627,6 +2658,18 @@
   .uploadArea {
     max-width: 100%;
     overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  /* === DropZone text overflow fix === */
+  .dropZone p,
+  .dropZone span,
+  .uploadArea p,
+  .uploadArea span {
+    white-space: normal !important;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
   }
 
   /* === Inputs touch-friendly === */
