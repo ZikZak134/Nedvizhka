@@ -2655,6 +2655,11 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
+  .searchWrapper {
+    margin-top: 24px !important;
+    margin-bottom: 24px !important;
+  }
+
   .pageHeader > button,
   .pageHeader > a {
     width: 100%;

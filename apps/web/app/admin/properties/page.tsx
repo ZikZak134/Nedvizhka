@@ -1015,7 +1015,7 @@ export default function AdminProperties() {
       </header>
 
       {/* Поиск */}
-      <div className="mb-6">
+      <div className={styles.searchWrapper}>
         <input
           type="text"
           value={searchQuery}
