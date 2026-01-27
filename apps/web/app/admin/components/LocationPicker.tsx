@@ -60,7 +60,7 @@ export default function LocationPicker({ initialLat, initialLon, addressName, on
         const map = new window.ymaps.Map(mapContainer.current, {
             center: [startLat, startLng],
             zoom: 16,
-            controls: ['zoomControl', 'searchControl', 'typeSelector']
+            controls: [] // Clean map without extra controls
         });
 
         // Draggable Placemark
