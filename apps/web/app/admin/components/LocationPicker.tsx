@@ -60,7 +60,8 @@ export default function LocationPicker({ initialLat, initialLon, addressName, on
         const map = new window.ymaps.Map(mapContainer.current, {
             center: [startLat, startLng],
             zoom: 16,
-            controls: [], // Clean map without extra controls
+            controls: [] // Clean map without extra controls
+        }, {
             suppressMapOpenBlock: true // Remove 'Open in Yandex Maps', Taxi, Routes links
         });
 
