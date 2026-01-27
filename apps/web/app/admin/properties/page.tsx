@@ -260,7 +260,7 @@ export default function AdminProperties() {
              setFormData(prev => ({ ...prev, address: address }));
              showSuccess(`Адрес обновлен: ${address}`);
         } else {
-            // Иначе пробуем 2GIS (как раньше)
+            // Иначе пробуем Nominatim (fallback)
             const resolvedAddress = await reverseGeocode(lat, lon);
             if (resolvedAddress) {
                 setFormData(prev => ({ ...prev, address: resolvedAddress }));

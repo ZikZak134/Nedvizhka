@@ -581,25 +581,11 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
         return () => clearTimeout(t);
     }, [activeInfraFilters]);
 
-    // Load 2GIS script
+    // Load 2GIS script (REMOVED)
+    // 2GIS provider is deprecated. Logic removed.
     useEffect(() => {
-        if (mapProvider !== '2gis') return;
-        if (typeof window !== 'undefined' && !window.DG) {
-            const script = document.createElement('script');
-            script.src = 'https://maps.api.2gis.ru/2.0/loader.js?pkg=full';
-            script.async = true;
-            script.onload = () => {
-                window.DG.then(() => setDgReady(true));
-            };
-            script.onerror = () => {
-                console.error('Failed to load 2GIS script');
-                setMapProvider('osm');
-            };
-            document.head.appendChild(script);
-        } else if (window.DG) {
-            window.DG.then(() => setDgReady(true));
-        }
-    }, [mapProvider]);
+        // Cleanup if needed
+    }, []);
 
     // Fetch Data
     useEffect(() => {
@@ -685,12 +671,8 @@ export function PremiumMap({ height = '100%' }: PremiumMapProps) {
         const [lng, lat] = feature.geometry.coordinates;
         setSelectedPropertyId(feature.properties.id);
 
-        if (mapProvider === '2gis') {
-            mapInstanceRef.current.setView([lat, lng], 18, { animate: true });
-        } else {
-            mapInstanceRef.current.flyTo({ center: [lng, lat], zoom: 18, pitch: 60 });
-        }
-    }, [mapProvider]);
+        mapInstanceRef.current.flyTo({ center: [lng, lat], zoom: 18, pitch: 60 });
+    }, []);
 
     const navigateProperty = useCallback((direction: 'next' | 'prev') => {
         if (!selectedPropertyId || filteredFeatures.length === 0) return;

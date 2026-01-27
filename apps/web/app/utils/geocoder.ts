@@ -6,36 +6,22 @@ interface GeocodeResult {
 }
 
 export async function geocodeAddress(address: string): Promise<GeocodeResult | null> {
-    const apiKey = process.env.NEXT_PUBLIC_2GIS_KEY;
-    if (!apiKey) {
-        console.warn('Geocoding skipped: NEXT_PUBLIC_2GIS_KEY is missing');
-        return null;
-    }
-
     try {
-        // Using 2GIS Catalog API for geocoding
-        // Doc: https://docs.2gis.com/en/api/search/places/reference/3.0/items
-        const cleanAddress = address.replace(/^Сочи,\s*/i, '').trim(); 
-        const cityContext = 'Сочи'; // Bias towards Sochi
-        
-        const url = `https://catalog.api.2gis.com/3.0/items?q=${encodeURIComponent(`${cityContext}, ${cleanAddress}`)}&fields=items.point&key=${apiKey}`;
-        
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`Geocoding API error: ${response.statusText}`);
-        }
+        // Nominatim OpenStreetMap
+        const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`,
+            { headers: { 'Accept-Language': 'ru' } }
+        );
+
+        if (!response.ok) return null;
 
         const data = await response.json();
-        
-        if (data.result && data.result.items && data.result.items.length > 0) {
-            const item = data.result.items[0];
-            if (item.point) {
-                return {
-                    lat: item.point.lat,
-                    lng: item.point.lon,
-                    address: item.full_name || item.name
-                };
-            }
+        if (data && data.length > 0) {
+            return {
+                lat: parseFloat(data[0].lat),
+                lng: parseFloat(data[0].lon),
+                address: data[0].display_name
+            };
         }
     } catch (error) {
         console.error('Failed to geocode address:', error);
@@ -45,28 +31,17 @@ export async function geocodeAddress(address: string): Promise<GeocodeResult | n
 }
 
 export async function reverseGeocode(lat: number, lng: number): Promise<string | null> {
-    const apiKey = process.env.NEXT_PUBLIC_2GIS_KEY;
-    if (!apiKey) {
-        console.warn('Reverse geocoding skipped: NEXT_PUBLIC_2GIS_KEY is missing');
-        return null;
-    }
-
     try {
-        // Using 2GIS Catalog API for reverse geocoding
-        // Doc: https://docs.2gis.com/en/api/search/places/reference/3.0/items
-        const url = `https://catalog.api.2gis.com/3.0/items/geocode?lon=${lng}&lat=${lat}&fields=items.point&key=${apiKey}`;
-        
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`Reverse Geocoding API error: ${response.statusText}`);
-        }
+        // Nominatim Reverse
+        const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
+             { headers: { 'Accept-Language': 'ru' } }
+        );
+
+        if (!response.ok) return null;
 
         const data = await response.json();
-        
-        if (data.result && data.result.items && data.result.items.length > 0) {
-            const item = data.result.items[0];
-            return item.full_name || item.name || null;
-        }
+        return data.display_name || null;
     } catch (error) {
         console.error('Failed to reverse geocode:', error);
     }
