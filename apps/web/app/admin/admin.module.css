@@ -2917,3 +2917,105 @@
     display: none;
   }
 }
+
+/* === NUCLEAR OPTION FOR MOBILE (FIXED 27.01) === */
+@media (max-width: 768px) {
+  /* Force box-sizing everywhere inside admin content to prevent overflow */
+  .adminMainContent * {
+    box-sizing: border-box !important;
+  }
+
+  /* === Gallery Fixes === */
+  .galleryContainer {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 12px !important; /* Reset 20px padding */
+    margin: 0 !important;
+    display: block !important;
+  }
+
+  .galleryDropzone {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 16px !important; /* Reset 32px padding */
+    margin: 0 0 16px 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .galleryUploadRow {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    margin: 12px 0 !important;
+  }
+
+  /* Force buttons to wrap text and fit width */
+  .galleryUploadRow button,
+  .galleryUploadRow .btnSecondary,
+  .videoUploadRow button,
+  .videoUploadRow .btnSecondary {
+    width: 100% !important;
+    max-width: 100% !important;
+    white-space: normal !important; /* Must allow wrapping */
+    height: auto !important;
+    padding: 12px 8px !important;
+    text-align: center !important;
+    word-break: break-word !important; 
+    font-size: 14px !important;
+  }
+
+  /* URL Form - Vertical Stack */
+  .galleryUrlForm {
+    width: 100% !important;
+    flex-direction: column !important;
+    display: flex !important;
+    gap: 8px !important;
+  }
+
+  .galleryUrlInput {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important; /* Allow shrinking */
+  }
+
+  .galleryUrlBtn {
+    width: 100% !important;
+    margin-top: 4px !important;
+  }
+
+  /* === Video Fixes === */
+  .videoContainer {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 12px !important;
+    box-sizing: border-box !important;
+  }
+
+  .videoAddRow {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .videoAddRow input {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .videoAddRow button {
+    width: 100% !important;
+  }
+  
+  /* Reset generic buttons inside these containers */
+  .galleryContainer .btnSecondary,
+  .videoContainer .btnSecondary {
+      white-space: normal !important;
+      word-wrap: break-word !important;
+  }
+}
