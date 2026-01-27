@@ -3024,3 +3024,22 @@
       word-wrap: break-word !important;
   }
 }
+@media (max-width: 768px) {
+  .formGrid2,
+  .formGrid3,
+  .formGrid4,
+  .formRow {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+  
+  .formGrid2 > *,
+  .formGrid3 > *,
+  .formGrid4 > *,
+  .formRow > * {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}
