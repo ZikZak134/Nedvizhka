@@ -15,16 +15,27 @@ export default function ImageGalleryEditor({ images, onChange }: ImageGalleryEdi
     const [uploadProgress, setUploadProgress] = useState<string>('');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
 
     // Загрузка файла на сервер
     const uploadFile = async (file: File): Promise<string | null> => {
         const formData = new FormData();
         formData.append('file', file);
+        const token = localStorage.getItem('admin_token');
 
         try {
-            const response = await fetch(`${API_URL}/api/v1/upload`, {
+            // Remove trailing slash if present
+            const baseUrl = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL;
+            // Handle case where API_URL already includes /api/v1
+            const uploadEndpoint = baseUrl.endsWith('/api/v1') 
+                ? `${baseUrl}/upload` 
+                : `${baseUrl}/api/v1/upload`;
+
+            const response = await fetch(uploadEndpoint, {
                 method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
                 body: formData,
             });
 
