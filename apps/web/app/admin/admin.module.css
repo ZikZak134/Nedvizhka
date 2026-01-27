@@ -2838,10 +2838,7 @@
     box-sizing: border-box;
   }
 
-  /* === Inline flex containers === */
-  [style*="display: flex"] {
-    flex-wrap: wrap !important;
-  }
+
 
   /* === Cards and sections === */
   .sectionCard,
