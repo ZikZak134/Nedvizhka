@@ -187,13 +187,12 @@ export function VideoEditor({ videos, onChange }: VideoEditorProps) {
         </button>
       </div>
       
-      <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'center', gap: '12px', alignItems: 'center' }}>
-          <span style={{ fontSize: '12px', color: '#64748b' }}>или</span>
+      <div className={styles.videoUploadRow}>
+          <span className={styles.helperText}>или</span>
           <button
               type="button"
               onClick={handleFileSelect}
               className={styles.btnSecondary}
-              style={{ fontSize: '14px', padding: '8px 24px' }}
               disabled={isUploading}
           >
               {isUploading ? '⏳ Загрузка...' : '📁 Загрузить видео (MP4)'}

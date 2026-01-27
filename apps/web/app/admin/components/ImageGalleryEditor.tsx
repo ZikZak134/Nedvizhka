@@ -185,12 +185,11 @@ export default function ImageGalleryEditor({ images, onChange }: ImageGalleryEdi
             </div>
 
             {/* Явная кнопка загрузки (по просьбе пользователя) */}
-            <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'center' }}>
+            <div className={styles.galleryUploadRow}>
                 <button
                     type="button"
                     onClick={handleFileSelect}
                     className={styles.btnSecondary}
-                    style={{ fontSize: '14px', padding: '8px 24px' }}
                 >
                     📁 Выбрать файлы с компьютера
                 </button>
