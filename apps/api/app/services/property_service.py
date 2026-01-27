@@ -101,10 +101,15 @@ def update_property(db: Session, property_id: str, property_data: PropertyUpdate
         lon = update_data.get('longitude', db_property.longitude)
         
         if lat and lon:
-            distances = GeoService.calculate_distances(db, lat, lon)
-            update_data['distances'] = distances 
-            # Also update the object field directly since setattr might miss nested dict update logic if handled poorly
-            setattr(db_property, 'distances', distances)
+            try:
+                distances = GeoService.calculate_distances(db, lat, lon)
+                update_data['distances'] = distances 
+                # Also update the object field directly since setattr might miss nested dict update logic if handled poorly
+                setattr(db_property, 'distances', distances)
+            except Exception as e:
+                print(f"Warning: Failed to calculate distances: {e}")
+                # Do not abort transaction if geo fails
+                pass
 
     for field, value in update_data.items():
         setattr(db_property, field, value)

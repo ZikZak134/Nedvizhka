@@ -8,6 +8,7 @@ import LocationAutocomplete from '../components/LocationAutocomplete';
 import ImageGalleryEditor from '../components/ImageGalleryEditor';
 import { VideoEditor } from '../components/VideoEditor';
 import JsonListEditor from '../components/JsonListEditor';
+import MarkerIconEditor from '../components/MarkerIconEditor';
 import TextareaWithCounter from '../components/TextareaWithCounter';
 import styles from '../admin.module.css';
 import { geocodeAddress, reverseGeocode } from '../../utils/geocoder';
@@ -247,18 +248,24 @@ export default function AdminProperties() {
   }, [formData.address, showForm]);
 
     // Обработчик изменения координат на карте (Обратный геокодинг)
-    const handleMapLocationChange = async (lat: number, lon: number) => {
+    const handleMapLocationChange = async (lat: number, lon: number, address?: string) => {
         // Устанавливаем флаг, что это ручное обновление, чтобы useEffect не сработал
         isManualUpdate.current = true;
         
         // Сразу обновляем координаты
         setFormData(prev => ({ ...prev, latitude: lat, longitude: lon }));
         
-        // Запускаем обратный геокодинг
-        const address = await reverseGeocode(lat, lon);
         if (address) {
-            setFormData(prev => ({ ...prev, address: address }));
-            showSuccess(`Адрес обновлен: ${address}`);
+             // Если адрес пришел из LocationPicker (Yandex), используем его
+             setFormData(prev => ({ ...prev, address: address }));
+             showSuccess(`Адрес обновлен: ${address}`);
+        } else {
+            // Иначе пробуем 2GIS (как раньше)
+            const resolvedAddress = await reverseGeocode(lat, lon);
+            if (resolvedAddress) {
+                setFormData(prev => ({ ...prev, address: resolvedAddress }));
+                showSuccess(`Адрес обновлен: ${resolvedAddress}`);
+            }
         }
     };
 
@@ -703,12 +710,9 @@ export default function AdminProperties() {
                           />
                    </div>
                    <div style={{ marginTop: '16px' }}>
-                       <Label>Кастомный значок на карте (3D Icon URL)</Label>
-                       <Input 
-                           value={formData.marker_icon} 
-                           onChange={(v: string) => setFormData({...formData, marker_icon: v})} 
-                           placeholder="https://example.com/icons/my-building-3d.png" 
-                           helper="Оставьте пустым для стандартного маркера с ценой. 64x64px, PNG."
+                       <MarkerIconEditor 
+                           iconUrl={formData.marker_icon} 
+                           onChange={(url) => setFormData({...formData, marker_icon: url})} 
                        />
                    </div>
               </Section>
