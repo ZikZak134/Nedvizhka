@@ -373,13 +373,15 @@ export default function AdminProperties() {
             </h1>
             <p className={styles.pageSubtitle}>Полный контроль над контентом, аналитикой и медиа</p>
           </div>
-          <button 
-            onClick={handleCancel}
-            className={styles.btnSecondary}
-          >
-            ← Назад к списку
-          </button>
         </header>
+
+        {/* Кнопка Назад — вынесена из header для корректного отображения на mobile */}
+        <button 
+          onClick={handleCancel}
+          className={`${styles.btnSecondary} ${styles.backButton}`}
+        >
+          ← Назад к списку
+        </button>
 
         {/* Progress Bar */}
         {status === 'loading' && (

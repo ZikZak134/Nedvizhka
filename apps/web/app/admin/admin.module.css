@@ -1887,6 +1887,20 @@
   align-items: start;
 }
 
+/* === Back Button === */
+.backButton {
+  margin-bottom: 24px;
+  padding: 12px 24px;
+  width: fit-content;
+}
+
+@media (max-width: 768px) {
+  .backButton {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+}
+
 /* === PROPERTIES FORM === */
 .formColumn {
   display: flex;
