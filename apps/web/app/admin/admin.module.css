@@ -2563,6 +2563,64 @@
   .previewGrid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  /* === Mobile Forms (Tilda-style: 1 column) === */
+  .formGrid2,
+  .formGrid3,
+  .formGrid4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* === Page header fix: title and button stacked === */
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 12px;
+  }
+
+  .pageTitle {
+    font-size: 1.5rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+  }
+
+  /* === Form sections spacing fix === */
+  .formSection {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .formSection:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  /* === Map & Gallery overflow fix === */
+  .mapWrapper,
+  .imageGallery,
+  .dropZone,
+  .uploadArea {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* === Inputs touch-friendly === */
+  .formInput,
+  .formTextarea,
+  .formSelect {
+    min-height: 44px;
+    padding: 12px 14px;
+    font-size: 16px; /* Prevents iOS zoom */
+  }
+
+  /* === Form labels readable === */
+  .formLabel {
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
 }
 
 /* === Small phones (< 480px) === */

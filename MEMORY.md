@@ -37,12 +37,23 @@
 - [x] Perform UI Smoke Test (Manual/Screenshot). (Ready for use run)
 - [x] Final "Definition of Done" check.
 
-# #   6 .   L u x u r y   U X   &   A d a p t i v e   U I   ( E x p e r t   P o l i s h )
+## 6. Luxury UX & Adaptive UI (Tilda-style)
 
-- [ x ]   **A d a p t i v e   U I** :   I m p l e m e n t   T i l d a - s t y l e   b r e a k p o i n t s   ( M o b i l e ,   T a b l e t ,   D e s k t o p ) .
-- [ x ]   **C o n t r a s t   A u d i t** :   F i x   a l l   b l a c k - o n - n a v y   a n d   l o w - c o n t r a s t   t e x t .
-- [ x ]   **S p a c e   &   F l o w** :   I n c r e a s e   w h i t e   s p a c e   a n d   r e m o v e   ' c l u t t e r e d '   b a n n e r   o v e r l a y s   o n   m o b i l e .
-- [ x ]   **I n t e r a c t i o n** :   E n s u r e   p r e m i u m   a n i m a t i o n s   a n d   t o u c h - f r i e n d l y   c o n t r o l s .  
+**Правило**: Desktop и Mobile — **два разных интерфейса** (см. `.agent/rules/responsive-design.md`)
+
+| Задача | Статус |
+|--------|--------|
+| Adaptive UI (breakpoints) | 🔄 В работе |
+| Contrast Audit | ✅ |
+| Space & Flow | 🔄 Требует доработки |
+| Mobile Forms (1 колонка) | ❌ Критично |
+| Touch targets ≥ 44px | ✅ |
+
+### Выявленные проблемы (27.01.2026):
+- **Формы редактирования**: 3-колоночные гриды выезжают за экран
+- **Заголовки**: Налезают на кнопки
+- **Текст**: Обрезается справа (нет `word-break`)
+- **Секции**: Элементы «Базовая информация» и «Полный контроль» накладываются  
 
 ## 7. Compliance & Legal (Yandex Maps)
 
